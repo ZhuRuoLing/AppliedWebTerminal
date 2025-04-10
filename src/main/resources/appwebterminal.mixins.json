@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "icu.takeneko.appwebterminal.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
