@@ -66,7 +66,6 @@ legacyForge {
     runs {
         client {
             client()
-
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }
@@ -141,6 +140,32 @@ dependencies {
     modImplementation(libs.bundles.jei)
     modImplementation(libs.ae2)
 
+    jarJar implementation("io.ktor:ktor-server-core:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-websockets:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-content-negotiation:3.1.2")
+    jarJar implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-call-logging:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-forwarded-header:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-cors:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-caching-headers:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-host-common:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-auth:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-auth-jwt:3.1.2")
+    jarJar implementation("io.ktor:ktor-server-cio:3.1.2")
+
+    additionalRuntimeClasspath("io.ktor:ktor-server-core:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-websockets:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-content-negotiation:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-serialization-kotlinx-json:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-call-logging:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-forwarded-header:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-cors:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-caching-headers:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-host-common:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-auth:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-auth-jwt:3.1.2")
+    additionalRuntimeClasspath("io.ktor:ktor-server-cio:3.1.2")
+
     implementation "thedarkcolour:kotlinforforge:4.11.0"
 }
 
@@ -164,17 +189,17 @@ jar {
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [
-            minecraft_version        : minecraft_version,
-            minecraft_version_range  : minecraft_version_range,
-            forge_version            : forge_version,
-            forge_version_range      : forge_version_range,
-            loader_version_range     : loader_version_range,
-            mod_id                   : mod_id,
-            mod_name                 : mod_name,
-            mod_license              : mod_license,
-            mod_version              : mod_version,
-            mod_authors              : mod_authors,
-            mod_description          : mod_description
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            forge_version          : forge_version,
+            forge_version_range    : forge_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description
     ]
     inputs.properties replaceProperties
     expand replaceProperties

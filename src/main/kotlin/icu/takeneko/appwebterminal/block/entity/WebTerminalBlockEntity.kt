@@ -107,7 +107,7 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
     }
 
     override fun getGrid(): IGrid? {
-       return this.mainNode.grid
+        return this.mainNode.grid
     }
 
     override fun getId(): UUID = id
