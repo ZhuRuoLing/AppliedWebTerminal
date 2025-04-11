@@ -58,7 +58,7 @@ class WebTerminalBlock(properties: Properties) : AEBaseEntityBlock<WebTerminalBl
         val be = level.getBlockEntity(pos) as WebTerminalBlockEntity
         networkingChannel.send(
             PacketDistributor.PLAYER.with { player as ServerPlayer },
-            OpenWebTerminalScreenPacket(be.displayName, be.getId(), pos)
+            OpenWebTerminalScreenPacket(be.displayName, be.getId(), pos, be.password)
         )
         return InteractionResult.SUCCESS
     }

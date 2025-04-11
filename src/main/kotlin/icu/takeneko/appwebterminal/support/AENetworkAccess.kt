@@ -5,8 +5,6 @@ import net.minecraft.core.BlockPos
 import java.util.UUID
 
 interface AENetworkAccess {
-    var displayName:String
-
     fun getId(): UUID
 
     fun worldPosition(): BlockPos
@@ -14,4 +12,12 @@ interface AENetworkAccess {
     fun markDirty()
 
     fun getGrid(): IGrid?
+
+    fun auth(password: String): Boolean
+
+    fun update(displayName: String, password: String)
+
+    fun validateNonce(nonce: String): Boolean
+
+    fun getNonce(): String
 }

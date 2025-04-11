@@ -12,6 +12,7 @@ import icu.takeneko.appwebterminal.block.WebTerminalBlock
 import icu.takeneko.appwebterminal.support.AENetworkAccess
 import icu.takeneko.appwebterminal.support.AENetworkSupport
 import icu.takeneko.appwebterminal.util.get
+import io.ktor.util.*
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
@@ -23,7 +24,12 @@ import java.util.*
 class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEntity, AENetworkAccess {
 
     private var id: UUID = UUID.randomUUID()
-    override var displayName: String = "ME Web Terminal"
+    var displayName: String = "ME Web Terminal"
+        private set
+    var password: String = "AppliedWebTerminal"
+        private set
+
+    private var nonce = generateNonce()
 
     constructor(
         blockEntityType: BlockEntityType<*>,
@@ -52,6 +58,7 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
         super.saveAdditional(data)
         data.putString("Name", displayName)
         data.putUUID("UUID", id)
+        data.putString("Password", password)
     }
 
     override fun loadTag(data: CompoundTag) {
@@ -59,6 +66,7 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
         AENetworkSupport.remove(this)
         this.displayName = if (data.contains("Name")) data.getString("Name") else "ME Web Terminal"
         this.id = if (data.hasUUID("UUID")) data.getUUID("UUID") else UUID.randomUUID()
+        this.password = if (data.contains("Password")) data.getString("Password") else "AppliedWebTerminal"
         AENetworkSupport.register(this)
     }
 
@@ -108,6 +116,28 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
 
     override fun getGrid(): IGrid? {
         return this.mainNode.grid
+    }
+
+    override fun auth(password: String): Boolean {
+        return password == this.password
+    }
+
+    override fun update(displayName: String, password: String) {
+        this.displayName = displayName
+        val oldPassword = this.password
+        this.password = password
+        this.nonce = generateNonce()
+        if (oldPassword != password){
+            AENetworkSupport.requestSessionReset(this)
+        }
+    }
+
+    override fun validateNonce(nonce: String): Boolean {
+        return nonce == this.nonce
+    }
+
+    override fun getNonce(): String {
+        return nonce
     }
 
     override fun getId(): UUID = id

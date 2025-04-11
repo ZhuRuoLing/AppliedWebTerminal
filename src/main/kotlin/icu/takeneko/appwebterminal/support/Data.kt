@@ -1,6 +1,5 @@
 package icu.takeneko.appwebterminal.support
 
-import appeng.api.networking.crafting.ICraftingCPU
 import appeng.api.stacks.GenericStack
 import appeng.menu.me.crafting.CraftingStatus
 import appeng.menu.me.crafting.CraftingStatusEntry

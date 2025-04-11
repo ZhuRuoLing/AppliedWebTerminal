@@ -15,27 +15,41 @@ import java.util.*
 
 class WebTerminalScreen(
     private var name: String,
-    private var uuid: UUID
+    private var uuid: UUID,
+    private var password: String
 ) : Screen(Component.translatable("appwebterminal.screen.title")) {
 
     private val texture = AppWebTerminal.location("textures/gui/blank.png")
-    private lateinit var textField: AETextField
+    private lateinit var nameField: AETextField
     private lateinit var finishButton: Button
+    private lateinit var passwordField:AETextField
     override fun init() {
         super.init()
         val style = StyleManager.loadStyleDoc("/screens/terminals/crafting_terminal.json")
         val x: Int = (this.width - 195) / 2
         val y: Int = (this.height - 136) / 2
-        textField = AETextField(style, Minecraft.getInstance().font, x + 60, y + 50, 128, 18)
-        textField.setBordered(false)
-        textField.value = name
-        textField.setResponder {
-            name = it
-        }
+        nameField = AETextField(style, Minecraft.getInstance().font, x + 60, y + 40, 128, 18)
+            .apply {
+                setBordered(false)
+                value = name
+                setResponder {
+                    name = it
+                }
+            }
+        passwordField = AETextField(style, Minecraft.getInstance().font, x + 60, y + 70, 128, 18)
+            .apply {
+                setBordered(false)
+                value = password
+                setResponder {
+                    password = it
+                }
+            }
+
         finishButton = Button.builder(Component.translatable("appwebterminal.button.done")) {
             Minecraft.getInstance().setScreen(null)
         }.bounds(x + 130, y + 110, 60, 20).build()
-        addRenderableWidget(textField)
+        addRenderableWidget(nameField)
+        addRenderableWidget(passwordField)
         addRenderableWidget(finishButton)
     }
 
@@ -52,7 +66,15 @@ class WebTerminalScreen(
             Minecraft.getInstance().font,
             Component.translatable("appwebterminal.hint.name"),
             x + 8,
-            y + 52,
+            y + 42,
+            4210752,
+            false
+        )
+        guiGraphics.drawString(
+            Minecraft.getInstance().font,
+            Component.translatable("appwebterminal.hint.password"),
+            x + 8,
+            y + 72,
             4210752,
             false
         )
@@ -60,6 +82,6 @@ class WebTerminalScreen(
     }
 
     override fun removed() {
-        networkingChannel.send(PacketDistributor.SERVER.noArg(), UpdateWebTerminalNamePacket(name, uuid))
+        networkingChannel.send(PacketDistributor.SERVER.noArg(), UpdateWebTerminalNamePacket(name, uuid, password))
     }
 }

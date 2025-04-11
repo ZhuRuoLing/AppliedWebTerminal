@@ -40,6 +40,9 @@ repositories {
         forRepository { maven { url = "https://maven.tterrag.com/" } }
         filter { includeGroup("com.tterrag.registrate") }
     }
+    maven {
+        url "https://cursemaven.com"
+    }
 }
 
 base {
@@ -66,8 +69,11 @@ legacyForge {
     runs {
         client {
             client()
+            devLogin = true
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+            jvmArgument("--add-opens=kotlinx.coroutines.core/kotlinx.coroutines.debug.internal=kotlin.stdlib")
+            //jvmArgument("--add-opens kotlin.stdlib/kotlin.coroutines=kotlin.stdlib")
         }
 
         server {
@@ -131,8 +137,13 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
+
 obfuscation {
     createRemappingConfiguration(configurations.localRuntime)
+}
+
+configurations.configureEach {
+    exclude(group: "org.jetbrains.kotlinx", module: "kotlinx-serialization-json-io-jvm")
 }
 
 dependencies {
@@ -140,6 +151,7 @@ dependencies {
     modImplementation(libs.bundles.jei)
     modImplementation(libs.ae2)
 
+    modImplementation("curse.maven:configuration-444699:5840405")
     jarJar implementation("io.ktor:ktor-server-core:3.1.2")
     jarJar implementation("io.ktor:ktor-server-websockets:3.1.2")
     jarJar implementation("io.ktor:ktor-server-content-negotiation:3.1.2")
@@ -166,7 +178,9 @@ dependencies {
     additionalRuntimeClasspath("io.ktor:ktor-server-auth-jwt:3.1.2")
     additionalRuntimeClasspath("io.ktor:ktor-server-cio:3.1.2")
 
-    implementation "thedarkcolour:kotlinforforge:4.11.0"
+    implementation "thedarkcolour:kfflang:4.11.0"
+    implementation "thedarkcolour:kfflib:4.11.0"
+    implementation "thedarkcolour:kffmod:4.11.0"
 }
 
 mixin {
