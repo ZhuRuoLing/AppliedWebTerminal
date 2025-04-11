@@ -20,4 +20,6 @@ interface AENetworkAccess {
     fun validateNonce(nonce: String): Boolean
 
     fun getNonce(): String
+
+    fun getTerminalName():String
 }

@@ -8,10 +8,13 @@ object AENetworkSupport {
     private val logger = LoggerFactory.getLogger("AE Network Support")
 
     fun register(accessor: AENetworkAccess) {
+        logger.info("Registering $accessor(${accessor.getId()})")
         accessors[accessor.getId()] = accessor
     }
 
     fun remove(accessor: AENetworkAccess) {
+        if (accessor !in accessors.values) return
+        logger.info("Unegistering $accessor(${accessor.getId()})")
         accessors.remove(accessor.getId())
     }
 
@@ -24,6 +27,10 @@ object AENetworkSupport {
 
     fun requestSessionReset(accessor: AENetworkAccess) {
 
+    }
+
+    fun listAllTerminals(): List<TerminalInfo> {
+        return accessors.map { TerminalInfo(it.value.getTerminalName(), it.value.getId().toString()) }
     }
 
     fun validateNonce(uuid: UUID, nonce: String): Boolean {

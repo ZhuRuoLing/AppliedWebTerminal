@@ -2,10 +2,14 @@ package icu.takeneko.appwebterminal.all
 
 import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.block.LateInitSupported
+import icu.takeneko.appwebterminal.block.entity.WebTerminalBlockEntity
 import icu.takeneko.appwebterminal.registrate
 import icu.takeneko.appwebterminal.support.AENetworkSupport
 import icu.takeneko.appwebterminal.support.http.HttpServerLifecycleSupport
 import net.minecraft.core.registries.Registries
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.level.chunk.LevelChunk
+import net.minecraftforge.event.level.ChunkEvent
 import net.minecraftforge.event.server.ServerStartedEvent
 import net.minecraftforge.event.server.ServerStoppedEvent
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
@@ -15,6 +19,18 @@ fun onCommonSetup(event: FMLCommonSetupEvent) {
         val block = it.get()
         if (block is LateInitSupported) {
             block.lateInit()
+        }
+    }
+}
+
+fun onChunkUnloaded(event: ChunkEvent.Unload) {
+    if (event.level is ServerLevel) {
+        if (event.chunk is LevelChunk) {
+            (event.chunk as LevelChunk).blockEntities.forEach { (_, blockEntity) ->
+                if (blockEntity is WebTerminalBlockEntity) {
+                    AENetworkSupport.remove(blockEntity)
+                }
+            }
         }
     }
 }

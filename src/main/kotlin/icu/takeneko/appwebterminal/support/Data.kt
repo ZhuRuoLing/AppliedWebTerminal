@@ -82,3 +82,5 @@ data class MEStack(
     }
 }
 
+@kotlinx.serialization.Serializable
+data class TerminalInfo(val name:String, val uuid:String)

@@ -10,7 +10,7 @@ object HttpServerLifecycleSupport {
     }
 
     fun stop() {
-        serverInstance?.interrupt()
+        serverInstance?.gracefullyStop()
         serverInstance = null
     }
 }

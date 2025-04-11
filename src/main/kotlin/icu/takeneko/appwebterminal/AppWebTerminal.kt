@@ -7,7 +7,9 @@ import icu.takeneko.appwebterminal.all.*
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
 import icu.takeneko.appwebterminal.util.KRegistrate
+import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.fml.common.Mod
 import org.slf4j.Logger
@@ -34,8 +36,9 @@ object AppWebTerminal {
         registerNetworking()
         configureDataGeneration()
         modBus.addListener(::onCommonSetup)
-        FORGE_BUS.addListener(::onServerStart)
-        FORGE_BUS.addListener(::onServerStop)
+        MinecraftForge.EVENT_BUS.addListener(::onServerStart)
+        MinecraftForge.EVENT_BUS.addListener(::onServerStop)
+        MinecraftForge.EVENT_BUS.addListener(::onChunkUnloaded)
         LOGGER.info("AppWebTerminal initialized")
     }
 

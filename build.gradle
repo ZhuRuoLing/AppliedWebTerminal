@@ -1,3 +1,5 @@
+import java.util.regex.Pattern
+
 plugins {
     id 'idea'
     id 'java-library'
@@ -142,6 +144,14 @@ obfuscation {
     createRemappingConfiguration(configurations.localRuntime)
 }
 
+task copyFrontendFile(type:Copy) {
+    from "frontend/build/libs"
+    into "src/main/resources"
+}
+
+copyFrontendFile.dependsOn ":frontend:build"
+processResources.dependsOn "copyFrontendFile"
+
 configurations.configureEach {
     exclude(group: "org.jetbrains.kotlinx", module: "kotlinx-serialization-json-io-jvm")
 }
@@ -182,7 +192,6 @@ dependencies {
     implementation "thedarkcolour:kfflib:4.11.0"
     implementation "thedarkcolour:kffmod:4.11.0"
 }
-
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
     config "${mod_id}.mixins.json"

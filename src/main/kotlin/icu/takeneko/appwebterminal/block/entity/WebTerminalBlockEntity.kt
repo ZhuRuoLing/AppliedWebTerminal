@@ -16,6 +16,7 @@ import io.ktor.util.*
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
@@ -30,6 +31,7 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
         private set
 
     private var nonce = generateNonce()
+    private var registered = false
 
     constructor(
         blockEntityType: BlockEntityType<*>,
@@ -39,7 +41,6 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
         this.mainNode.setExposedOnSides(Direction.entries.toMutableSet() - blockState[WebTerminalBlock.FACING])
         this.mainNode.setVisualRepresentation(meWebTerminal.asStack())
         this.mainNode.setIdlePowerUsage(3.0)
-        AENetworkSupport.register(this)
     }
 
     override fun getGridConnectableSides(orientation: BlockOrientation): Set<Direction> {
@@ -63,11 +64,9 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
 
     override fun loadTag(data: CompoundTag) {
         super.loadTag(data)
-        AENetworkSupport.remove(this)
         this.displayName = if (data.contains("Name")) data.getString("Name") else "ME Web Terminal"
         this.id = if (data.hasUUID("UUID")) data.getUUID("UUID") else UUID.randomUUID()
         this.password = if (data.contains("Password")) data.getString("Password") else "AppliedWebTerminal"
-        AENetworkSupport.register(this)
     }
 
     override fun onReady() {
@@ -95,11 +94,6 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
         }
     }
 
-    override fun onChunkUnloaded() {
-        super.onChunkUnloaded()
-        AENetworkSupport.remove(this)
-    }
-
     override fun onOrientationChanged(orientation: BlockOrientation) {
         super.onOrientationChanged(orientation)
         updateExposedSides()
@@ -108,6 +102,17 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
     override fun getInternalInventory(): InternalInventory = InternalInventory.empty()
 
     override fun serverTick() {
+        if (!registered) {
+            AENetworkSupport.register(this)
+            registered = true
+        }
+    }
+
+    override fun setRemoved() {
+        super.setRemoved()
+        if (this.level is ServerLevel) {
+            AENetworkSupport.remove(this)
+        }
     }
 
     override fun markDirty() {
@@ -127,7 +132,7 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
         val oldPassword = this.password
         this.password = password
         this.nonce = generateNonce()
-        if (oldPassword != password){
+        if (oldPassword != password) {
             AENetworkSupport.requestSessionReset(this)
         }
     }
@@ -138,6 +143,10 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
 
     override fun getNonce(): String {
         return nonce
+    }
+
+    override fun getTerminalName(): String {
+        return displayName
     }
 
     override fun getId(): UUID = id

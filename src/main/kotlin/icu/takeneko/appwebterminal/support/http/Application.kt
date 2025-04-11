@@ -26,6 +26,11 @@ class HttpServer(
             }
         }
     }
+
+    fun gracefullyStop(){
+        logger.info("Stopping http server because minecraft server is stopping.")
+        server.stop()
+    }
 }
 
 fun Application.module() {

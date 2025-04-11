@@ -12,8 +12,8 @@ import java.util.*
 
 fun Application.configureRouting() {
     routing {
-        get("/") {
-            call.respondText("Hello World!")
+        get("/list") {
+            return@get call.respond(AENetworkSupport.listAllTerminals())
         }
         authenticate("jwt") {
             get("/test") {
