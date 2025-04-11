@@ -13,7 +13,7 @@ class CachedModFile(
         return if (path in cacheMap) {
             cacheMap[path]
         } else {
-            resourcePath.readBytes()
+            resourcePath.readBytes().also { cacheMap[path] = it }
         }
     }
 }
