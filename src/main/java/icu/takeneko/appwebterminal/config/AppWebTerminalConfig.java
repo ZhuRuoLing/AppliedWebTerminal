@@ -21,7 +21,7 @@ public class AppWebTerminalConfig {
    public String frontendTitle = "Applied Web Terminal";
 
    @Configurable
-   @Configurable.Comment({"Websocket url for frontend to connect"})
+   @Configurable.Comment({"Websocket url for frontend to connect", "Use \"~\" for auto detecting"})
    public String backendWebsocketEndpoint = "~";
 
    @SuppressWarnings("unused")

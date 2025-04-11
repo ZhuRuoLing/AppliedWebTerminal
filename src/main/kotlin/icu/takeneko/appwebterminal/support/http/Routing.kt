@@ -2,9 +2,11 @@ package icu.takeneko.appwebterminal.support.http
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.support.AENetworkSupport
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,12 +17,20 @@ fun Application.configureRouting() {
         get("/list") {
             return@get call.respond(AENetworkSupport.listAllTerminals())
         }
+        staticResources("/", "frontend", "index.html") {
+
+        }
         authenticate("jwt") {
-            get("/test") {
-                return@get call.respond("yes")
+            get("/ping") {
+                return@get call.respond("pong")
             }
             get("/settings") {
-
+                return@get call.respond(
+                    FrontendSettings(
+                        AppWebTerminal.config.frontendTitle,
+                        AppWebTerminal.config.backendWebsocketEndpoint
+                    )
+                )
             }
         }
         post("/login") {
@@ -47,10 +57,10 @@ fun Application.configureRouting() {
 }
 
 @kotlinx.serialization.Serializable
-private data class FrontendSettings(val title:String, val webSocketUrl: String)
+private data class FrontendSettings(val title: String, val webSocketUrl: String)
 
 @kotlinx.serialization.Serializable
 private data class UserCredential(val uuid: String, val password: String)
 
 @kotlinx.serialization.Serializable
-private data class UserAuthResult(val success: Boolean, val payload : String?)
+private data class UserAuthResult(val success: Boolean, val payload: String?)
