@@ -7,13 +7,11 @@ import icu.takeneko.appwebterminal.all.*
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
 import icu.takeneko.appwebterminal.util.KRegistrate
-import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.fml.common.Mod
 import org.slf4j.Logger
-import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
 
 val registrate = KRegistrate.create(AppWebTerminal.MOD_ID)

@@ -1,5 +1,3 @@
-import java.util.regex.Pattern
-
 plugins {
     id 'idea'
     id 'java-library'
@@ -21,7 +19,9 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
+// Formats the mod version to include the loader, Minecraft version, and build number (if present)
+String buildNumber = System.getenv("GITHUB_ACTION_NUMBER")
+version = "${mod_version}" + (buildNumber != null ? "-build.${System.getenv("GITHUB_RUN_NUMBER")}" : "")
 group = mod_group_id
 
 repositories {
@@ -264,6 +264,10 @@ tasks.withType(JavaCompile).configureEach {
 
 compileKotlin {
     kotlinOptions.jvmTarget = "17"
+}
+
+java {
+    withSourcesJar()
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
