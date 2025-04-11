@@ -16,8 +16,26 @@ public class AppWebTerminalConfig {
    @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
    public int httpPort = 11451;
 
+   @Configurable
+   @Configurable.Comment({"Web Terminal Title"})
+   public String frontendTitle = "Applied Web Terminal";
+
+   @Configurable
+   @Configurable.Comment({"Websocket url for frontend to connect"})
+   public String backendWebsocketEndpoint = "~";
+
    @SuppressWarnings("unused")
    public int getHttpPort() {
       return httpPort;
+   }
+
+   @SuppressWarnings("unused")
+   public String getFrontendTitle() {
+      return frontendTitle;
+   }
+
+   @SuppressWarnings("unused")
+   public String getBackendWebsocketEndpoint() {
+      return backendWebsocketEndpoint;
    }
 }

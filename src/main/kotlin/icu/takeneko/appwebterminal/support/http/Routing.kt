@@ -19,6 +19,9 @@ fun Application.configureRouting() {
             get("/test") {
                 return@get call.respond("yes")
             }
+            get("/settings") {
+
+            }
         }
         post("/login") {
             val user = call.receive<UserCredential>()
@@ -42,6 +45,9 @@ fun Application.configureRouting() {
         }
     }
 }
+
+@kotlinx.serialization.Serializable
+private data class FrontendSettings(val title:String, val webSocketUrl: String)
 
 @kotlinx.serialization.Serializable
 private data class UserCredential(val uuid: String, val password: String)
