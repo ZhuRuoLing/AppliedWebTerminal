@@ -34,6 +34,7 @@ object AppWebTerminal {
         registerNetworking()
         configureDataGeneration()
         modBus.addListener(::onCommonSetup)
+        modBus.addListener(::onBuildCreativeTab)
         MinecraftForge.EVENT_BUS.addListener(::onServerStart)
         MinecraftForge.EVENT_BUS.addListener(::onServerStop)
         MinecraftForge.EVENT_BUS.addListener(::onChunkUnloaded)
