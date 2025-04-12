@@ -3,12 +3,15 @@ package icu.takeneko.appwebterminal.util
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.MissingFieldException
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import net.minecraft.resources.ResourceLocation
 
 class DispatchedSerializer<T, K>(
     private val keyName: String,
@@ -45,6 +48,20 @@ class DispatchedSerializer<T, K>(
         compositeEncoder.encodeSerializableElement(descriptor, 0, keySerializer, key)
         val serializer = dispatchMap[key] ?: throw IllegalArgumentException("No KSerializer found for key type $value")
         serializer.serialize(encoder, value)
+    }
+
+}
+
+class ResourceLocationSerializer: KSerializer<ResourceLocation> {
+    override val descriptor: SerialDescriptor
+        get() = PrimitiveSerialDescriptor("ResourceLocation", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): ResourceLocation {
+        return ResourceLocation(decoder.decodeString())
+    }
+
+    override fun serialize(encoder: Encoder, value: ResourceLocation) {
+        encoder.encodeString(value.toString())
     }
 
 }

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "ae2:charged_certus_quartz_crystal"
+    },
+    "B": {
+      "item": "ae2:wireless_access_point"
+    },
+    "C": {
+      "item": "ae2:engineering_processor"
+    },
+    "D": {
+      "item": "ae2:crafting_card"
+    },
+    "E": {
+      "item": "ae2:quartz_vibrant_glass"
+    },
+    "F": {
+      "item": "ae2:crafting_monitor"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "result": {
+    "item": "appwebterminal:web_terminal"
+  },
+  "show_notification": true
+}
