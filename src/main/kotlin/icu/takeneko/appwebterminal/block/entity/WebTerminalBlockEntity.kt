@@ -1,12 +1,10 @@
 package icu.takeneko.appwebterminal.block.entity
 
-import appeng.api.inventories.InternalInventory
+import appeng.api.networking.GridFlags
 import appeng.api.networking.IGrid
 import appeng.api.networking.IGridNodeListener
-import appeng.api.networking.pathing.ControllerState
 import appeng.api.orientation.BlockOrientation
-import appeng.blockentity.ServerTickingBlockEntity
-import appeng.blockentity.grid.AENetworkPowerBlockEntity
+import appeng.blockentity.grid.AENetworkBlockEntity
 import icu.takeneko.appwebterminal.all.meWebTerminal
 import icu.takeneko.appwebterminal.block.WebTerminalBlock
 import icu.takeneko.appwebterminal.support.AENetworkAccess
@@ -20,9 +18,13 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
-import java.util.*
+import java.util.UUID
 
-class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEntity, AENetworkAccess {
+class WebTerminalBlockEntity(
+    blockEntityType: BlockEntityType<*>,
+    blockPos: BlockPos,
+    blockState: BlockState
+) : AENetworkBlockEntity(blockEntityType, blockPos, blockState), AENetworkAccess {
 
     private var id: UUID = UUID.randomUUID()
     var displayName: String = "ME Web Terminal"
@@ -33,14 +35,11 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
     private var nonce = generateNonce()
     private var registered = false
 
-    constructor(
-        blockEntityType: BlockEntityType<*>,
-        blockPos: BlockPos,
-        blockState: BlockState
-    ) : super(blockEntityType, blockPos, blockState) {
+    init {
         this.mainNode.setExposedOnSides(Direction.entries.toMutableSet() - blockState[WebTerminalBlock.FACING])
         this.mainNode.setVisualRepresentation(meWebTerminal.asStack())
         this.mainNode.setIdlePowerUsage(3.0)
+        this.mainNode.setFlags(GridFlags.REQUIRE_CHANNEL)
     }
 
     override fun getGridConnectableSides(orientation: BlockOrientation): Set<Direction> {
@@ -50,9 +49,6 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
 
     private fun updateExposedSides() {
         this.mainNode.setExposedOnSides(Direction.entries.toMutableSet() - level!!.getBlockState(worldPosition)[WebTerminalBlock.FACING])
-    }
-
-    override fun onChangeInventory(p0: InternalInventory, p1: Int) {
     }
 
     override fun saveAdditional(data: CompoundTag) {
@@ -79,33 +75,24 @@ class WebTerminalBlockEntity : AENetworkPowerBlockEntity, ServerTickingBlockEnti
     }
 
     private fun updateState() {
-        if (mainNode.isReady) {
-            val grid = this.mainNode.grid
-            val online = if (grid != null) {
-                grid.energyService.isNetworkPowered && grid.pathingService.controllerState != ControllerState.CONTROLLER_CONFLICT
-            } else {
-                false
-            }
-            level!!.setBlock(
-                this.worldPosition,
-                level!!.getBlockState(blockPos).setValue(WebTerminalBlock.ONLINE, online),
-                Block.UPDATE_CLIENTS
-            )
+        level!!.setBlock(
+            this.worldPosition,
+            level!!.getBlockState(blockPos).setValue(WebTerminalBlock.ONLINE, mainNode.isOnline),
+            Block.UPDATE_CLIENTS
+        )
+        if (!registered && mainNode.isOnline) {
+            AENetworkSupport.register(this)
+            registered = true
+        }
+        if (registered && !mainNode.isOnline) {
+            AENetworkSupport.remove(this)
+            registered = false
         }
     }
 
     override fun onOrientationChanged(orientation: BlockOrientation) {
         super.onOrientationChanged(orientation)
         updateExposedSides()
-    }
-
-    override fun getInternalInventory(): InternalInventory = InternalInventory.empty()
-
-    override fun serverTick() {
-        if (!registered) {
-            AENetworkSupport.register(this)
-            registered = true
-        }
     }
 
     override fun setRemoved() {

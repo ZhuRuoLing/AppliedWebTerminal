@@ -7,7 +7,7 @@ operator fun <O, S, T> StateHolder<O, S>.get(property: Property<T>): T where T :
     return this.getValue(property)
 }
 
-operator fun <O, S, T> StateHolder<O, S>.set(property: Property<T>, value:T): T where T : Comparable<T> {
+operator fun <O, S, T> StateHolder<O, S>.set(property: Property<T>, value: T): T where T : Comparable<T> {
     this.setValue(property, value)
     return this.getValue(property)
 }

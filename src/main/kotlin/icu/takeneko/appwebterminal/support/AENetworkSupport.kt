@@ -1,7 +1,7 @@
 package icu.takeneko.appwebterminal.support
 
 import org.slf4j.LoggerFactory
-import java.util.*
+import java.util.UUID
 
 object AENetworkSupport {
     private val accessors: MutableMap<UUID, AENetworkAccess> = mutableMapOf()

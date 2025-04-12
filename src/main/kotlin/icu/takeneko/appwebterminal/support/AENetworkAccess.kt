@@ -21,5 +21,5 @@ interface AENetworkAccess {
 
     fun getNonce(): String
 
-    fun getTerminalName():String
+    fun getTerminalName(): String
 }

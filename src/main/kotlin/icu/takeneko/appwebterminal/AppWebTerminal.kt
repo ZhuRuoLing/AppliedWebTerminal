@@ -10,11 +10,9 @@ import icu.takeneko.appwebterminal.util.KRegistrate
 import net.minecraft.resources.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.eventbus.api.IEventBus
-import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.common.Mod
 import org.slf4j.Logger
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
-import kotlin.io.path.readBytes
 
 val registrate = KRegistrate.create(AppWebTerminal.MOD_ID)
 

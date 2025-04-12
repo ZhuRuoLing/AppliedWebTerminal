@@ -1,6 +1,13 @@
 {
   "appwebterminal.button.done": "Done",
+  "appwebterminal.gui.me_network_offline": "Offline",
+  "appwebterminal.gui.me_network_online": "Online",
   "appwebterminal.hint.name": "Name: ",
+  "appwebterminal.hint.password": "Password: ",
   "appwebterminal.screen.title": "ME Web Terminal",
-  "block.appwebterminal.web_terminal": "ME Web Terminal"
+  "block.appwebterminal.web_terminal": "ME Web Terminal",
+  "config.appwebterminal.option.backendWebsocketEndpoint": "Backend Websocket Endpoint",
+  "config.appwebterminal.option.frontendTitle": "Frontend Title",
+  "config.appwebterminal.option.httpPort": "Http Port",
+  "config.screen.appwebterminal": "AppliedWebTerminal Settings"
 }

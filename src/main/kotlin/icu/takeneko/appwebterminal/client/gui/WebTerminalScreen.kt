@@ -11,18 +11,19 @@ import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraftforge.network.PacketDistributor
-import java.util.*
+import java.util.UUID
 
 class WebTerminalScreen(
     private var name: String,
     private var uuid: UUID,
-    private var password: String
+    private var password: String,
+    private var isOnline: Boolean,
 ) : Screen(Component.translatable("appwebterminal.screen.title")) {
 
     private val texture = AppWebTerminal.location("textures/gui/blank.png")
     private lateinit var nameField: AETextField
     private lateinit var finishButton: Button
-    private lateinit var passwordField:AETextField
+    private lateinit var passwordField: AETextField
     override fun init() {
         super.init()
         val style = StyleManager.loadStyleDoc("/screens/terminals/crafting_terminal.json")
@@ -60,22 +61,37 @@ class WebTerminalScreen(
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         val x: Int = (this.width - 195) / 2
         val y: Int = (this.height - 136) / 2
-        guiGraphics.drawString(Minecraft.getInstance().font, this.title, x + 8, y + 6, 4210752)
+        val font = Minecraft.getInstance().font
+        guiGraphics.drawString(font, this.title, x + 8, y + 6, 0x404040)
+
+        val statusText = if (isOnline) {
+            Component.translatable("appwebterminal.gui.me_network_online")
+        } else {
+            Component.translatable("appwebterminal.gui.me_network_offline")
+        }
+        val statusTextWidth = font.width(statusText)
+        guiGraphics.drawString(
+            font,
+            statusText,
+            x + 195 - 8 - statusTextWidth,
+            y + 6,
+            if (isOnline) 0x00AA00 else 0xFF5555
+        )
         guiGraphics.blit(texture, x, y, 0, 0, 195, 136)
         guiGraphics.drawString(
-            Minecraft.getInstance().font,
+            font,
             Component.translatable("appwebterminal.hint.name"),
             x + 8,
             y + 42,
-            4210752,
+            0x404040,
             false
         )
         guiGraphics.drawString(
-            Minecraft.getInstance().font,
+            font,
             Component.translatable("appwebterminal.hint.password"),
             x + 8,
             y + 72,
-            4210752,
+            0x404040,
             false
         )
         super.render(guiGraphics, mouseX, mouseY, partialTick)

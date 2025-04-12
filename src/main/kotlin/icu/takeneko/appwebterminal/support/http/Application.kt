@@ -27,7 +27,7 @@ class HttpServer(
         }
     }
 
-    fun gracefullyStop(){
+    fun gracefullyStop() {
         logger.info("Stopping http server because minecraft server is stopping.")
         server.stop()
     }

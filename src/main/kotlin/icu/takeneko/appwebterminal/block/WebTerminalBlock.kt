@@ -34,10 +34,9 @@ class WebTerminalBlock(properties: Properties) : AEBaseEntityBlock<WebTerminalBl
         setBlockEntity(
             WebTerminalBlockEntity::class.java,
             meWebTerminalBlockEntity.get(),
+            null,
             null
-        ) { _, _, _, blockEntity ->
-            blockEntity.serverTick()
-        }
+        )
     }
 
     override fun getOrientationStrategy(): IOrientationStrategy {
@@ -58,7 +57,7 @@ class WebTerminalBlock(properties: Properties) : AEBaseEntityBlock<WebTerminalBl
         val be = level.getBlockEntity(pos) as WebTerminalBlockEntity
         networkingChannel.send(
             PacketDistributor.PLAYER.with { player as ServerPlayer },
-            OpenWebTerminalScreenPacket(be.displayName, be.getId(), pos, be.password)
+            OpenWebTerminalScreenPacket(be.displayName, be.getId(), pos, be.password, be.mainNode.isOnline)
         )
         return InteractionResult.SUCCESS
     }

@@ -1,6 +1,13 @@
 {
   "appwebterminal.button.done": "ǝuoᗡ",
+  "appwebterminal.gui.me_network_offline": "ǝuıןɟɟO",
+  "appwebterminal.gui.me_network_online": "ǝuıןuO",
   "appwebterminal.hint.name": " :ǝɯɐN",
+  "appwebterminal.hint.password": " :pɹoʍssɐԀ",
   "appwebterminal.screen.title": "ןɐuıɯɹǝ⟘ qǝM ƎW",
-  "block.appwebterminal.web_terminal": "ןɐuıɯɹǝ⟘ qǝM ƎW"
+  "block.appwebterminal.web_terminal": "ןɐuıɯɹǝ⟘ qǝM ƎW",
+  "config.appwebterminal.option.backendWebsocketEndpoint": "ʇuıodpuƎ ʇǝʞɔosqǝM puǝʞɔɐᗺ",
+  "config.appwebterminal.option.frontendTitle": "ǝןʇı⟘ puǝʇuoɹℲ",
+  "config.appwebterminal.option.httpPort": "ʇɹoԀ dʇʇH",
+  "config.screen.appwebterminal": "sbuıʇʇǝS ןɐuıɯɹǝ⟘qǝMpǝıןddⱯ"
 }

@@ -35,7 +35,7 @@ data class MECraftingStatusBundle(
 data class MECraftingStatusEntry(
     val serial: Long,
     val what: String,
-    val displayName:String,
+    val displayName: String,
     val storedAmount: Long,
     val activeAmount: Long,
     val pendingAmount: Long
@@ -83,4 +83,4 @@ data class MEStack(
 }
 
 @kotlinx.serialization.Serializable
-data class TerminalInfo(val name:String, val uuid:String)
+data class TerminalInfo(val name: String, val uuid: String)

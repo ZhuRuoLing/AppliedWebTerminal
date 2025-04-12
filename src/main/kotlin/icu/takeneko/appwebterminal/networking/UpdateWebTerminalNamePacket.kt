@@ -3,7 +3,7 @@ package icu.takeneko.appwebterminal.networking
 import icu.takeneko.appwebterminal.support.AENetworkSupport
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraftforge.network.NetworkEvent
-import java.util.*
+import java.util.UUID
 import java.util.function.Supplier
 
 data class UpdateWebTerminalNamePacket(
