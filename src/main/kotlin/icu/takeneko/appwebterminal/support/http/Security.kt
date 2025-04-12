@@ -19,7 +19,7 @@ fun Application.configureSecurity() {
     // Please read the jwt property from the config file if you are using EngineMain
 
     logger.info("Using $jwtSecret as JWT secret.")
-    authentication {
+    install(Authentication) {
         jwt("jwt") {
             realm = "AppliedWebTerminal"
             verifier(
@@ -45,12 +45,12 @@ fun Application.configureSecurity() {
 }
 
 fun validateJwt(credential: JWTCredential): Boolean {
-    val username = credential.payload.getClaim("username")
+    val usernameClaim = credential.payload.getClaim("username")
     val nonceClaim = credential.payload.getClaim("nonce")
-    if (username.isNull || nonceClaim.isNull) return false
+    if (usernameClaim.isNull || nonceClaim.isNull) return false
     return try {
-        val uuid = UUID.fromString(username.asString())
-        val nonce = username.asString()
+        val uuid = UUID.fromString(usernameClaim.asString())
+        val nonce = nonceClaim.asString()
         AENetworkSupport.validateNonce(uuid, nonce)
     } catch (e: IllegalArgumentException) {
         logger.warn("Could not validate jwt token: ", e)

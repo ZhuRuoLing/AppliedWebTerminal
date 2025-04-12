@@ -19,10 +19,11 @@ object AENetworkSupport {
     }
 
     fun update(uuid: UUID, name: String, password: String) {
-        logger.info("Renaming $uuid into $name")
-        logger.info("Updating $uuid password into $password")
         accessors[uuid]?.update(name, password)
         accessors[uuid]?.markDirty()
+        logger.info("Renaming $uuid into $name")
+        logger.info("Updating $uuid password into $password")
+        logger.info("Updating $uuid nonce into ${accessors[uuid]?.getNonce()}")
     }
 
     fun requestSessionReset(accessor: AENetworkAccess) {

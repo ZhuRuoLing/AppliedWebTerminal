@@ -118,9 +118,9 @@ class WebTerminalBlockEntity(
         this.displayName = displayName
         val oldPassword = this.password
         this.password = password
-        this.nonce = generateNonce()
         if (oldPassword != password) {
             AENetworkSupport.requestSessionReset(this)
+            this.nonce = generateNonce()
         }
     }
 
