@@ -67,11 +67,11 @@ fun Application.configureSecurity() {
 }
 
 fun validateJwt(payload: Payload): Boolean {
-    val usernameClaim = payload.getClaim("username")
+    val uuidClaim = payload.getClaim("uuid")
     val nonceClaim = payload.getClaim("nonce")
-    if (usernameClaim.isNull || nonceClaim.isNull) return false
+    if (uuidClaim.isNull || nonceClaim.isNull) return false
     return try {
-        val uuid = UUID.fromString(usernameClaim.asString())
+        val uuid = UUID.fromString(uuidClaim.asString())
         val nonce = nonceClaim.asString()
         AENetworkSupport.validateNonce(uuid, nonce)
     } catch (e: IllegalArgumentException) {

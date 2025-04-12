@@ -16,6 +16,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.minecraft.resources.ResourceLocation
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.UUID
 
@@ -43,9 +45,9 @@ fun Application.configureRouting() {
                     val token = JWT.create()
                         .withAudience(jwtAudience)
                         .withIssuer("AppliedWebTerminal")
-                        .withClaim("username", user.uuid)
+                        .withClaim("uuid", user.uuid)
                         .withClaim("nonce", AENetworkSupport.getNonce(uuid))
-                        .withExpiresAt(Date(System.currentTimeMillis() + 60000))
+                        .withExpiresAt(Date(System.currentTimeMillis() + 6000000))
                         .sign(Algorithm.HMAC256(jwtSecret))
                     call.respond(UserAuthResult(success = true, payload = token))
                 } else {
@@ -56,9 +58,18 @@ fun Application.configureRouting() {
             }
         }
         authenticate("jwt") {
-            get("/ping") {
-                call.principal<JWTPrincipal>()
-                return@get call.respond("pong")
+            get("/validate") {
+                val principal = call.principal<JWTPrincipal>()
+                return@get call.respond(
+                    if (principal != null) {
+                        val uuid = principal.payload.getClaim("uuid").asString()
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+                        val expiresAt = principal.expiresAt?.toInstant()?.atZone(ZoneOffset.UTC)?.format(formatter)
+                        ValidateResult(true, uuid, expiresAt)
+                    } else {
+                        ValidateResult(false, null, null)
+                    }
+                )
             }
             route("/crafting") {
                 get("/craftables") {
@@ -104,3 +115,6 @@ private data class UserCredential(val uuid: String, val password: String)
 
 @kotlinx.serialization.Serializable
 private data class UserAuthResult(val success: Boolean, val payload: String?)
+
+@kotlinx.serialization.Serializable
+private data class ValidateResult(val success: Boolean, val uuid: String?, val expiresAt: String?)
