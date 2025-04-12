@@ -1,9 +1,7 @@
 package icu.takeneko.appwebterminal.support.http
 
-import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.response.*
+import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
@@ -17,21 +15,7 @@ fun Application.configureSockets() {
         masking = false
     }
     routing {
-        authenticationByQueryParam(RouteAuthenticationConfig {
-            paramKey = "token"
-            challenge {
-                it.respond(
-                    HttpStatusCode.Unauthorized,
-                    "Token is not valid or has expired"
-                )
-            }
-            validate {
-                if (it.audience.contains(jwtAudience) && validateJwt(it))
-                    JWTPrincipal(it)
-                else
-                    null
-            }
-        }) {
+        authenticate("query_jwt") {
             webSocket("/ws") { // websocketSession
                 for (frame in incoming) {
                     if (frame is Frame.Text) {
@@ -44,6 +28,5 @@ fun Application.configureSockets() {
                 }
             }
         }
-
     }
 }

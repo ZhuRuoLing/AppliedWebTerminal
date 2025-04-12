@@ -34,10 +34,10 @@ class HttpServer(
 }
 
 fun Application.module() {
-    configureSockets()
     configureSerialization()
     configureMonitoring()
     configureHTTP()
     configureSecurity()
     configureRouting()
+    configureSockets()
 }
