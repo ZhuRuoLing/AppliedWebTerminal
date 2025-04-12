@@ -114,13 +114,16 @@ class WebTerminalBlockEntity(
         return password == this.password
     }
 
-    override fun update(displayName: String, password: String) {
+    override fun update(displayName: String, password: String): Boolean {
         this.displayName = displayName
         val oldPassword = this.password
         this.password = password
-        if (oldPassword != password) {
+        return if (oldPassword != password) {
             AENetworkSupport.requestSessionReset(this)
             this.nonce = generateNonce()
+            true
+        } else {
+            false
         }
     }
 

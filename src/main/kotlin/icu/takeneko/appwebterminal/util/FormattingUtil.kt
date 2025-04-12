@@ -1,14 +1,19 @@
 package icu.takeneko.appwebterminal.util
 
 import com.google.common.base.CaseFormat
-import org.apache.commons.lang3.StringUtils
-import java.util.Locale
-import java.util.stream.Collectors
+import java.util.*
 
 fun String.toEnglishName(): String {
-    return this.lowercase(Locale.ROOT).split("_").stream()
-        .map { StringUtils.capitalize(it) }
-        .collect(Collectors.joining(" "))
+    return this.lowercase(Locale.ROOT).split("_")
+        .joinToString(separator = " ") { a ->
+            a.replaceFirstChar {
+                if (it.isLowerCase()) {
+                    it.titlecase(Locale.getDefault())
+                } else {
+                    it.toString()
+                }
+            }
+        }
 }
 
 fun String.toLowerCaseUnder(): String {

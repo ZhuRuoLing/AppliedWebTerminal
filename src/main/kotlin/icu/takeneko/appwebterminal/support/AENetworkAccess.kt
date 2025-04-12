@@ -15,7 +15,7 @@ interface AENetworkAccess {
 
     fun auth(password: String): Boolean
 
-    fun update(displayName: String, password: String)
+    fun update(displayName: String, password: String):Boolean
 
     fun validateNonce(nonce: String): Boolean
 

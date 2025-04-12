@@ -7,6 +7,7 @@ import icu.takeneko.appwebterminal.support.AENetworkSupport
 import icu.takeneko.appwebterminal.util.staticResourceForModContainer
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -16,24 +17,18 @@ import java.util.UUID
 const val pathParameterName = "static-content-path-parameter"
 
 fun Application.configureRouting() {
-
     routing {
+        staticResourceForModContainer()
         get("/list") {
             return@get call.respond(AENetworkSupport.listAllTerminals())
         }
-        staticResourceForModContainer()
-        authenticate("jwt") {
-            get("/ping") {
-                return@get call.respond("pong")
-            }
-            get("/settings") {
-                return@get call.respond(
-                    FrontendSettings(
-                        AppWebTerminal.config.frontendTitle,
-                        AppWebTerminal.config.backendWebsocketEndpoint
-                    )
+        get("/settings") {
+            return@get call.respond(
+                FrontendSettings(
+                    AppWebTerminal.config.frontendTitle,
+                    AppWebTerminal.config.backendWebsocketEndpoint
                 )
-            }
+            )
         }
         post("/login") {
             val user = call.receive<UserCredential>()
@@ -55,8 +50,16 @@ fun Application.configureRouting() {
                 call.respond(UserAuthResult(success = false, payload = e.message))
             }
         }
+        authenticate("jwt") {
+            get("/ping") {
+                call.principal<JWTPrincipal>()
+                return@get call.respond("pong")
+            }
+        }
     }
 }
+
+
 
 @kotlinx.serialization.Serializable
 private data class FrontendSettings(val title: String, val webSocketUrl: String)

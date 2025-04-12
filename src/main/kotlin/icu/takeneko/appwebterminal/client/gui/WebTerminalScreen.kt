@@ -63,7 +63,6 @@ class WebTerminalScreen(
         val y: Int = (this.height - 136) / 2
         val font = Minecraft.getInstance().font
         guiGraphics.drawString(font, this.title, x + 8, y + 6, 0x404040)
-
         val statusText = if (isOnline) {
             Component.translatable("appwebterminal.gui.me_network_online")
         } else {
