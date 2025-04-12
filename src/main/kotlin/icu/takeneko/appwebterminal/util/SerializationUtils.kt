@@ -13,9 +13,9 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import net.minecraft.resources.ResourceLocation
 
-class DispatchedSerializer<T, K>(
+class DispatchedSerializer<T : Any, K>(
     private val keyName: String,
-    private val dispatchMap: Map<K, KSerializer<T>>,
+    private val dispatchMap: Map<K, KSerializer<out T>>,
     private val keySerializer: KSerializer<K>,
     private val keyGetter: T.() -> K
 ) : KSerializer<T> {
@@ -42,17 +42,17 @@ class DispatchedSerializer<T, K>(
         return serializer.deserialize(WrappedDecoder(decoder, composite))
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun serialize(encoder: Encoder, value: T) {
         val key = value.keyGetter()
         val compositeEncoder = encoder.beginStructure(descriptor)
         compositeEncoder.encodeSerializableElement(descriptor, 0, keySerializer, key)
         val serializer = dispatchMap[key] ?: throw IllegalArgumentException("No KSerializer found for key type $value")
-        serializer.serialize(encoder, value)
+        (serializer as KSerializer<T>).serialize(WrappedEncoder(encoder, compositeEncoder), value)
     }
-
 }
 
-class ResourceLocationSerializer: KSerializer<ResourceLocation> {
+class ResourceLocationSerializer : KSerializer<ResourceLocation> {
     override val descriptor: SerialDescriptor
         get() = PrimitiveSerialDescriptor("ResourceLocation", PrimitiveKind.STRING)
 

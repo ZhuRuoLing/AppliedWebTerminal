@@ -8,6 +8,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '2.0.0'
     // OPTIONAL Kotlin Serialization plugin
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0'
+    id("com.gradleup.shadow") version "9.0.0-beta12"
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -140,6 +141,7 @@ sourceSets.main.resources {
 // "optional", meaning it will not be pulled by dependents of this mod.
 configurations {
     runtimeClasspath.extendsFrom localRuntime
+    shadowInclude
 }
 
 obfuscation {
@@ -162,8 +164,48 @@ tasks.register("copyFrontendFile", Copy) {
     into "src/frontend/frontend"
 }
 
+jar {
+    from jarJar.outputs
+}
+
+shadowJar {
+    archiveClassifier = "all-dev"
+    configurations = [project.configurations.shadowInclude]
+    from jar.outputs
+    from jarJar.outputs
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}" }
+    }
+    exclude "/_COROUTINE/**"
+    exclude "/kotlinx/coroutines/**"
+    exclude "/kotlinx/serialization/**"
+    exclude "/kotlin/**"
+    exclude "META-INF/LICENSE*"
+    exclude "META-INF/NOTICE*"
+    exclude "com/google/**"
+    exclude "javax/**"
+    exclude "org/slf4j/**"
+    exclude "META-INF/kotlin*.kotlin_module"
+    exclude "META-INF/proguard/**"
+    exclude "META-INF/native-image/**"
+    exclude "META-INF/maven/**"
+    exclude "META-INF/services/kotlin*"
+    exclude "META-INF/versions/9/**"
+    exclude "META-INF/com.android.tools/**"
+}
+
+reobfJar {
+    archiveClassifier = "all"
+    input = shadowJar.archiveFile
+}
+
 configurations.configureEach {
     exclude(group: "org.jetbrains.kotlinx", module: "kotlinx-serialization-json-io-jvm")
+    resolutionStrategy {
+        force "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3"
+        force "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3"
+    }
+
 }
 
 dependencies {
@@ -172,18 +214,18 @@ dependencies {
     modImplementation(libs.ae2)
 
     modImplementation("curse.maven:configuration-444699:5840405")
-    jarJar implementation("io.ktor:ktor-server-core:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-websockets:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-content-negotiation:3.1.2")
-    jarJar implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-call-logging:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-forwarded-header:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-cors:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-caching-headers:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-host-common:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-auth:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-auth-jwt:3.1.2")
-    jarJar implementation("io.ktor:ktor-server-cio:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-core:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-websockets:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-content-negotiation:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-call-logging:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-forwarded-header:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-cors:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-caching-headers:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-host-common:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-auth:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-auth-jwt:3.1.2")
+    shadowInclude implementation("io.ktor:ktor-server-cio:3.1.2")
 
     additionalRuntimeClasspath("io.ktor:ktor-server-core:3.1.2")
     additionalRuntimeClasspath("io.ktor:ktor-server-websockets:3.1.2")

@@ -4,8 +4,11 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.support.AENetworkSupport
+import icu.takeneko.appwebterminal.util.MinecraftI18nSupport
 import icu.takeneko.appwebterminal.util.ResourceLocationSerializer
+import icu.takeneko.appwebterminal.util.ServerI18nSupport
 import icu.takeneko.appwebterminal.util.staticResourceForModContainer
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -63,6 +66,24 @@ fun Application.configureRouting() {
                 post("/craft") {
                     val request = call.receive<CraftingRequest>()
                 }
+            }
+        }
+        get("/translate/{language}/{key}") {
+            val language = call.parameters["language"] ?: return@get call.respond(
+                HttpStatusCode.BadRequest,
+                "Expected parameter 'language'"
+            )
+            val key = call.parameters["key"] ?: return@get call.respond(
+                HttpStatusCode.BadRequest,
+                "Expected parameter 'key'"
+            )
+            if (ServerI18nSupport.contains(language, key)) {
+                return@get call.respond(ServerI18nSupport.get(language, key))
+            } else {
+                if (MinecraftI18nSupport.contains(language, key)) {
+                    return@get call.respond(MinecraftI18nSupport.get(language, key))
+                }
+                return@get call.respond(ServerI18nSupport.get(language, key))
             }
         }
     }

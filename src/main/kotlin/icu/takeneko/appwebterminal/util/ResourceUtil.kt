@@ -39,3 +39,4 @@ fun Routing.staticResourceForModContainer() {
         }
     }
 }
+

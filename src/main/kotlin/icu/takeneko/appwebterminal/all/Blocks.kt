@@ -9,9 +9,12 @@ import icu.takeneko.appwebterminal.registrate
 import icu.takeneko.appwebterminal.util.get
 import net.minecraft.data.recipes.RecipeCategory
 import net.minecraft.data.recipes.ShapedRecipeBuilder
+import net.minecraft.tags.BlockTags
+import net.minecraft.world.level.block.Blocks
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile
 
 val meWebTerminal = registrate.block<WebTerminalBlock>("web_terminal", ::WebTerminalBlock)
+    .initialProperties { Blocks.IRON_BLOCK }
     .blockstate { dataGenContext, registrateBlockstateProvider ->
         registrateBlockstateProvider.directionalBlock(dataGenContext.get()) {
             UncheckedModelFile(
@@ -25,6 +28,13 @@ val meWebTerminal = registrate.block<WebTerminalBlock>("web_terminal", ::WebTerm
         }
     }
     .lang("ME Web Terminal")
+    .properties {
+        it.lightLevel { bs ->
+            if (bs[WebTerminalBlock.ONLINE]) 5 else 0
+        }
+    }
+    .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+    .tag(BlockTags.NEEDS_STONE_TOOL)
     .item()
     .model { dataGenContext, registrateItemModelProvider ->
         registrateItemModelProvider.getBuilder(dataGenContext.name)

@@ -6,6 +6,7 @@ import dev.toma.configuration.config.format.ConfigFormats
 import icu.takeneko.appwebterminal.all.*
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
+import icu.takeneko.appwebterminal.resource.LanguageFileDownloader
 import icu.takeneko.appwebterminal.util.KRegistrate
 import net.minecraft.resources.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
@@ -38,6 +39,7 @@ object AppWebTerminal {
         MinecraftForge.EVENT_BUS.addListener(::onServerStart)
         MinecraftForge.EVENT_BUS.addListener(::onServerStop)
         MinecraftForge.EVENT_BUS.addListener(::onChunkUnloaded)
+        LanguageFileDownloader().start()
         LOGGER.info("AppWebTerminal initialized")
     }
 
