@@ -1,4 +1,4 @@
-package icu.takeneko.appwebterminal.support.http
+package icu.takeneko.appwebterminal.support.http.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

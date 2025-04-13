@@ -4,6 +4,8 @@ import appeng.api.stacks.GenericStack
 import appeng.menu.me.crafting.CraftingStatus
 import appeng.menu.me.crafting.CraftingStatusEntry
 import icu.takeneko.appwebterminal.support.MECraftingStatusEntry.Companion.bundle
+import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 
 @kotlinx.serialization.Serializable
 data class MENetworkStatusBundle(
@@ -81,6 +83,12 @@ data class MEStack(
             get() = MEStack(this.what.id.toString(), this.amount)
     }
 }
+
+data class AEKeyObject(
+    val id:ResourceLocation,
+    val displayName:Component,
+    val count:Long
+)
 
 @kotlinx.serialization.Serializable
 data class TerminalInfo(val name: String, val uuid: String)

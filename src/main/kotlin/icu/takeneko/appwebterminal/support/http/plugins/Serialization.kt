@@ -1,4 +1,4 @@
-package icu.takeneko.appwebterminal.support.http
+package icu.takeneko.appwebterminal.support.http.plugins
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

@@ -1,7 +1,6 @@
 package icu.takeneko.appwebterminal.util
 
 import icu.takeneko.appwebterminal.AppWebTerminal.MOD_ID
-import icu.takeneko.appwebterminal.support.http.pathParameterName
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -9,6 +8,8 @@ import net.minecraftforge.fml.ModList
 import java.io.File
 import kotlin.io.path.Path
 import kotlin.io.path.extension
+
+const val pathParameterName = "static-content-path-parameter"
 
 private val modResource by lazy {
     CachedModFile(ModList.get().getModFileById(MOD_ID).file)

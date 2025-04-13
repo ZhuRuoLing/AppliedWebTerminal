@@ -1,4 +1,4 @@
-package icu.takeneko.appwebterminal.support.http
+package icu.takeneko.appwebterminal.support.http.plugins
 
 import io.ktor.http.*
 import io.ktor.http.content.*

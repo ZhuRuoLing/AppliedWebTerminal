@@ -1,5 +1,7 @@
 package icu.takeneko.appwebterminal.support.http
 
+import icu.takeneko.appwebterminal.support.http.plugins.*
+import icu.takeneko.appwebterminal.support.http.routing.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
