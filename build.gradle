@@ -169,7 +169,7 @@ jar {
 }
 
 shadowJar {
-    archiveClassifier = "all-dev"
+    archiveClassifier = "dev"
     configurations = [project.configurations.shadowInclude]
     from jar.outputs
     from jarJar.outputs
@@ -195,7 +195,7 @@ shadowJar {
 }
 
 reobfJar {
-    archiveClassifier = "all"
+    archiveClassifier = ""
     input = shadowJar.archiveFile
 }
 
