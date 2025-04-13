@@ -11,6 +11,7 @@ import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 
 class DispatchedSerializer<T : Any, K>(
@@ -73,6 +74,13 @@ class ResourceLocationSerializer : StringifySerializer<ResourceLocation>() {
     override fun objectToString(e: ResourceLocation): String = e.toString()
 
     override fun fromString(s: String): ResourceLocation = ResourceLocation(s)
+}
+
+class ComponentSerializer: StringifySerializer<Component>() {
+    override fun objectToString(e: Component): String = Component.Serializer.toJson(e)
+
+
+    override fun fromString(s: String): Component = Component.Serializer.fromJson(s)!!
 }
 
 private class WrappedDecoder(decoder: Decoder, val compositeDecoder: CompositeDecoder) : Decoder by decoder {

@@ -5,6 +5,7 @@ import appeng.client.gui.widgets.AETextField
 import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.all.networkingChannel
 import icu.takeneko.appwebterminal.networking.UpdateWebTerminalNamePacket
+import icu.takeneko.appwebterminal.util.use
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
@@ -62,7 +63,9 @@ class WebTerminalScreen(
         val x: Int = (this.width - 195) / 2
         val y: Int = (this.height - 136) / 2
         val font = Minecraft.getInstance().font
-        guiGraphics.drawString(font, this.title, x + 8, y + 6, 0x404040)
+        guiGraphics.blit(texture, x, y, 0, 0, 195, 136)
+
+        guiGraphics.drawString(font, this.title, x + 8, y + 6, 0x404040, false)
         val statusText = if (isOnline) {
             Component.translatable("appwebterminal.gui.me_network_online")
         } else {
@@ -74,9 +77,9 @@ class WebTerminalScreen(
             statusText,
             x + 195 - 8 - statusTextWidth,
             y + 6,
-            if (isOnline) 0x00AA00 else 0xFF5555
+            if (isOnline) 0x00AA00 else 0xFF5555,
+            false
         )
-        guiGraphics.blit(texture, x, y, 0, 0, 195, 136)
         guiGraphics.drawString(
             font,
             Component.translatable("appwebterminal.hint.name"),
@@ -93,6 +96,18 @@ class WebTerminalScreen(
             0x404040,
             false
         )
+        guiGraphics.pose().use {
+            translate((x + 4).toDouble(), (y + 127).toDouble(), 0.0)
+            scale(0.5f, 0.5f, 0.5f)
+            guiGraphics.drawString(
+                font,
+                Component.literal(uuid.toString()),
+                0,
+                0,
+                0xAAAAAA,
+                false
+            )
+        }
         super.render(guiGraphics, mouseX, mouseY, partialTick)
     }
 

@@ -1,5 +1,8 @@
 package icu.takeneko.appwebterminal.support
 
+import appeng.api.networking.IGrid
+import appeng.api.networking.security.IActionHost
+import net.minecraft.world.level.Level
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
@@ -53,5 +56,17 @@ object AENetworkSupport {
 
     fun getNonce(uuid: UUID): String {
         return (accessors[uuid] ?: throw IllegalArgumentException("No such accessor owns uuid $uuid")).getNonce()
+    }
+
+    fun getActionHost(uuid: UUID):IActionHost? {
+        return (accessors[uuid] ?: return null) as? IActionHost
+    }
+
+    fun getGrid(uuid: UUID): IGrid? {
+        return (accessors[uuid] ?: return null).getGrid()
+    }
+
+    fun getLevel(uuid: UUID): Level? {
+        return (accessors[uuid] ?: return null).level()
     }
 }

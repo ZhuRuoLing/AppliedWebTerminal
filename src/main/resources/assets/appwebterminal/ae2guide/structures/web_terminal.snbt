@@ -1,0 +1,20 @@
+{
+    DataVersion: 3465,
+    size: [3, 2, 3],
+    data: [
+        {pos: [0, 0, 1], state: "ae2:drive{facing:north,spin:0}", nbt: {ForgeCaps: {}, id: "ae2:drive", inv: {item0: {}, item1: {}, item2: {}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, priority: 0, proxy: {p: -1}, visual: {online: 1b}}},
+        {pos: [0, 0, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {ForgeCaps: {}, cable: {gn: {p: -1}, id: "ae2:fluix_smart_dense_cable", visual: {channelsEast: 1, channelsNorth: 1, connections: ["north", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 1], state: "appwebterminal:web_terminal{facing:north,online:true}", nbt: {ForgeCaps: {}, Name: "ME Web Terminal", Password: "AppliedWebTerminal", UUID: [I; 1932285910, 885146403, -2094225687, 1324842882], id: "appwebterminal:web_terminal", proxy: {p: -1}, visual: {}}},
+        {pos: [1, 0, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {ForgeCaps: {}, cable: {gn: {p: -1}, id: "ae2:fluix_smart_dense_cable", visual: {channelsEast: 2, channelsNorth: 1, channelsWest: 1, connections: ["north", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 2], state: "ae2:controller{state:online,type:block}", nbt: {ForgeCaps: {}, id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {p: -1}, visual: {}}},
+        {pos: [2, 1, 2], state: "ae2:creative_energy_cell", nbt: {ForgeCaps: {}, id: "ae2:creative_energy_cell", proxy: {p: -1}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:drive{facing:north,spin:0}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "appwebterminal:web_terminal{facing:north,online:true}",
+        "ae2:controller{state:online,type:block}",
+        "ae2:creative_energy_cell"
+    ]
+}

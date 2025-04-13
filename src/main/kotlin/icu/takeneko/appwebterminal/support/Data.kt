@@ -1,9 +1,13 @@
 package icu.takeneko.appwebterminal.support
 
+import appeng.api.stacks.AEKey
+import appeng.api.stacks.AEKeyType
 import appeng.api.stacks.GenericStack
 import appeng.menu.me.crafting.CraftingStatus
 import appeng.menu.me.crafting.CraftingStatusEntry
 import icu.takeneko.appwebterminal.support.MECraftingStatusEntry.Companion.bundle
+import icu.takeneko.appwebterminal.util.ComponentSerializer
+import icu.takeneko.appwebterminal.util.ResourceLocationSerializer
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 
@@ -84,11 +88,42 @@ data class MEStack(
     }
 }
 
-data class AEKeyObject(
+@kotlinx.serialization.Serializable
+data class AEKeyTypeObject(
+    @kotlinx.serialization.Serializable(with = ResourceLocationSerializer::class)
     val id: ResourceLocation,
+    @kotlinx.serialization.Serializable(with = ComponentSerializer::class)
+    val description: Component,
+) {
+    companion object {
+        fun AEKeyType.serializable(): AEKeyTypeObject {
+            return AEKeyTypeObject(
+                this.id,
+                this.description
+            )
+        }
+    }
+}
+
+@kotlinx.serialization.Serializable
+data class AEKeyObject(
+    @kotlinx.serialization.Serializable(with = ResourceLocationSerializer::class)
+    val id: ResourceLocation,
+    @kotlinx.serialization.Serializable(with = ComponentSerializer::class)
     val displayName: Component,
-    val count: Long
-)
+    @kotlinx.serialization.Serializable(with = ResourceLocationSerializer::class)
+    val type: ResourceLocation,
+) {
+    companion object {
+        fun AEKey.serializable(): AEKeyObject {
+            return AEKeyObject(
+                this.id,
+                this.displayName,
+                this.type.id
+            )
+        }
+    }
+}
 
 @kotlinx.serialization.Serializable
 data class TerminalInfo(val name: String, val uuid: String)

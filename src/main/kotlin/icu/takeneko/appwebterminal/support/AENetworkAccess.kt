@@ -2,6 +2,7 @@ package icu.takeneko.appwebterminal.support
 
 import appeng.api.networking.IGrid
 import net.minecraft.core.BlockPos
+import net.minecraft.world.level.Level
 import java.util.UUID
 
 interface AENetworkAccess {
@@ -22,4 +23,6 @@ interface AENetworkAccess {
     fun getNonce(): String
 
     fun getTerminalName(): String
+
+    fun level(): Level?
 }

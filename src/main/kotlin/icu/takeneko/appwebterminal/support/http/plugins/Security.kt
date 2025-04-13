@@ -32,7 +32,11 @@ fun Application.configureSecurity() {
             verifier(jwtVerifier)
             validate { credential ->
                 if (credential.payload.audience.contains(jwtAudience) && validateJwt(credential.payload))
-                    JWTPrincipal(credential.payload)
+                    Principal(
+                        credential.payload,
+                        UUID.fromString(credential.payload.getClaim("uuid").asString()),
+                        credential.payload.getClaim("nonce").asString()
+                    )
                 else
                     null
             }

@@ -46,6 +46,9 @@ repositories {
     maven {
         url "https://cursemaven.com"
     }
+    flatDir {
+        dirs("run/runtimeMods")
+    }
 }
 
 base {
@@ -230,6 +233,14 @@ dependencies {
     implementation "thedarkcolour:kfflang:4.11.0"
     implementation "thedarkcolour:kfflib:4.11.0"
     implementation "thedarkcolour:kffmod:4.11.0"
+
+    modRuntimeOnly("curse.maven:modern-ui-352491:6199942")
+    modRuntimeOnly("curse.maven:mekanism-268560:6258796")
+    modRuntimeOnly("curse.maven:applied-mekanistics-574300:4842281")
+    modRuntimeOnly("curse.maven:mekanism-generators-268566:6258799")
+    modRuntimeOnly("curse.maven:applied-flux-965012:6327987")
+    modRuntimeOnly("curse.maven:glodium-957920:5226922")
+
 }
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
