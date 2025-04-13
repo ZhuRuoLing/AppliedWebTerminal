@@ -33,11 +33,12 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import net.minecraft.resources.ResourceLocation
-import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 private val allCraftingPlans = CacheBuilder.newBuilder()
-    .expireAfterAccess(Duration.ofMinutes(10))
+    .expireAfterAccess(10.minutes.toJavaDuration())
     .build<Int, ICraftingPlan>()
 
 private val idCounter = AtomicInteger()

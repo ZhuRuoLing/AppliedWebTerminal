@@ -82,6 +82,14 @@ legacyForge {
             //jvmArgument("--add-opens kotlin.stdlib/kotlin.coroutines=kotlin.stdlib")
         }
 
+        guide {
+            client()
+            systemProperties.putAll(
+                    "guideDev.ae2guide.sources": file("src/main/resources/assets/appwebterminal/ae2guide").absolutePath,
+                    "guideDev.ae2guide.startupPage": "appwebterminal:web_terminal.md"
+            )
+        }
+
         server {
             server()
             programArgument '--nogui'
