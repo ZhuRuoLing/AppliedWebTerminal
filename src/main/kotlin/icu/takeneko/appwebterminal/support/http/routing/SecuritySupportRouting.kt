@@ -3,17 +3,18 @@ package icu.takeneko.appwebterminal.support.http.routing
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import icu.takeneko.appwebterminal.support.AENetworkSupport
+import icu.takeneko.appwebterminal.support.http.plugins.Principal
 import icu.takeneko.appwebterminal.support.http.plugins.jwtAudience
 import icu.takeneko.appwebterminal.support.http.plugins.jwtSecret
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
 fun Application.configureSecuritySupportRouting() {
     routing {
@@ -39,7 +40,7 @@ fun Application.configureSecuritySupportRouting() {
         }
         authenticate("jwt") {
             get("/validate") {
-                val principal = call.principal<JWTPrincipal>()
+                val principal = call.principal<Principal>()
                 return@get call.respond(
                     if (principal != null) {
                         val uuid = principal.payload.getClaim("uuid").asString()

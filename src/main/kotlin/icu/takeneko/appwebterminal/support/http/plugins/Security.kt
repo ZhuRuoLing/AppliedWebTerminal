@@ -52,7 +52,11 @@ fun Application.configureSecurity() {
             )
             validate { credential ->
                 if (credential.payload.audience.contains(jwtAudience) && validateJwt(credential.payload))
-                    JWTPrincipal(credential.payload)
+                    Principal(
+                        credential.payload,
+                        UUID.fromString(credential.payload.getClaim("uuid").asString()),
+                        credential.payload.getClaim("nonce").asString()
+                    )
                 else
                     null
             }
@@ -79,3 +83,9 @@ fun validateJwt(payload: Payload): Boolean {
         false
     }
 }
+
+class Principal(
+    payload: Payload,
+    val uuid: UUID,
+    val nonce: String
+) : JWTPayloadHolder(payload)

@@ -85,9 +85,9 @@ data class MEStack(
 }
 
 data class AEKeyObject(
-    val id:ResourceLocation,
-    val displayName:Component,
-    val count:Long
+    val id: ResourceLocation,
+    val displayName: Component,
+    val count: Long
 )
 
 @kotlinx.serialization.Serializable

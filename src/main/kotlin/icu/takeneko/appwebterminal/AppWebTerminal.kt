@@ -3,7 +3,14 @@ package icu.takeneko.appwebterminal
 import com.mojang.logging.LogUtils
 import dev.toma.configuration.Configuration
 import dev.toma.configuration.config.format.ConfigFormats
-import icu.takeneko.appwebterminal.all.*
+import icu.takeneko.appwebterminal.all.onBuildCreativeTab
+import icu.takeneko.appwebterminal.all.onChunkUnloaded
+import icu.takeneko.appwebterminal.all.onCommonSetup
+import icu.takeneko.appwebterminal.all.onServerStart
+import icu.takeneko.appwebterminal.all.onServerStop
+import icu.takeneko.appwebterminal.all.registerBlockEntities
+import icu.takeneko.appwebterminal.all.registerBlocks
+import icu.takeneko.appwebterminal.all.registerNetworking
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
 import icu.takeneko.appwebterminal.resource.LanguageFileDownloader

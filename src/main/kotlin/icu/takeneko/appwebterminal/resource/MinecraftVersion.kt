@@ -1,6 +1,5 @@
 package icu.takeneko.appwebterminal.resource
 
-import com.google.gson.annotations.SerializedName
 import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.serialization.json.Json

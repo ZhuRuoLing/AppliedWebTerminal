@@ -1,6 +1,10 @@
 package icu.takeneko.appwebterminal.support.http
 
-import icu.takeneko.appwebterminal.support.http.plugins.*
+import icu.takeneko.appwebterminal.support.http.plugins.configureHTTP
+import icu.takeneko.appwebterminal.support.http.plugins.configureMonitoring
+import icu.takeneko.appwebterminal.support.http.plugins.configureSecurity
+import icu.takeneko.appwebterminal.support.http.plugins.configureSerialization
+import icu.takeneko.appwebterminal.support.http.plugins.configureSockets
 import icu.takeneko.appwebterminal.support.http.routing.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.cio.*

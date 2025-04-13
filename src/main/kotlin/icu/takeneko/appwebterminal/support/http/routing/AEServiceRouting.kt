@@ -1,6 +1,7 @@
 package icu.takeneko.appwebterminal.support.http.routing
 
 import icu.takeneko.appwebterminal.support.AENetworkSupport
+import icu.takeneko.appwebterminal.support.http.plugins.Principal
 import icu.takeneko.appwebterminal.util.ResourceLocationSerializer
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -17,6 +18,7 @@ fun Application.configureAEServiceRouting() {
         authenticate("jwt") {
             route("/crafting") {
                 get("/craftables") {
+                    val principal = call.principal<Principal>()
                 }
                 post("/craft") {
                     val request = call.receive<CraftingRequest>()

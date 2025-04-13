@@ -52,18 +52,27 @@ class DispatchedSerializer<T : Any, K>(
     }
 }
 
-class ResourceLocationSerializer : KSerializer<ResourceLocation> {
+abstract class StringifySerializer<E> : KSerializer<E> {
     override val descriptor: SerialDescriptor
         get() = PrimitiveSerialDescriptor("ResourceLocation", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): ResourceLocation {
-        return ResourceLocation(decoder.decodeString())
+    override fun deserialize(decoder: Decoder): E {
+        return fromString(decoder.decodeString())
     }
 
-    override fun serialize(encoder: Encoder, value: ResourceLocation) {
-        encoder.encodeString(value.toString())
+    override fun serialize(encoder: Encoder, value: E) {
+        encoder.encodeString(objectToString(value))
     }
 
+    abstract fun objectToString(e: E): String
+
+    abstract fun fromString(s: String): E
+}
+
+class ResourceLocationSerializer : StringifySerializer<ResourceLocation>() {
+    override fun objectToString(e: ResourceLocation): String = e.toString()
+
+    override fun fromString(s: String): ResourceLocation = ResourceLocation(s)
 }
 
 private class WrappedDecoder(decoder: Decoder, val compositeDecoder: CompositeDecoder) : Decoder by decoder {
