@@ -2,13 +2,16 @@ package icu.takeneko.appwebterminal.support
 
 import appeng.api.networking.IGrid
 import appeng.api.networking.security.IActionHost
+import icu.takeneko.appwebterminal.support.http.websocket.WebsocketSession
+import kotlinx.coroutines.runBlocking
 import net.minecraft.world.level.Level
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
 object AENetworkSupport {
-    private val accessors: MutableMap<UUID, AENetworkAccess> = mutableMapOf()
+    val accessors: MutableMap<UUID, AENetworkAccess> = mutableMapOf()
     private val logger = LoggerFactory.getLogger("AE Network Support")
+    private val sessions = mutableMapOf<AENetworkAccess, MutableList<WebsocketSession>>()
 
     fun register(accessor: AENetworkAccess) {
         logger.info("Registering $accessor(${accessor.getId()})")
@@ -21,6 +24,24 @@ object AENetworkSupport {
         accessors.remove(accessor.getId())
     }
 
+    fun notifySessionStarted(session: WebsocketSession) {
+        logger.info("Starting new websocket session of {}({}).", session.owner, session.owner.getId())
+        sessions.computeIfAbsent(session.owner) { mutableListOf() } += session
+    }
+
+    fun notifySessionTerminated(session: WebsocketSession) {
+        logger.info("Terminating websocket session $session of ${session.owner}")
+        sessions.computeIfAbsent(session.owner) { mutableListOf() } -= session
+    }
+
+    fun tick() {
+        synchronized(sessions) {
+            sessions.values.flatten().forEach {
+                it.tick()
+            }
+        }
+    }
+
     fun update(uuid: UUID, name: String, password: String) {
         if ((accessors[uuid] ?: return).update(name, password)) {
             logger.info("Updating $uuid password into $password")
@@ -31,7 +52,9 @@ object AENetworkSupport {
     }
 
     fun requestSessionReset(accessor: AENetworkAccess) {
-
+        val sessions = sessions.computeIfAbsent(accessor) { mutableListOf() }.toList()
+        sessions.forEach { it.close() }
+        this.sessions.computeIfAbsent(accessor) { mutableListOf() }.clear()
     }
 
     fun listAllTerminals(): List<TerminalInfo> {
@@ -58,7 +81,7 @@ object AENetworkSupport {
         return (accessors[uuid] ?: throw IllegalArgumentException("No such accessor owns uuid $uuid")).getNonce()
     }
 
-    fun getActionHost(uuid: UUID):IActionHost? {
+    fun getActionHost(uuid: UUID): IActionHost? {
         return (accessors[uuid] ?: return null) as? IActionHost
     }
 

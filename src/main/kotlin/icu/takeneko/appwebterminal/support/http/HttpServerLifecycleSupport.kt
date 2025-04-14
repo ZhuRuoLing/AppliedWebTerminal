@@ -1,7 +1,7 @@
 package icu.takeneko.appwebterminal.support.http
 
 object HttpServerLifecycleSupport {
-    private var serverInstance: HttpServer? = null
+    var serverInstance: HttpServer? = null
 
     fun launch(port: Int) {
         serverInstance?.interrupt()

@@ -19,8 +19,8 @@ import java.util.UUID
 fun Application.configureSecuritySupportRouting() {
     routing {
         post("/login") {
-            val user = call.receive<UserCredential>()
             return@post try {
+                val user = call.receive<UserCredential>()
                 val uuid = UUID.fromString(user.uuid)
                 if (AENetworkSupport.auth(uuid, user.password)) {
                     val token = JWT.create()

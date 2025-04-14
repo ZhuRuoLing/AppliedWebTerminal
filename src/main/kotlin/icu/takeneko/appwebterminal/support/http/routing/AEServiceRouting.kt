@@ -27,6 +27,7 @@ import icu.takeneko.appwebterminal.support.http.routing.CraftingPlanSubmitResult
 import icu.takeneko.appwebterminal.support.http.routing.CraftingPlanSummaryBundle.Companion.serializable
 import icu.takeneko.appwebterminal.support.http.routing.MissingIngredientError.Companion.asError
 import icu.takeneko.appwebterminal.support.http.routing.UnsuitableCpuError.Companion.serializable
+import icu.takeneko.appwebterminal.support.http.websocket.WebsocketSession
 import icu.takeneko.appwebterminal.util.DispatchedSerializer
 import icu.takeneko.appwebterminal.util.ResourceLocationSerializer
 import io.ktor.http.*
@@ -35,6 +36,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import net.minecraft.resources.ResourceLocation
@@ -141,6 +143,15 @@ fun Application.configureAEServiceRouting() {
                 val meta = PageMeta(meStacks.size, page, limit, meStacksChunked.size)
                 if (page > meStacksChunked.size) return@get call.respond(StorageData(listOf(), meta))
                 call.respond(StorageData(meStacksChunked[page], meta))
+            }
+        }
+        authenticate("query_jwt") {
+            webSocket("/cpuMonitor") {
+                val principal = call.principal<Principal>()!!
+                val grid = AENetworkSupport.getGrid(principal.uuid)
+                    ?: return@webSocket
+                val owner = AENetworkSupport.accessors[principal.uuid] ?: return@webSocket
+                WebsocketSession(this, grid, owner).accept()
             }
         }
     }

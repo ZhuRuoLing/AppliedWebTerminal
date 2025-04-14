@@ -9,6 +9,9 @@ import appeng.me.cluster.implementations.CraftingCPUCluster
 import appeng.menu.me.common.IncrementalUpdateHelper
 import appeng.menu.me.crafting.CraftingStatus
 import com.google.common.collect.ImmutableSet
+import icu.takeneko.appwebterminal.support.MECpuStatusBundle.Companion.asStatus
+import icu.takeneko.appwebterminal.support.MECraftingStatusBundle.Companion.bundle
+import icu.takeneko.appwebterminal.support.http.websocket.MECraftingServiceStatusBundle
 
 class MECraftingServiceView(
     val grid: IGrid,
@@ -24,6 +27,13 @@ class MECraftingServiceView(
     private var cpuSchedulingMode = CpuSelectionMode.ANY
     private var craftingStatus: CraftingStatus? = null
     private var cantStoreItems: Boolean = false
+    private var fullUpgradeSent = false
+
+    init {
+        allCpus.forEach {
+            cpuMap[cpuId++] = it
+        }
+    }
 
     fun tick() {
         if (allCpus != craftingService.cpus) {
@@ -40,24 +50,25 @@ class MECraftingServiceView(
             }
             if (currentCpu !in allCpus) {
                 currentCpu = null
+                craftingStatus = null
             }
         }
-        if (this.currentCpu != null) {
+        if (this.currentCpu != null && fullUpgradeSent) {
             this.cpuSchedulingMode = this.currentCpu!!.selectionMode
             this.cantStoreItems = this.currentCpu!!.craftingLogic.isCantStoreItems;
             this.craftingStatus = CraftingStatus.create(this.incrementalUpdateHelper, this.currentCpu!!.craftingLogic)
             this.incrementalUpdateHelper.commitChanges()
         }
-        updateRemote()
-    }
-
-    private fun updateRemote() {
     }
 
     fun selectCpu(id: Int) {
         if (id == -1) {
             this.selectedCpuId = -1
             this.currentCpu = null
+            this.currentCpu?.craftingLogic?.removeListener(cpuUpdateListener)
+            this.incrementalUpdateHelper.reset()
+            this.fullUpgradeSent = false
+            this.craftingStatus = null
         }
         this.cpuMap[id]?.let {
             this.selectedCpuId = id
@@ -69,6 +80,9 @@ class MECraftingServiceView(
         if (cpu != currentCpu) {
             this.currentCpu?.craftingLogic?.removeListener(cpuUpdateListener)
             this.incrementalUpdateHelper.reset()
+            this.fullUpgradeSent = false
+            this.craftingStatus = null
+            println("Setting cpu $cpu")
             if (cpu is CraftingCPUCluster) {
                 this.currentCpu = cpu
                 val keyCounter = KeyCounter()
@@ -81,5 +95,16 @@ class MECraftingServiceView(
                 this.currentCpu = null
             }
         }
+    }
+
+    fun createUpdateMessage(): MECraftingServiceStatusBundle {
+        val data = MECraftingServiceStatusBundle(
+            cpuMap.map { (k,v) -> v.asStatus(k) },
+            craftingStatus?.bundle
+        )
+        if (data.craftingStatus?.entries != null) {
+            fullUpgradeSent = true
+        }
+        return data
     }
 }

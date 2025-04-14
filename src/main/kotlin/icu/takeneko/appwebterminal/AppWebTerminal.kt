@@ -8,6 +8,7 @@ import icu.takeneko.appwebterminal.all.onChunkUnloaded
 import icu.takeneko.appwebterminal.all.onCommonSetup
 import icu.takeneko.appwebterminal.all.onServerStart
 import icu.takeneko.appwebterminal.all.onServerStop
+import icu.takeneko.appwebterminal.all.onServerTickPost
 import icu.takeneko.appwebterminal.all.registerBlockEntities
 import icu.takeneko.appwebterminal.all.registerBlocks
 import icu.takeneko.appwebterminal.all.registerNetworking
@@ -46,6 +47,7 @@ object AppWebTerminal {
         MinecraftForge.EVENT_BUS.addListener(::onServerStart)
         MinecraftForge.EVENT_BUS.addListener(::onServerStop)
         MinecraftForge.EVENT_BUS.addListener(::onChunkUnloaded)
+        MinecraftForge.EVENT_BUS.addListener(::onServerTickPost)
         LanguageFileDownloader().start()
         LOGGER.info("AppWebTerminal initialized")
     }

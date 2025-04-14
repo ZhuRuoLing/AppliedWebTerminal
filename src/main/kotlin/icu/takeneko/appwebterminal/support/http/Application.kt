@@ -44,6 +44,7 @@ fun Application.module() {
     configureMonitoring()
     configureHTTP()
     configureSecurity()
-    configureRouting()
     configureSockets()
+    configureRouting()
+
 }

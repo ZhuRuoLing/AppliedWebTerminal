@@ -18,12 +18,6 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 
 @kotlinx.serialization.Serializable
-data class MENetworkStatusBundle(
-    val cpus: List<MECpuStatusBundle>,
-    val craftingStatus: MECraftingStatusBundle?
-)
-
-@kotlinx.serialization.Serializable
 data class MECraftingStatusBundle(
     val fullStatus: Boolean,
     val elapsedTime: Long,
@@ -32,8 +26,8 @@ data class MECraftingStatusBundle(
     val entries: List<MECraftingStatusEntry>
 ) {
     companion object {
-        val CraftingStatus.bundle: MECraftingStatusBundle
-            get() = MECraftingStatusBundle(
+        val CraftingStatus.bundle: MECraftingStatusBundle?
+            get() = if(this.entries.isEmpty()) null else MECraftingStatusBundle(
                 this.isFullStatus,
                 this.elapsedTime,
                 this.remainingItemCount,
@@ -46,8 +40,7 @@ data class MECraftingStatusBundle(
 @kotlinx.serialization.Serializable
 data class MECraftingStatusEntry(
     val serial: Long,
-    val what: String,
-    val displayName: String,
+    val what: AEKeyObject?,
     val storedAmount: Long,
     val activeAmount: Long,
     val pendingAmount: Long
@@ -56,8 +49,7 @@ data class MECraftingStatusEntry(
         val CraftingStatusEntry.bundle: MECraftingStatusEntry
             get() = MECraftingStatusEntry(
                 this.serial,
-                this.what.id.toString(),
-                this.what.displayName.string,
+                this.what?.serializable(),
                 this.storedAmount,
                 this.activeAmount,
                 this.pendingAmount

@@ -11,6 +11,8 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.chunk.LevelChunk
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent
+import net.minecraftforge.event.TickEvent
+import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.level.ChunkEvent
 import net.minecraftforge.event.server.ServerStartedEvent
 import net.minecraftforge.event.server.ServerStoppedEvent
@@ -35,6 +37,11 @@ fun onChunkUnloaded(event: ChunkEvent.Unload) {
             }
         }
     }
+}
+
+fun onServerTickPost(event: ServerTickEvent) {
+    if (event.phase != TickEvent.Phase.END) return
+    AENetworkSupport.tick()
 }
 
 fun onServerStart(event: ServerStartedEvent) {
