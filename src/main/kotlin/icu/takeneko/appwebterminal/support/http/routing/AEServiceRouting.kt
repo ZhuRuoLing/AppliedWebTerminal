@@ -18,6 +18,9 @@ import icu.takeneko.appwebterminal.support.AEKeyTypeObject.Companion.serializabl
 import icu.takeneko.appwebterminal.support.AENetworkSupport
 import icu.takeneko.appwebterminal.support.MECpuStatusBundle
 import icu.takeneko.appwebterminal.support.MECpuStatusBundle.Companion.asStatus
+import icu.takeneko.appwebterminal.support.MEStack
+import icu.takeneko.appwebterminal.support.MEStack.Companion.meStacks
+import icu.takeneko.appwebterminal.support.PageMeta
 import icu.takeneko.appwebterminal.support.http.plugins.Principal
 import icu.takeneko.appwebterminal.support.http.routing.CraftingPlanSubmitErrorCode.Companion.my
 import icu.takeneko.appwebterminal.support.http.routing.CraftingPlanSubmitResult.Companion.serializable
@@ -126,6 +129,18 @@ fun Application.configureAEServiceRouting() {
                     allCraftingPlans.invalidate(request.id)
                     return@post call.respond(submitResult.serializable(request.id))
                 }
+            }
+            get("/storage") {
+                val principal = call.principal<Principal>()!!
+                val page = call.queryParameters["page"]?.toIntOrNull() ?: 0
+                val limit = call.queryParameters["limit"]?.toIntOrNull() ?: 10
+                val grid = AENetworkSupport.getGrid(principal.uuid)
+                    ?: return@get call.respond<List<MEStack>>(listOf())
+                val meStacks = grid.storageService.cachedInventory.meStacks
+                val meStacksChunked = meStacks.chunked(limit)
+                val meta = PageMeta(meStacks.size, page, limit, meStacksChunked.size)
+                if (page > meStacksChunked.size) return@get call.respond(StorageData(listOf(), meta))
+                call.respond(StorageData(meStacksChunked[page], meta))
             }
         }
     }
@@ -283,3 +298,6 @@ private data class CraftingPlanSummaryEntryBundle(
     var storedAmount: Long,
     var craftAmount: Long
 )
+
+@kotlinx.serialization.Serializable
+private data class StorageData(val data: List<MEStack>, val meta: PageMeta)

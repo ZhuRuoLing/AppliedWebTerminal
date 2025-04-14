@@ -5,6 +5,7 @@ import appeng.api.networking.crafting.ICraftingCPU
 import appeng.api.stacks.AEKey
 import appeng.api.stacks.AEKeyType
 import appeng.api.stacks.GenericStack
+import appeng.api.stacks.KeyCounter
 import appeng.menu.me.crafting.CraftingStatus
 import appeng.menu.me.crafting.CraftingStatusEntry
 import icu.takeneko.appwebterminal.support.AEKeyObject.Companion.serializable
@@ -113,6 +114,8 @@ data class MEStack(
     companion object {
         val GenericStack.meStack: MEStack
             get() = MEStack(this.what.serializable(), this.amount)
+        val KeyCounter.meStacks: List<MEStack>
+            get() = this.map { MEStack(it.key.serializable(), it.longValue) }
     }
 }
 
@@ -155,3 +158,6 @@ data class AEKeyObject(
 
 @kotlinx.serialization.Serializable
 data class TerminalInfo(val name: String, val uuid: String)
+
+@kotlinx.serialization.Serializable
+data class PageMeta(val total: Int, val page: Int, val limit: Int, val totalPages: Int)
