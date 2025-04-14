@@ -169,7 +169,7 @@ tasks.register("copyFrontendFile", Copy) {
     dependsOn(tasks.named('deleteFrontend'))
     dependsOn(project(":frontend").tasks.named('npmBuild'))
     group = 'build'
-    description = 'delete exists frontend files'
+    description = 'build and copy dist to src/frontend/frontend'
 
     from "frontend/dist/"
     into "src/frontend/frontend"
