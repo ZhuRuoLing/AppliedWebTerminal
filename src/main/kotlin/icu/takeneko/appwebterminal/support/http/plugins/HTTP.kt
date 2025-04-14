@@ -15,8 +15,10 @@ fun Application.configureHTTP() {
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)
         allowMethod(HttpMethod.Patch)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Get)
         allowHeader(HttpHeaders.Authorization)
-        allowHeader("MyCustomHeader")
+        allowHeader(HttpHeaders.ContentType)
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
     install(CachingHeaders) {
