@@ -3,6 +3,7 @@ package icu.takeneko.appwebterminal
 import com.mojang.logging.LogUtils
 import dev.toma.configuration.Configuration
 import dev.toma.configuration.config.format.ConfigFormats
+import icu.takeneko.appwebterminal.all.onAddRegistries
 import icu.takeneko.appwebterminal.all.onBuildCreativeTab
 import icu.takeneko.appwebterminal.all.onChunkUnloaded
 import icu.takeneko.appwebterminal.all.onCommonSetup
@@ -11,6 +12,7 @@ import icu.takeneko.appwebterminal.all.onServerStop
 import icu.takeneko.appwebterminal.all.onServerTickPost
 import icu.takeneko.appwebterminal.all.registerBlockEntities
 import icu.takeneko.appwebterminal.all.registerBlocks
+import icu.takeneko.appwebterminal.all.registerImageProviders
 import icu.takeneko.appwebterminal.all.registerNetworking
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
@@ -44,6 +46,8 @@ object AppWebTerminal {
         configureDataGeneration()
         modBus.addListener(::onCommonSetup)
         modBus.addListener(::onBuildCreativeTab)
+        modBus.addListener(::registerImageProviders)
+        modBus.addListener(::onAddRegistries)
         MinecraftForge.EVENT_BUS.addListener(::onServerStart)
         MinecraftForge.EVENT_BUS.addListener(::onServerStop)
         MinecraftForge.EVENT_BUS.addListener(::onChunkUnloaded)
