@@ -72,7 +72,7 @@ fun Application.configureAEServiceRouting() {
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
                     val actionHost = AENetworkSupport.getActionHost(principal.uuid)
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
-                    val key = grid.craftingService.getCraftables { it.id == request.item }.firstOrNull()
+                    val key = grid.craftingService.getCraftables { it.id == request.id && it.type.id == request.type }.firstOrNull()
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
                     val actionSource = IActionSource.ofMachine(actionHost)
                     val craftingPlan = grid.craftingService.beginCraftingCalculation(
@@ -122,7 +122,9 @@ fun Application.configureAEServiceRouting() {
 @kotlinx.serialization.Serializable
 private data class CraftingRequest(
     @kotlinx.serialization.Serializable(with = ResourceLocationSerializer::class)
-    val item: ResourceLocation,
+    val type: ResourceLocation,
+    @kotlinx.serialization.Serializable(with = ResourceLocationSerializer::class)
+    val id: ResourceLocation,
     val count: Long,
     val calculationStrategy: CalculationStrategy = CalculationStrategy.REPORT_MISSING_ITEMS
 )
