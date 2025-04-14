@@ -107,7 +107,7 @@ data class MECraftingJobStatusBundle(
 
 @kotlinx.serialization.Serializable
 data class MEStack(
-    val key: AEKeyObject,
+    val what: AEKeyObject,
     val amount: Long,
 ) {
     companion object {
