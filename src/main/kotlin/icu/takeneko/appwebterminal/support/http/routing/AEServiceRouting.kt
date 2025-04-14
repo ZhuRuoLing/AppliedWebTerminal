@@ -16,6 +16,8 @@ import icu.takeneko.appwebterminal.support.AEKeyObject
 import icu.takeneko.appwebterminal.support.AEKeyObject.Companion.serializable
 import icu.takeneko.appwebterminal.support.AEKeyTypeObject.Companion.serializable
 import icu.takeneko.appwebterminal.support.AENetworkSupport
+import icu.takeneko.appwebterminal.support.MECpuStatusBundle
+import icu.takeneko.appwebterminal.support.MECpuStatusBundle.Companion.asStatus
 import icu.takeneko.appwebterminal.support.http.plugins.Principal
 import icu.takeneko.appwebterminal.support.http.routing.CraftingPlanSubmitErrorCode.Companion.my
 import icu.takeneko.appwebterminal.support.http.routing.CraftingPlanSubmitResult.Companion.serializable
@@ -55,6 +57,15 @@ fun Application.configureAEServiceRouting() {
                 }
             }
             route("/crafting") {
+                get("/cpus") {
+                    val principal = call.principal<Principal>()!!
+                    val grid = AENetworkSupport.getGrid(principal.uuid)
+                        ?: return@get call.respond<List<MECpuStatusBundle>>(listOf())
+                    return@get call.respond(
+                        grid.craftingService.cpus
+                            .mapIndexed { index, it -> it.asStatus(index) }
+                    )
+                }
                 get("/craftables") {
                     val principal = call.principal<Principal>()!!
                     val grid = AENetworkSupport.getGrid(principal.uuid)
@@ -72,7 +83,8 @@ fun Application.configureAEServiceRouting() {
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
                     val actionHost = AENetworkSupport.getActionHost(principal.uuid)
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
-                    val key = grid.craftingService.getCraftables { it.id == request.id && it.type.id == request.type }.firstOrNull()
+                    val key = grid.craftingService.getCraftables { it.id == request.id && it.type.id == request.type }
+                        .firstOrNull()
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
                     val actionSource = IActionSource.ofMachine(actionHost)
                     val craftingPlan = grid.craftingService.beginCraftingCalculation(

@@ -1,11 +1,16 @@
 package icu.takeneko.appwebterminal.support
 
+import appeng.api.networking.crafting.CraftingJobStatus
+import appeng.api.networking.crafting.ICraftingCPU
 import appeng.api.stacks.AEKey
 import appeng.api.stacks.AEKeyType
 import appeng.api.stacks.GenericStack
 import appeng.menu.me.crafting.CraftingStatus
 import appeng.menu.me.crafting.CraftingStatusEntry
+import icu.takeneko.appwebterminal.support.AEKeyObject.Companion.serializable
+import icu.takeneko.appwebterminal.support.MECraftingJobStatusBundle.Companion.serializable
 import icu.takeneko.appwebterminal.support.MECraftingStatusEntry.Companion.bundle
+import icu.takeneko.appwebterminal.support.MEStack.Companion.meStack
 import icu.takeneko.appwebterminal.util.ComponentSerializer
 import icu.takeneko.appwebterminal.util.ResourceLocationSerializer
 import net.minecraft.network.chat.Component
@@ -62,12 +67,26 @@ data class MECraftingStatusEntry(
 @kotlinx.serialization.Serializable
 data class MECpuStatusBundle(
     val id: Int,
-    val name: String?,
+    @kotlinx.serialization.Serializable(with = ComponentSerializer::class)
+    val name: Component?,
     val busy: Boolean,
-    val storageSize: Int,
+    val storageSize: Long,
     val coProcessorCount: Int,
     val craftingStatus: MECraftingJobStatusBundle?
-)
+) {
+    companion object {
+        fun ICraftingCPU.asStatus(id: Int): MECpuStatusBundle {
+            return MECpuStatusBundle(
+                id,
+                this.name,
+                this.isBusy,
+                this.availableStorage,
+                this.coProcessors,
+                this.jobStatus?.serializable()
+            )
+        }
+    }
+}
 
 @kotlinx.serialization.Serializable
 data class MECraftingJobStatusBundle(
@@ -75,16 +94,25 @@ data class MECraftingJobStatusBundle(
     val totalItems: Long,
     val progress: Long,
     val elapsedTimeNanos: Long
-)
+) {
+    companion object {
+        fun CraftingJobStatus.serializable() = MECraftingJobStatusBundle(
+            this.crafting.meStack,
+            this.totalItems,
+            this.progress,
+            this.elapsedTimeNanos
+        )
+    }
+}
 
 @kotlinx.serialization.Serializable
 data class MEStack(
-    val id: String,
-    val amount: Long
+    val key: AEKeyObject,
+    val amount: Long,
 ) {
     companion object {
         val GenericStack.meStack: MEStack
-            get() = MEStack(this.what.id.toString(), this.amount)
+            get() = MEStack(this.what.serializable(), this.amount)
     }
 }
 
