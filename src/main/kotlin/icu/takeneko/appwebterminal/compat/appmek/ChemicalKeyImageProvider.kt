@@ -3,7 +3,6 @@ package icu.takeneko.appwebterminal.compat.appmek
 import appeng.api.client.AEKeyRenderHandler
 import appeng.api.client.AEKeyRendering
 import appeng.api.stacks.AEKeyTypes
-import com.glodblock.github.appflux.AppFlux
 import com.mojang.blaze3d.vertex.PoseStack
 import icu.takeneko.appwebterminal.api.ImageProvider
 import icu.takeneko.appwebterminal.client.rendering.AEKeyImageProvider
@@ -13,12 +12,14 @@ import mekanism.api.MekanismAPI
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.MultiBufferSource
+import org.slf4j.LoggerFactory
 
 @ImageProvider(
     value = "appmek:chemical",
     modid = "appmek"
 )
-object ChemicalKeyImageProvider : AEKeyImageProvider<MekanismKey> {
+class ChemicalKeyImageProvider : AEKeyImageProvider<MekanismKey> {
+    private val logger = LoggerFactory.getLogger("ChemicalKeyImageProvider")
     private val keyType by lazy {
         AEKeyTypes.get(AppliedMekanistics.id("chemical"))
     }
@@ -30,6 +31,7 @@ object ChemicalKeyImageProvider : AEKeyImageProvider<MekanismKey> {
         canvasSizeX: Int,
         canvasSizeY: Int
     ) {
+        try {
         @Suppress("UNCHECKED_CAST")
         val renderer = AEKeyRendering.getOrThrow(keyType) as AEKeyRenderHandler<MekanismKey>
         poseStack.translate(
@@ -46,12 +48,17 @@ object ChemicalKeyImageProvider : AEKeyImageProvider<MekanismKey> {
             LightTexture.FULL_BLOCK,
             Minecraft.getInstance().level
         )
+        } catch (e: Throwable) {
+            logger.error("An exception was thrown while rendering $aeKey", e)
+        }
     }
 
     override fun getAllEntries(): Iterable<MekanismKey> {
         return (MekanismAPI.gasRegistry()
             + MekanismAPI.infuseTypeRegistry()
             + MekanismAPI.pigmentRegistry()
-            + MekanismAPI.slurryRegistry()).map { MekanismKey.of(it.getStack(1000))!! }
+            + MekanismAPI.slurryRegistry()).mapNotNull {
+                MekanismKey.of(it.getStack(1000))
+            }
     }
 }

@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.MultiBufferSource
     value = "appflux:flux",
     modid = "appflux"
 )
-object FluxKeyImageProvider : AEKeyImageProvider<FluxKey> {
+class FluxKeyImageProvider : AEKeyImageProvider<FluxKey> {
     private val keyType by lazy {
         AEKeyTypes.get(AppFlux.id("flux"))
     }
