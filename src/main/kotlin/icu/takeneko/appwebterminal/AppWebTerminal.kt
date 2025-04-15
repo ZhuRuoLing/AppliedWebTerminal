@@ -12,18 +12,22 @@ import icu.takeneko.appwebterminal.all.onServerStop
 import icu.takeneko.appwebterminal.all.onServerTickPost
 import icu.takeneko.appwebterminal.all.registerBlockEntities
 import icu.takeneko.appwebterminal.all.registerBlocks
-import icu.takeneko.appwebterminal.all.registerImageProviders
+import icu.takeneko.appwebterminal.all.registerClientCommand
+import icu.takeneko.appwebterminal.all.registerKeyImageProviders
 import icu.takeneko.appwebterminal.all.registerNetworking
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
 import icu.takeneko.appwebterminal.resource.LanguageFileDownloader
 import icu.takeneko.appwebterminal.util.KRegistrate
 import net.minecraft.resources.ResourceLocation
+import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.fml.common.Mod
 import org.slf4j.Logger
+import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import thedarkcolour.kotlinforforge.forge.runWhenOn
 
 val registrate = KRegistrate.create(AppWebTerminal.MOD_ID)
 
@@ -44,9 +48,9 @@ object AppWebTerminal {
         registerBlocks()
         registerNetworking()
         configureDataGeneration()
+        registerKeyImageProviders(modBus)
         modBus.addListener(::onCommonSetup)
         modBus.addListener(::onBuildCreativeTab)
-        modBus.addListener(::registerImageProviders)
         modBus.addListener(::onAddRegistries)
         MinecraftForge.EVENT_BUS.addListener(::onServerStart)
         MinecraftForge.EVENT_BUS.addListener(::onServerStop)
@@ -54,6 +58,10 @@ object AppWebTerminal {
         MinecraftForge.EVENT_BUS.addListener(::onServerTickPost)
         LanguageFileDownloader().start()
         LOGGER.info("AppWebTerminal initialized")
+
+        runWhenOn(Dist.CLIENT) {
+            FORGE_BUS.addListener(::registerClientCommand)
+        }
     }
 
 

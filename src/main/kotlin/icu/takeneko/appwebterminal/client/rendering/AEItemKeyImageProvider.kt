@@ -9,10 +9,9 @@ import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.MultiBufferSource
-import net.minecraft.world.item.Item
 import net.minecraftforge.registries.ForgeRegistries
 
-object AEItemKeyImageProvider : AEKeyImageProvider<AEItemKey, Item> {
+object AEItemKeyImageProvider : AEKeyImageProvider<AEItemKey> {
     private val keyType by lazy {
         AEKeyTypes.get(AppEng.makeId("i"))
     }
@@ -24,7 +23,7 @@ object AEItemKeyImageProvider : AEKeyImageProvider<AEItemKey, Item> {
         canvasSizeX: Int,
         canvasSizeY: Int
     ) {
-        val renderer = AEKeyRendering.getOrThrow(keyType) as AEKeyRenderHandler<AEItemKey>
+        @Suppress("UNCHECKED_CAST") val renderer = AEKeyRendering.getOrThrow(keyType) as AEKeyRenderHandler<AEItemKey>
         poseStack.translate(
             canvasSizeX / 2f,
             canvasSizeY / 2f,
@@ -40,7 +39,5 @@ object AEItemKeyImageProvider : AEKeyImageProvider<AEItemKey, Item> {
         )
     }
 
-    override fun getAllEntries(): Iterable<Item> = ForgeRegistries.ITEMS
-
-    override fun objectToKey(element: Item): AEItemKey = AEItemKey.of(element)
+    override fun getAllEntries(): Iterable<AEItemKey> = ForgeRegistries.ITEMS.map { AEItemKey.of { it } }
 }
