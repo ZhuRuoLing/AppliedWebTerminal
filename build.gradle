@@ -249,7 +249,8 @@ dependencies {
     modImplementation("curse.maven:mekanism-generators-268566:6258799")
     modImplementation("curse.maven:applied-flux-965012:6327987")
     modImplementation("curse.maven:glodium-957920:5226922")
-
+    modImplementation("curse.maven:ars-energistique-905641:5504444")
+    modImplementation("curse.maven:ars-nouveau-401955:5894609")
 }
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"

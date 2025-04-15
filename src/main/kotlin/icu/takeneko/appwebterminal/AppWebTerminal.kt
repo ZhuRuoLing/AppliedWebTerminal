@@ -7,6 +7,7 @@ import icu.takeneko.appwebterminal.all.onAddRegistries
 import icu.takeneko.appwebterminal.all.onBuildCreativeTab
 import icu.takeneko.appwebterminal.all.onChunkUnloaded
 import icu.takeneko.appwebterminal.all.onCommonSetup
+import icu.takeneko.appwebterminal.all.onRegister
 import icu.takeneko.appwebterminal.all.onServerStart
 import icu.takeneko.appwebterminal.all.onServerStop
 import icu.takeneko.appwebterminal.all.onServerTickPost
@@ -15,6 +16,7 @@ import icu.takeneko.appwebterminal.all.registerBlocks
 import icu.takeneko.appwebterminal.all.registerClientCommand
 import icu.takeneko.appwebterminal.all.registerKeyImageProviders
 import icu.takeneko.appwebterminal.all.registerNetworking
+import icu.takeneko.appwebterminal.api.KeyImageProviderLoader
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
 import icu.takeneko.appwebterminal.resource.LanguageFileDownloader
@@ -52,13 +54,14 @@ object AppWebTerminal {
         modBus.addListener(::onCommonSetup)
         modBus.addListener(::onBuildCreativeTab)
         modBus.addListener(::onAddRegistries)
+        modBus.addListener(::onRegister)
         MinecraftForge.EVENT_BUS.addListener(::onServerStart)
         MinecraftForge.EVENT_BUS.addListener(::onServerStop)
         MinecraftForge.EVENT_BUS.addListener(::onChunkUnloaded)
         MinecraftForge.EVENT_BUS.addListener(::onServerTickPost)
         LanguageFileDownloader().start()
+        KeyImageProviderLoader.compileContents()
         LOGGER.info("AppWebTerminal initialized")
-
         runWhenOn(Dist.CLIENT) {
             FORGE_BUS.addListener(::registerClientCommand)
         }
