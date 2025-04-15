@@ -4,12 +4,16 @@ import appeng.api.stacks.AEKey
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource
 
-interface AEKeyImageProvider<T : AEKey> {
+interface AEKeyImageProvider<T : AEKey, E : Any> {
     fun renderImage(
         aeKey: T,
         poseStack: PoseStack,
         bufferSource: BufferSource,
-        x: Int,
-        y: Int
+        canvasSizeX: Int,
+        canvasSizeY: Int
     )
+
+    fun getAllEntries(): Iterable<E>
+
+    fun objectToKey(element: E): T
 }

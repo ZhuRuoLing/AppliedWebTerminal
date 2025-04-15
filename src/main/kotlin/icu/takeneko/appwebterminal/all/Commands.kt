@@ -5,8 +5,13 @@ import icu.takeneko.appwebterminal.util.literal
 import net.minecraftforge.client.ClientCommandHandler
 
 val AppWebTerminalCommand = LiteralCommand("appwebterminal") {
-    literal("render") {
+    literal("renderResources") {
+        literal("immediate") {
 
+        }
+        literal("saved") {
+
+        }
     }
 }
 
