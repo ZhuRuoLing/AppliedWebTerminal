@@ -68,7 +68,7 @@ legacyForge {
     }
 
     // This line is optional. Access Transformers are automatically detected
-    // accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+    //accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -79,6 +79,7 @@ legacyForge {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
             jvmArgument("--add-opens=kotlinx.coroutines.core/kotlinx.coroutines.debug.internal=kotlin.stdlib")
+            jvmArgument("-XX:+CreateCoredumpOnCrash")
             //jvmArgument("--add-opens kotlin.stdlib/kotlin.coroutines=kotlin.stdlib")
         }
 
@@ -243,11 +244,11 @@ dependencies {
     implementation "thedarkcolour:kffmod:4.11.0"
 
     modRuntimeOnly("curse.maven:modern-ui-352491:6199942")
-    modRuntimeOnly("curse.maven:mekanism-268560:6258796")
-    modRuntimeOnly("curse.maven:applied-mekanistics-574300:4842281")
-    modRuntimeOnly("curse.maven:mekanism-generators-268566:6258799")
-    modRuntimeOnly("curse.maven:applied-flux-965012:6327987")
-    modRuntimeOnly("curse.maven:glodium-957920:5226922")
+    modImplementation("curse.maven:mekanism-268560:6258796")
+    modImplementation("curse.maven:applied-mekanistics-574300:4842281")
+    modImplementation("curse.maven:mekanism-generators-268566:6258799")
+    modImplementation("curse.maven:applied-flux-965012:6327987")
+    modImplementation("curse.maven:glodium-957920:5226922")
 
 }
 mixin {

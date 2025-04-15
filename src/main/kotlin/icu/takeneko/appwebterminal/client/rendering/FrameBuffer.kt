@@ -1,7 +1,6 @@
 package icu.takeneko.appwebterminal.client.rendering
 
 import com.mojang.blaze3d.platform.GlStateManager
-import io.ktor.http.*
 import net.minecraft.client.Minecraft
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
@@ -107,6 +106,7 @@ class FrameBuffer(
         if (Minecraft.ON_OSX) {
             glGetError()
         }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0)
     }
 
     fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
