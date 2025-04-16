@@ -262,9 +262,11 @@ dependencies {
     modImplementation("curse.maven:ars-nouveau-401955:5894609")
     modImplementation("software.bernie.geckolib:geckolib-forge-1.20.1:4.2.2")
     modImplementation("top.theillusivec4.curios:curios-forge:5.3.1+1.20.1")
-    modImplementation("vazkii.patchouli:Patchouli:1.20.1-80-FORGE")
+    modImplementation("vazkii.patchouli:Patchouli:1.20.1-84-FORGE")
 
-
+    modCompileOnly("vazkii.botania:Botania:1.20.1-448-FORGE:api")
+    modRuntimeOnly("vazkii.botania:Botania:1.20.1-448-FORGE")
+    modImplementation("curse.maven:applied-botanics-addon-610632:4904185")
 
     annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 }

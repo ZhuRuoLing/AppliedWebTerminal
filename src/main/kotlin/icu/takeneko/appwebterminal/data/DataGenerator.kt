@@ -19,6 +19,8 @@ fun handleLang(langProvider: RegistrateLangProvider) {
     langProvider.add("appwebterminal.hint.name", "Name: ")
     langProvider.add("appwebterminal.hint.password", "Password: ")
 
+    langProvider.add("appwebterminal.message.render_complete", "Render Complete")
+
     langProvider.add("appwebterminal.gui.me_network_online", "Online")
     langProvider.add("appwebterminal.gui.me_network_offline", "Offline")
 

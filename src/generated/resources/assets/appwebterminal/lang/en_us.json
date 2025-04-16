@@ -4,6 +4,7 @@
   "appwebterminal.gui.me_network_online": "Online",
   "appwebterminal.hint.name": "Name: ",
   "appwebterminal.hint.password": "Password: ",
+  "appwebterminal.message.render_complete": "Render Complete",
   "appwebterminal.screen.title": "ME Web Terminal",
   "block.appwebterminal.web_terminal": "ME Web Terminal",
   "config.appwebterminal.option.backendWebsocketEndpoint": "Backend Websocket Endpoint",
