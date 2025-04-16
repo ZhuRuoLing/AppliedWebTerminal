@@ -1,5 +1,6 @@
 package icu.takeneko.appwebterminal.util
 
+import com.mojang.logging.LogUtils
 import kotlinx.serialization.json.Json
 import net.minecraftforge.fml.ModList
 import kotlin.io.path.exists
@@ -9,6 +10,8 @@ import kotlin.io.path.readText
 private val Json = Json {
     ignoreUnknownKeys = true
 }
+
+private val logger = LogUtils.getLogger()
 
 class LanguageInstance(
     val language: String
@@ -21,8 +24,13 @@ class LanguageInstance(
                 it.file.findResource("assets")?.listDirectoryEntries()
             }.flatMap {
                 it.map { it1 -> it1.resolve("lang").resolve("$language.json") }.filter { it1 -> it1.exists() }
-            }.map {
-                icu.takeneko.appwebterminal.util.Json.decodeFromString<Map<String, String>>(it.readText())
+            }.mapNotNull {
+                try {
+                    icu.takeneko.appwebterminal.util.Json.decodeFromString<Map<String, String>>(it.readText())
+                } catch (e: Exception) {
+                    logger.error("Error while decoding language", e)
+                    null
+                }
             }.flatMap {
                 it.entries
             }.forEach { (k, v) ->

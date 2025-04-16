@@ -136,12 +136,18 @@ fun Application.configureAEServiceRouting() {
                 val principal = call.principal<Principal>()!!
                 val page = call.queryParameters["page"]?.toIntOrNull() ?: 0
                 val limit = call.queryParameters["limit"]?.toIntOrNull() ?: 10
+                val sortMethod = try {
+                    enumValueOf<SortMethod>(call.queryParameters["sort"] ?: "BY_NAME")
+                } catch (_: IllegalArgumentException) {
+                    SortMethod.BY_NAME
+                }
+                val decrease = call.queryParameters["decrease"]?.toBoolean() == true
                 val grid = AENetworkSupport.getGrid(principal.uuid)
                     ?: return@get call.respond<List<MEStack>>(listOf())
-                val meStacks = grid.storageService.cachedInventory.meStacks
+                val meStacks = sortMethod.sort(grid.storageService.cachedInventory.meStacks, decrease)
                 val meStacksChunked = meStacks.chunked(limit)
                 val meta = PageMeta(meStacks.size, page, limit, meStacksChunked.size)
-                if (page > meStacksChunked.size) return@get call.respond(StorageData(listOf(), meta))
+                if (page >= meStacksChunked.size) return@get call.respond(StorageData(listOf(), meta))
                 call.respond(StorageData(meStacksChunked[page], meta))
             }
         }
@@ -312,3 +318,29 @@ private data class CraftingPlanSummaryEntryBundle(
 
 @kotlinx.serialization.Serializable
 private data class StorageData(val data: List<MEStack>, val meta: PageMeta)
+
+private enum class SortMethod {
+    BY_COUNT {
+        override fun sort(list: List<MEStack>, decrease: Boolean): List<MEStack> = if (decrease) {
+            list.sortedByDescending { it.amount }
+        } else {
+            list.sortedBy { it.amount }
+        }
+    },
+    BY_NAME {
+        override fun sort(list: List<MEStack>, decrease: Boolean): List<MEStack> = if (decrease) {
+            list.sortedByDescending { it.what.id.path }
+        } else {
+            list.sortedBy { it.what.id.path }
+        }
+    },
+    BY_ID {
+        override fun sort(list: List<MEStack>, decrease: Boolean): List<MEStack> = if (decrease) {
+            list.sortedByDescending { it.what.id }
+        } else {
+            list.sortedBy { it.what.id }
+        }
+    };
+
+    abstract fun sort(list: List<MEStack>, decrease: Boolean): List<MEStack>
+}
