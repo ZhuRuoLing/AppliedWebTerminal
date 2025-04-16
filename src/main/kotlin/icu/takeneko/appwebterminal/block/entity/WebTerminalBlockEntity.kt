@@ -76,18 +76,20 @@ class WebTerminalBlockEntity(
     }
 
     private fun updateState() {
-        level!!.setBlock(
-            this.worldPosition,
-            level!!.getBlockState(blockPos).setValue(WebTerminalBlock.ONLINE, mainNode.isOnline),
-            Block.UPDATE_CLIENTS
-        )
-        if (!registered && mainNode.isOnline) {
-            AENetworkSupport.register(this)
-            registered = true
-        }
-        if (registered && !mainNode.isOnline) {
-            AENetworkSupport.remove(this)
-            registered = false
+        if(level!!.getBlockState(blockPos).`is`(meWebTerminal.get())){
+            level!!.setBlock(
+                this.worldPosition,
+                level!!.getBlockState(blockPos).setValue(WebTerminalBlock.ONLINE, mainNode.isOnline),
+                Block.UPDATE_CLIENTS
+            )
+            if (!registered && mainNode.isOnline) {
+                AENetworkSupport.register(this)
+                registered = true
+            }
+            if (registered && !mainNode.isOnline) {
+                AENetworkSupport.remove(this)
+                registered = false
+            }
         }
     }
 

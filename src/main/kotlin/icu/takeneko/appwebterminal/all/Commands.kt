@@ -39,6 +39,7 @@ val AppWebTerminalCommand = LiteralCommand("appwebterminal") {
                     dispose()
                 }
                 progressListener.progressWindow?.dismiss()
+                sendFeedback(Component.translatable("appwebterminal.message.render_complete"))
                 1
             }
         }
