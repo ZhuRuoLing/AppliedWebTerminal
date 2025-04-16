@@ -4,6 +4,7 @@ import appeng.client.gui.style.StyleManager
 import appeng.client.gui.widgets.AETextField
 import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.all.networkingChannel
+import icu.takeneko.appwebterminal.compat.modernui.ModernUISupport
 import icu.takeneko.appwebterminal.networking.UpdateWebTerminalNamePacket
 import icu.takeneko.appwebterminal.util.use
 import net.minecraft.client.Minecraft
@@ -59,11 +60,26 @@ class WebTerminalScreen(
         return false
     }
 
+    fun background(guiGraphics: GuiGraphics, x: Int, y: Int, width: Int, height: Int) {
+        if (ModernUISupport.modernUIPresent) {
+            ModernUISupport.roundRect(
+                guiGraphics,
+                x.toFloat(),
+                y.toFloat(),
+                x + width.toFloat(),
+                y + height.toFloat(),
+                5f
+            )
+            return
+        }
+        guiGraphics.blit(texture, x, y, 0, 0, 195, 136)
+    }
+
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         val x: Int = (this.width - 195) / 2
         val y: Int = (this.height - 136) / 2
         val font = Minecraft.getInstance().font
-        guiGraphics.blit(texture, x, y, 0, 0, 195, 136)
+        background(guiGraphics, x, y, 195, 136)
 
         guiGraphics.drawString(font, this.title, x + 8, y + 6, 0x404040, false)
         val statusText = if (isOnline) {

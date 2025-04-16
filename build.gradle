@@ -252,7 +252,7 @@ dependencies {
     implementation "thedarkcolour:kfflib:4.11.0"
     implementation "thedarkcolour:kffmod:4.11.0"
 
-    modRuntimeOnly("curse.maven:modern-ui-352491:6199942")
+    modImplementation("curse.maven:modern-ui-352491:6199942")
     modImplementation("curse.maven:mekanism-268560:6258796")
     modImplementation("curse.maven:applied-mekanistics-574300:4842281")
     modImplementation("curse.maven:mekanism-generators-268566:6258799")

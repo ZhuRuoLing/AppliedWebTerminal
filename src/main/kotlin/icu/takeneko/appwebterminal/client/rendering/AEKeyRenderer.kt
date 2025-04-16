@@ -46,7 +46,7 @@ class AEKeyRenderer(
 
     fun renderAll(basePath: Path, progressListener: RenderProgressListener) {
         rendering = true
-        KeyImageProviderRegistry.values.forEach { prov ->
+        KeyImageProviderRegistry.values.toList().forEach { prov ->
             val entries = prov.getAllEntries().toList()
             progressListener.notifyTotalCount(entries.size)
             entries.forEachIndexed { index, it ->
