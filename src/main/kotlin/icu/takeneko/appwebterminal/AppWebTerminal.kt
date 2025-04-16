@@ -14,6 +14,7 @@ import icu.takeneko.appwebterminal.all.onServerTickPost
 import icu.takeneko.appwebterminal.all.registerBlockEntities
 import icu.takeneko.appwebterminal.all.registerBlocks
 import icu.takeneko.appwebterminal.all.registerClientCommand
+import icu.takeneko.appwebterminal.all.registerItems
 import icu.takeneko.appwebterminal.all.registerKeyImageProviders
 import icu.takeneko.appwebterminal.all.registerNetworking
 import icu.takeneko.appwebterminal.api.KeyImageProviderLoader
@@ -48,6 +49,7 @@ object AppWebTerminal {
     init {
         registerBlockEntities()
         registerBlocks()
+        registerItems()
         registerNetworking()
         configureDataGeneration()
         registerKeyImageProviders(modBus)

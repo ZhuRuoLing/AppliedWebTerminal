@@ -3,7 +3,7 @@ package icu.takeneko.appwebterminal.block
 import appeng.api.orientation.IOrientationStrategy
 import appeng.api.orientation.OrientationStrategies
 import appeng.block.AEBaseEntityBlock
-import icu.takeneko.appwebterminal.all.meWebTerminalBlockEntity
+import icu.takeneko.appwebterminal.all.MEWebTerminalBlockEntity
 import icu.takeneko.appwebterminal.all.networkingChannel
 import icu.takeneko.appwebterminal.block.entity.WebTerminalBlockEntity
 import icu.takeneko.appwebterminal.networking.OpenWebTerminalScreenPacket
@@ -33,7 +33,7 @@ class WebTerminalBlock(properties: Properties) : AEBaseEntityBlock<WebTerminalBl
     override fun lateInit() {
         setBlockEntity(
             WebTerminalBlockEntity::class.java,
-            meWebTerminalBlockEntity.get(),
+            MEWebTerminalBlockEntity.get(),
             null,
             null
         )

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "appwebterminal:web_terminal"
+    }
+  ],
+  "result": {
+    "item": "appwebterminal:cable_web_terminal"
+  }
+}

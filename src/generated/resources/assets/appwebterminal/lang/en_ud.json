@@ -10,5 +10,6 @@
   "config.appwebterminal.option.backendWebsocketEndpoint": "ʇuıodpuƎ ʇǝʞɔosqǝM puǝʞɔɐᗺ",
   "config.appwebterminal.option.frontendTitle": "ǝןʇı⟘ puǝʇuoɹℲ",
   "config.appwebterminal.option.httpPort": "ʇɹoԀ dʇʇH",
-  "config.screen.appwebterminal": "sbuıʇʇǝS ןɐuıɯɹǝ⟘qǝMpǝıןddⱯ"
+  "config.screen.appwebterminal": "sbuıʇʇǝS ןɐuıɯɹǝ⟘qǝMpǝıןddⱯ",
+  "item.appwebterminal.cable_web_terminal": "ןɐuıɯɹǝ⟘ qǝM ƎW"
 }

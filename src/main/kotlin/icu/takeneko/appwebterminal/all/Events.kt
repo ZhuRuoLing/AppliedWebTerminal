@@ -78,6 +78,7 @@ fun onServerStop(event: ServerStoppedEvent) {
 
 fun onBuildCreativeTab(event: BuildCreativeModeTabContentsEvent) {
     if (AECreativeTabIds.MAIN == event.tabKey) {
-        event.accept(meWebTerminal.asStack())
+        event.accept(MEWebTerminal.asStack())
+        event.accept(MEWebTerminalPartItem.asStack())
     }
 }

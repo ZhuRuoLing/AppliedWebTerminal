@@ -3,17 +3,19 @@ package icu.takeneko.appwebterminal.all
 import appeng.core.definitions.AEBlocks
 import appeng.core.definitions.AEItems
 import com.tterrag.registrate.providers.RegistrateRecipeProvider
+import com.tterrag.registrate.util.entry.BlockEntry
 import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.block.WebTerminalBlock
 import icu.takeneko.appwebterminal.registrate
 import icu.takeneko.appwebterminal.util.get
 import net.minecraft.data.recipes.RecipeCategory
 import net.minecraft.data.recipes.ShapedRecipeBuilder
+import net.minecraft.data.recipes.ShapelessRecipeBuilder
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.Blocks
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile
 
-val meWebTerminal = registrate.block<WebTerminalBlock>("web_terminal", ::WebTerminalBlock)
+val MEWebTerminal: BlockEntry<WebTerminalBlock> = registrate.block<WebTerminalBlock>("web_terminal", ::WebTerminalBlock)
     .initialProperties { Blocks.IRON_BLOCK }
     .blockstate { dataGenContext, registrateBlockstateProvider ->
         registrateBlockstateProvider.directionalBlock(dataGenContext.get()) {
@@ -53,6 +55,10 @@ val meWebTerminal = registrate.block<WebTerminalBlock>("web_terminal", ::WebTerm
             .define('F', AEBlocks.CRAFTING_MONITOR)
             .unlockedBy("has_item", RegistrateRecipeProvider.has(AEBlocks.WIRELESS_ACCESS_POINT))
             .save(prov)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ctx.get())
+            .requires(MEWebTerminalPartItem)
+            .unlockedBy("has_item", RegistrateRecipeProvider.has(MEWebTerminalPartItem))
+            .save(prov, AppWebTerminal.location("cable_web_terminal_from_part"))
     }
     .build()
     .register()

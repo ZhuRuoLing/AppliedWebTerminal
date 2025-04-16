@@ -5,7 +5,7 @@ import appeng.api.networking.IGrid
 import appeng.api.networking.IGridNodeListener
 import appeng.api.orientation.BlockOrientation
 import appeng.blockentity.grid.AENetworkBlockEntity
-import icu.takeneko.appwebterminal.all.meWebTerminal
+import icu.takeneko.appwebterminal.all.MEWebTerminal
 import icu.takeneko.appwebterminal.block.WebTerminalBlock
 import icu.takeneko.appwebterminal.support.AENetworkAccess
 import icu.takeneko.appwebterminal.support.AENetworkSupport
@@ -38,7 +38,7 @@ class WebTerminalBlockEntity(
 
     init {
         this.mainNode.setExposedOnSides(Direction.entries.toMutableSet() - blockState[WebTerminalBlock.FACING])
-        this.mainNode.setVisualRepresentation(meWebTerminal.asStack())
+        this.mainNode.setVisualRepresentation(MEWebTerminal.asStack())
         this.mainNode.setIdlePowerUsage(3.0)
         this.mainNode.setFlags(GridFlags.REQUIRE_CHANNEL)
     }
@@ -76,21 +76,20 @@ class WebTerminalBlockEntity(
     }
 
     private fun updateState() {
-        if(level!!.getBlockState(blockPos).`is`(meWebTerminal.get())){
-            level!!.setBlock(
-                this.worldPosition,
-                level!!.getBlockState(blockPos).setValue(WebTerminalBlock.ONLINE, mainNode.isOnline),
-                Block.UPDATE_CLIENTS
-            )
-            if (!registered && mainNode.isOnline) {
-                AENetworkSupport.register(this)
-                registered = true
-            }
-            if (registered && !mainNode.isOnline) {
-                AENetworkSupport.remove(this)
-                registered = false
-            }
+        level!!.setBlock(
+            this.worldPosition,
+            level!!.getBlockState(blockPos).setValue(WebTerminalBlock.ONLINE, mainNode.isOnline),
+            Block.UPDATE_CLIENTS
+        )
+        if (!registered && mainNode.isOnline) {
+            AENetworkSupport.register(this)
+            registered = true
         }
+        if (registered && !mainNode.isOnline) {
+            AENetworkSupport.remove(this)
+            registered = false
+        }
+
     }
 
     override fun onOrientationChanged(orientation: BlockOrientation) {
