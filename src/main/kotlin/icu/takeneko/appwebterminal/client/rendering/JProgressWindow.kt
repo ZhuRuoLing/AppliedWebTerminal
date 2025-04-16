@@ -1,6 +1,6 @@
 package icu.takeneko.appwebterminal.client.rendering
 
-import net.minecraft.resources.ResourceLocation
+import appeng.api.stacks.AEKey
 import javax.swing.BoxLayout
 import javax.swing.JFrame
 import javax.swing.JLabel
@@ -40,9 +40,13 @@ class JProgressWindow(
         progressBar.value = 0
     }
 
-    override fun notifyProgress(current: Int, name: ResourceLocation) {
-        progressText.text = "Progress: $totalCount/$current Current: $name"
+    override fun notifyProgress(current: Int, what: AEKey) {
+        progressText.text = "Progress: $totalCount/$current Current: ${what.id}"
         progressBar.value = current
+    }
+
+    override fun notifyCompleted() {
+        dismiss()
     }
 
     fun show() {

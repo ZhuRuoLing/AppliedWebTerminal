@@ -39,15 +39,24 @@ repositories {
         url = 'https://thedarkcolour.github.io/KotlinForForge/'
         content { includeGroup "thedarkcolour" }
     }
-    exclusiveContent { // tterrag - registrate
-        forRepository { maven { url = "https://maven.tterrag.com/" } }
-        filter { includeGroup("com.tterrag.registrate") }
-    }
     maven {
         url "https://cursemaven.com"
     }
-    flatDir {
-        dirs("run/runtimeMods")
+    maven {
+        url 'https://maven.blamejared.com'
+    }
+    maven {
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+    }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+    maven {
+        url 'https://jitpack.io'
+    }
+    exclusiveContent { // tterrag - registrate
+        forRepository { maven { url = "https://maven.tterrag.com/" } }
+        filter { includeGroup("com.tterrag.registrate") }
     }
 }
 
@@ -249,16 +258,19 @@ dependencies {
     modImplementation("curse.maven:mekanism-generators-268566:6258799")
     modImplementation("curse.maven:applied-flux-965012:6327987")
     modImplementation("curse.maven:glodium-957920:5226922")
-    //modImplementation("curse.maven:ars-energistique-905641:5504444")
-    //modImplementation("curse.maven:ars-nouveau-401955:5894609")
+    modImplementation("curse.maven:ars-energistique-905641:5504444")
+    modImplementation("curse.maven:ars-nouveau-401955:5894609")
+    modImplementation("software.bernie.geckolib:geckolib-forge-1.20.1:4.2.2")
+    modImplementation("top.theillusivec4.curios:curios-forge:5.3.1+1.20.1")
+    modImplementation("vazkii.patchouli:Patchouli:1.20.1-80-FORGE")
+
+
+
+    annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 }
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
     config "${mod_id}.mixins.json"
-}
-
-dependencies {
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {

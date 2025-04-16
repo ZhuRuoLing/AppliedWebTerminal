@@ -10,6 +10,7 @@ import icu.takeneko.appwebterminal.all.KeyImageProviderRegistry
 import net.minecraft.client.Minecraft
 import org.joml.Matrix3f
 import org.joml.Matrix4f
+import org.slf4j.LoggerFactory
 import java.nio.file.Path
 import kotlin.io.path.createFile
 import kotlin.io.path.createParentDirectories
@@ -39,14 +40,22 @@ class AEKeyRenderer(
         1000f
     )
 
-    fun renderAll(basePath: Path, progressListener: RenderProgressListener, ) {
+    private val logger = LoggerFactory.getLogger("AEKeyRenderer")
+
+    private var lastNotify: Long = 0
+
+    fun renderAll(basePath: Path, progressListener: RenderProgressListener) {
         rendering = true
         KeyImageProviderRegistry.values.forEach { prov ->
             val entries = prov.getAllEntries().toList()
             progressListener.notifyTotalCount(entries.size)
             entries.forEachIndexed { index, it ->
                 val id = it.id
-                progressListener.notifyProgress(index, it.id)
+                if (System.currentTimeMillis() - lastNotify > 200) {
+                    progressListener.notifyProgress(index, it)
+                    lastNotify = System.currentTimeMillis()
+                }
+                @Suppress("UNCHECKED_CAST")
                 renderSingle(
                     it,
                     prov as AEKeyImageProvider<AEKey>,
@@ -56,6 +65,7 @@ class AEKeyRenderer(
                 )
             }
         }
+        progressListener.notifyCompleted()
         rendering = false
     }
 
@@ -80,13 +90,18 @@ class AEKeyRenderer(
         RenderSystem.setShaderColor(0.99f,0.99f,0.99f,1f)
         RenderSystem.enableDepthTest()
         frameBuffer.bindWrite(true)
-        provider.renderImage(
-            key,
-            poseStack,
-            bufferSource,
-            sizeX,
-            sizeY
-        )
+        try {
+            provider.renderImage(
+                key,
+                poseStack,
+                bufferSource,
+                sizeX,
+                sizeY
+            )
+        } catch (e : Exception) {
+            logger.error("Error while rendering ${key.type.id}/${key.id}", e)
+        }
+
         frameBuffer.bindWrite(true)
         bufferSource.endBatch()
         RenderSystem.getModelViewStack().popPose()

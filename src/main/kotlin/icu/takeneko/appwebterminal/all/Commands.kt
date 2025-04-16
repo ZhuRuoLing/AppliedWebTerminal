@@ -1,5 +1,6 @@
 package icu.takeneko.appwebterminal.all
 
+import appeng.api.stacks.AEKey
 import icu.takeneko.appwebterminal.client.rendering.AEKeyRenderer
 import icu.takeneko.appwebterminal.client.rendering.JProgressWindow
 import icu.takeneko.appwebterminal.client.rendering.RenderProgressListener
@@ -10,7 +11,6 @@ import icu.takeneko.appwebterminal.util.sendError
 import icu.takeneko.appwebterminal.util.sendFeedback
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
 import net.minecraftforge.client.event.RegisterClientCommandsEvent
 import org.slf4j.LoggerFactory
 import java.awt.HeadlessException
@@ -68,11 +68,15 @@ private class ProgressListenerImpl : RenderProgressListener {
         progressWindow?.notifyTotalCount(size)
     }
 
-    override fun notifyProgress(current: Int, name: ResourceLocation) {
-        logger.info("Progress: $total/$current")
-        progressWindow?.notifyProgress(current, name)
+    override fun notifyProgress(current: Int, what: AEKey) {
+        logger.info("Progress: $current/$total, Current: ${what.type}/${what.id}")
+        progressWindow?.notifyProgress(current, what)
     }
 
+    override fun notifyCompleted() {
+        logger.info("Render Completed")
+        progressWindow?.notifyCompleted()
+    }
 }
 
 fun registerClientCommand(event: RegisterClientCommandsEvent) {

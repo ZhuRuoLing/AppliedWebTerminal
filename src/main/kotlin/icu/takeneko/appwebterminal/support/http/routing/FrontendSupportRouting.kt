@@ -29,8 +29,6 @@ fun Application.configureFrontendSupportRouting() {
             val filePath = Path("./aeKeyResources") /
                 keyType.replace(":", "_") /
                 "$key.png".replace(":", "_")
-            println(filePath.normalize().toString().startsWith("aeKeyResources"))
-            println(filePath.normalize())
             if (filePath.notExists() || !filePath.normalize().toString().startsWith("aeKeyResources")) {
                 return@get call.respond(HttpStatusCode.NotFound)
             }
