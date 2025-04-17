@@ -14,8 +14,10 @@ import icu.takeneko.appwebterminal.support.MECraftingStatusEntry.Companion.bundl
 import icu.takeneko.appwebterminal.support.MEStack.Companion.meStack
 import icu.takeneko.appwebterminal.util.ComponentSerializer
 import icu.takeneko.appwebterminal.util.ResourceLocationSerializer
+import icu.takeneko.appwebterminal.util.strip
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import java.util.Objects
 
 @kotlinx.serialization.Serializable
 data class MECraftingStatusBundle(
@@ -102,6 +104,7 @@ data class MECraftingJobStatusBundle(
 data class MEStack(
     val what: AEKeyObject,
     val amount: Long,
+    var craftable: Boolean = false,
 ) {
     companion object {
         val GenericStack.meStack: MEStack
@@ -122,7 +125,7 @@ data class AEKeyTypeObject(
         fun AEKeyType.serializable(): AEKeyTypeObject {
             return AEKeyTypeObject(
                 this.id,
-                this.description
+                this.description.strip()
             )
         }
     }
@@ -141,10 +144,14 @@ data class AEKeyObject(
         fun AEKey.serializable(): AEKeyObject {
             return AEKeyObject(
                 this.id,
-                this.displayName,
+                this.displayName.strip(),
                 this.type.id
             )
         }
+    }
+
+    fun myHash(): Int {
+        return Objects.hash(this.id, this.type)
     }
 }
 

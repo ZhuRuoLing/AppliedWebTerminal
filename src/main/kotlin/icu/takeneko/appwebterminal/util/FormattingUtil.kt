@@ -1,12 +1,12 @@
 package icu.takeneko.appwebterminal.util
 
 import com.google.common.base.CaseFormat
-import java.util.Locale
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentContents
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.network.chat.contents.LiteralContents
 import net.minecraft.network.chat.contents.TranslatableContents
+import java.util.Locale
 
 fun String.toEnglishName(): String {
     return this.lowercase(Locale.ROOT).split("_")
@@ -23,6 +23,29 @@ fun String.toEnglishName(): String {
 
 fun String.toLowerCaseUnder(): String {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, this)
+}
+
+fun Component.toLocalizedString(lang: String): String {
+    val contents = this.contents
+    var rt = when (contents) {
+        is LiteralContents -> {
+            contents.text()
+        }
+
+        is TranslatableContents -> {
+            val key = contents.key
+            val args = contents.args
+            ServerI18nSupport.translate(lang, key, *args)
+        }
+
+        else -> {
+            ""
+        }
+    }
+    this.siblings.forEach {
+        rt += it.toLocalizedString(lang)
+    }
+    return rt
 }
 
 

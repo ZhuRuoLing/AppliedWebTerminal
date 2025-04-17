@@ -12,6 +12,7 @@ import appeng.api.stacks.GenericStack
 import appeng.api.storage.AEKeyFilter
 import appeng.menu.me.crafting.CraftingPlanSummary
 import com.google.common.cache.CacheBuilder
+import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.support.AEKeyObject
 import icu.takeneko.appwebterminal.support.AEKeyObject.Companion.serializable
 import icu.takeneko.appwebterminal.support.AEKeyTypeObject.Companion.serializable
@@ -30,6 +31,8 @@ import icu.takeneko.appwebterminal.support.http.routing.UnsuitableCpuError.Compa
 import icu.takeneko.appwebterminal.support.http.websocket.WebsocketSession
 import icu.takeneko.appwebterminal.util.DispatchedSerializer
 import icu.takeneko.appwebterminal.util.ResourceLocationSerializer
+import icu.takeneko.appwebterminal.util.myHash
+import icu.takeneko.appwebterminal.util.toLocalizedString
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -39,6 +42,10 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
+import me.towdium.pinin.Keyboard
+import me.towdium.pinin.PinIn
+import me.towdium.pinin.searchers.Searcher
+import me.towdium.pinin.searchers.TreeSearcher
 import net.minecraft.resources.ResourceLocation
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.minutes
@@ -49,6 +56,18 @@ private val allCraftingPlans = CacheBuilder.newBuilder()
     .build<Int, ICraftingPlan>()
 
 private val idCounter = AtomicInteger()
+
+private val pinIn = PinIn().config()
+    .keyboard(Keyboard.QUANPIN)
+    .fZh2Z(true)
+    .fSh2S(true)
+    .fCh2C(true)
+    .fAng2An(true)
+    .fIng2In(true)
+    .fEng2En(true)
+    .fU2V(true)
+    .accelerate(true)
+    .commit()
 
 fun Application.configureAEServiceRouting() {
     routing {
@@ -142,11 +161,42 @@ fun Application.configureAEServiceRouting() {
                     SortMethod.BY_NAME
                 }
                 val decrease = call.queryParameters["decrease"]?.toBoolean() == true
+                val search = call.queryParameters["search"] ?: ""
+                val lang = call.queryParameters["lang"] ?: "en_us"
+
                 val grid = AENetworkSupport.getGrid(principal.uuid)
                     ?: return@get call.respond<List<MEStack>>(listOf())
-                val meStacks = sortMethod.sort(grid.storageService.cachedInventory.meStacks, decrease)
-                val meStacksChunked = meStacks.chunked(limit)
-                val meta = PageMeta(meStacks.size, page, limit, meStacksChunked.size)
+                val craftables = grid.craftingService.getCraftables(AEKeyFilter.none())
+                val meStacks = grid.storageService.cachedInventory.meStacks
+
+                val searchedMeStacks = if (!search.isEmpty()) {
+                    if (AppWebTerminal.config.needPinInLanguage.contains(lang)) {
+                        val treeSearcher = TreeSearcher<MEStack>(Searcher.Logic.CONTAIN, pinIn)
+                        meStacks.forEach {
+                            treeSearcher.put(it.what.displayName.toLocalizedString(lang), it)
+                        }
+                        treeSearcher.search(search)
+                    } else {
+                        meStacks.filter {
+                            it.what.displayName.toLocalizedString(lang).contains(search, true)
+                        }
+                    }
+                } else {
+                    meStacks
+                }
+
+                val storageHashSet = searchedMeStacks.associateBy { it.what.myHash() }
+                craftables.forEach {
+                    val hash = it.myHash()
+                    if (storageHashSet.contains(hash)) {
+                        storageHashSet[hash]?.craftable = true
+                    }
+                }
+
+                val sortedMeStacks = sortMethod.sort(searchedMeStacks, decrease)
+
+                val meStacksChunked = sortedMeStacks.chunked(limit)
+                val meta = PageMeta(searchedMeStacks.size, page, limit, meStacksChunked.size)
                 if (page >= meStacksChunked.size) return@get call.respond(StorageData(listOf(), meta))
                 call.respond(StorageData(meStacksChunked[page], meta))
             }
@@ -343,4 +393,8 @@ private enum class SortMethod {
     };
 
     abstract fun sort(list: List<MEStack>, decrease: Boolean): List<MEStack>
+}
+
+fun main() {
+    println(pinIn.contains("能源元件", "nyy"))
 }
