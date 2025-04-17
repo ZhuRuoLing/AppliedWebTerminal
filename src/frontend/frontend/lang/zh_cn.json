@@ -18,12 +18,14 @@
   "language.add.placeholder.result": "(结果)",
   "terminal.button.crafting_page": "合成状态",
   "terminal.button.storage_page": "存储",
+  "terminal.input.search": "搜索...",
   "ae.crafting.statue.missing": "缺少数量：",
   "ae.crafting.statue.available": "可用数量：",
   "ae.crafting.statue.to_craft": "合成数量：",
   "ae.crafting.statue.crafting": "正在合成：",
   "ae.crafting.statue.scheduled": "计划合成：",
   "ae.tooltip.stored": "已存储：",
-  "ae.tooltip.craftable": "可合成"
+  "ae.tooltip.craftable": "可合成",
+  "ae.tooltip.craft": "合成"
 
 }

@@ -18,11 +18,13 @@
   "language.add.placeholder.result": "(result)",
   "terminal.button.crafting_page": "Crafting Status",
   "terminal.button.storage_page": "Storage",
+  "terminal.input.search": "Search...",
   "ae.crafting.statue.missing": "Missing: ",
   "ae.crafting.statue.available": "Available: ",
   "ae.crafting.statue.to_craft": "To Craft: ",
   "ae.crafting.statue.crafting": "Crafting: ",
   "ae.crafting.statue.scheduled": "Scheduled: ",
   "ae.tooltip.stored": "Stored: ",
-  "ae.tooltip.craftable": "Craftable"
+  "ae.tooltip.craftable": "Craftable",
+  "ae.tooltip.craft": "Craft"
 }

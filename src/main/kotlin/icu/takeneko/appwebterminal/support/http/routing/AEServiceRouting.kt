@@ -396,7 +396,3 @@ private enum class SortMethod {
 
     abstract fun sort(list: List<MEStack>, decrease: Boolean): List<MEStack>
 }
-
-fun main() {
-    println(pinIn.contains("能源元件", "nyy"))
-}
