@@ -167,7 +167,17 @@ fun Application.configureAEServiceRouting() {
                 val grid = AENetworkSupport.getGrid(principal.uuid)
                     ?: return@get call.respond<List<MEStack>>(listOf())
                 val craftables = grid.craftingService.getCraftables(AEKeyFilter.none())
-                val meStacks = grid.storageService.cachedInventory.meStacks
+                val meStacks = grid.storageService.cachedInventory.meStacks.toMutableList()
+
+                val storageHashSet = meStacks.associateBy { it.what.myHash() }
+                craftables.forEach {
+                    val hash = it.myHash()
+                    if (storageHashSet.contains(hash)) {
+                        storageHashSet[hash]?.craftable = true
+                    } else {
+                        meStacks += MEStack(it.serializable(), 0, true)
+                    }
+                }
 
                 val searchedMeStacks = if (!search.isEmpty()) {
                     if (AppWebTerminal.config.needPinInLanguage.contains(lang)) {
@@ -183,14 +193,6 @@ fun Application.configureAEServiceRouting() {
                     }
                 } else {
                     meStacks
-                }
-
-                val storageHashSet = searchedMeStacks.associateBy { it.what.myHash() }
-                craftables.forEach {
-                    val hash = it.myHash()
-                    if (storageHashSet.contains(hash)) {
-                        storageHashSet[hash]?.craftable = true
-                    }
                 }
 
                 val sortedMeStacks = sortMethod.sort(searchedMeStacks, decrease)

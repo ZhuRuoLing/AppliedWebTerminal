@@ -35,7 +35,7 @@ fun Component.toLocalizedString(lang: String): String {
         is TranslatableContents -> {
             val key = contents.key
             val args = contents.args
-            ServerI18nSupport.translate(lang, key, *args)
+            I18nUtil.translate(lang, key, *args)
         }
 
         else -> {
