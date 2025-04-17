@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexSorting
 import icu.takeneko.appwebterminal.all.KeyImageProviderRegistry
+import icu.takeneko.appwebterminal.client.rendering.foundation.FrameBuffer
 import net.minecraft.client.Minecraft
 import org.joml.Matrix3f
 import org.joml.Matrix4f

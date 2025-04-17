@@ -18,6 +18,8 @@ import icu.takeneko.appwebterminal.all.registerItems
 import icu.takeneko.appwebterminal.all.registerKeyImageProviders
 import icu.takeneko.appwebterminal.all.registerNetworking
 import icu.takeneko.appwebterminal.api.KeyImageProviderLoader
+import icu.takeneko.appwebterminal.client.onLoadShaders
+import icu.takeneko.appwebterminal.client.onRenderLevelPost
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
 import icu.takeneko.appwebterminal.resource.LanguageFileDownloader
@@ -30,6 +32,7 @@ import net.minecraftforge.fml.common.Mod
 import org.slf4j.Logger
 import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import thedarkcolour.kotlinforforge.forge.runForDist
 import thedarkcolour.kotlinforforge.forge.runWhenOn
 
 val registrate = KRegistrate.create(AppWebTerminal.MOD_ID)
@@ -66,6 +69,8 @@ object AppWebTerminal {
         LOGGER.info("AppWebTerminal initialized")
         runWhenOn(Dist.CLIENT) {
             FORGE_BUS.addListener(::registerClientCommand)
+            FORGE_BUS.addListener(::onRenderLevelPost)
+            modBus.addListener(::onLoadShaders)
         }
     }
 
