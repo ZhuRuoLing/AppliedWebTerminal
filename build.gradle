@@ -194,9 +194,6 @@ shadowJar {
     configurations = [project.configurations.shadowInclude]
     from jar.outputs
     from jarJar.outputs
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
-    }
     exclude "/_COROUTINE/**"
     exclude "/kotlinx/coroutines/**"
     exclude "/kotlinx/serialization/**"
