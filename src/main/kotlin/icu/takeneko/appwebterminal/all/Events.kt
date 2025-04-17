@@ -1,6 +1,5 @@
 package icu.takeneko.appwebterminal.all
 
-import appeng.api.ids.AECreativeTabIds
 import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.api.KeyImageProviderLoader
 import icu.takeneko.appwebterminal.block.LateInitSupported
@@ -12,7 +11,6 @@ import icu.takeneko.appwebterminal.support.http.HttpServerLifecycleSupport
 import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.chunk.LevelChunk
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent
 import net.minecraftforge.event.TickEvent
 import net.minecraftforge.event.TickEvent.ServerTickEvent
 import net.minecraftforge.event.level.ChunkEvent
@@ -74,11 +72,4 @@ fun onServerStart(event: ServerStartedEvent) {
 fun onServerStop(event: ServerStoppedEvent) {
     HttpServerLifecycleSupport.stop()
     AENetworkSupport.reset()
-}
-
-fun onBuildCreativeTab(event: BuildCreativeModeTabContentsEvent) {
-    if (AECreativeTabIds.MAIN == event.tabKey) {
-        event.accept(MEWebTerminal.asStack())
-        event.accept(MEWebTerminalPartItem.asStack())
-    }
 }

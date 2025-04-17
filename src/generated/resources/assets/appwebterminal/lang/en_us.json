@@ -10,6 +10,8 @@
   "config.appwebterminal.option.backendWebsocketEndpoint": "Backend Websocket Endpoint",
   "config.appwebterminal.option.frontendTitle": "Frontend Title",
   "config.appwebterminal.option.httpPort": "Http Port",
+  "config.appwebterminal.option.needPinInLanguage": "Need Pin In Language",
   "config.screen.appwebterminal": "AppliedWebTerminal Settings",
-  "item.appwebterminal.cable_web_terminal": "ME Web Terminal"
+  "item.appwebterminal.cable_web_terminal": "ME Web Terminal",
+  "itemGroup.appwebterminal.applied_web_terminal": "Applied Web Terminal"
 }

@@ -10,6 +10,8 @@
   "config.appwebterminal.option.backendWebsocketEndpoint": "ʇuıodpuƎ ʇǝʞɔosqǝM puǝʞɔɐᗺ",
   "config.appwebterminal.option.frontendTitle": "ǝןʇı⟘ puǝʇuoɹℲ",
   "config.appwebterminal.option.httpPort": "ʇɹoԀ dʇʇH",
+  "config.appwebterminal.option.needPinInLanguage": "ǝbɐnbuɐꞀ uI uıԀ pǝǝN",
   "config.screen.appwebterminal": "sbuıʇʇǝS ןɐuıɯɹǝ⟘qǝMpǝıןddⱯ",
-  "item.appwebterminal.cable_web_terminal": "ןɐuıɯɹǝ⟘ qǝM ƎW"
+  "item.appwebterminal.cable_web_terminal": "ןɐuıɯɹǝ⟘ qǝM ƎW",
+  "itemGroup.appwebterminal.applied_web_terminal": "ןɐuıɯɹǝ⟘ qǝM pǝıןddⱯ"
 }

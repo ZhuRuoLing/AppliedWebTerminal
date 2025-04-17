@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils
 import dev.toma.configuration.Configuration
 import dev.toma.configuration.config.format.ConfigFormats
 import icu.takeneko.appwebterminal.all.onAddRegistries
-import icu.takeneko.appwebterminal.all.onBuildCreativeTab
 import icu.takeneko.appwebterminal.all.onChunkUnloaded
 import icu.takeneko.appwebterminal.all.onCommonSetup
 import icu.takeneko.appwebterminal.all.onRegister
@@ -14,6 +13,7 @@ import icu.takeneko.appwebterminal.all.onServerTickPost
 import icu.takeneko.appwebterminal.all.registerBlockEntities
 import icu.takeneko.appwebterminal.all.registerBlocks
 import icu.takeneko.appwebterminal.all.registerClientCommand
+import icu.takeneko.appwebterminal.all.registerCreativeTab
 import icu.takeneko.appwebterminal.all.registerItems
 import icu.takeneko.appwebterminal.all.registerKeyImageProviders
 import icu.takeneko.appwebterminal.all.registerNetworking
@@ -32,7 +32,6 @@ import net.minecraftforge.fml.common.Mod
 import org.slf4j.Logger
 import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
-import thedarkcolour.kotlinforforge.forge.runForDist
 import thedarkcolour.kotlinforforge.forge.runWhenOn
 
 val registrate = KRegistrate.create(AppWebTerminal.MOD_ID)
@@ -53,11 +52,11 @@ object AppWebTerminal {
         registerBlockEntities()
         registerBlocks()
         registerItems()
+        registerCreativeTab()
         registerNetworking()
         configureDataGeneration()
         registerKeyImageProviders(modBus)
         modBus.addListener(::onCommonSetup)
-        modBus.addListener(::onBuildCreativeTab)
         modBus.addListener(::onAddRegistries)
         modBus.addListener(::onRegister)
         MinecraftForge.EVENT_BUS.addListener(::onServerStart)
