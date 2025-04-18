@@ -354,7 +354,11 @@ private data class CraftingPlanSummaryBundle(
                         it.storedAmount,
                         it.craftAmount
                     )
-                }
+                }.sortedWith(
+                    compareBy(
+                        { -it.missingAmount }, { -it.craftAmount }, { -it.storedAmount }
+                    )
+                )
             )
         }
     }
