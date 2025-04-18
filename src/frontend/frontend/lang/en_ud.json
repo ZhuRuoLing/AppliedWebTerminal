@@ -1,4 +1,5 @@
 {
+  "lang.name": "ɥsᴉlƃuƎ (uʍop ǝpᴉsd∩)",
   "common.button.cancel": "lǝɔuɐƆ",
   "common.button.confirm": "ɯɹᴉɟuoƆ",
   "main.terminals.title": "lɐuᴉɯɹǝ┴ ∀ ʇɔǝlǝS",
@@ -18,11 +19,20 @@
   "language.add.placeholder.result": "(ʇlnsǝɹ)",
   "terminal.button.crafting_page": "snʇɐʇS ƃuᴉʇɟɐɹƆ",
   "terminal.button.storage_page": "ǝƃɐɹoʇS",
-  "ae.crafting.statue.missing": " :ƃuᴉssᴉW",
-  "ae.crafting.statue.available": " :ǝlqɐlᴉɐʌ∀",
-  "ae.crafting.statue.to_craft": " :ʇɟɐɹƆ o┴",
-  "ae.crafting.statue.crafting": " :ƃuᴉʇɟɐɹƆ",
-  "ae.crafting.statue.scheduled": " :pǝlnpǝɥɔS",
+  "terminal.input.search": "˙˙˙ɥɔɹɐǝS",
+  "ae.crafting.status.missing": " :ƃuᴉssᴉW",
+  "ae.crafting.status.available": " :ǝlqɐlᴉɐʌ∀",
+  "ae.crafting.status.to_craft": " :ʇɟɐɹƆ o┴",
+  "ae.crafting.status.crafting": " :ƃuᴉʇɟɐɹƆ",
+  "ae.crafting.status.scheduled": " :pǝlnpǝɥɔS",
   "ae.tooltip.stored": " :pǝɹoʇS",
-  "ae.tooltip.craftable": "ǝlqɐʇɟɐɹƆ"
+  "ae.tooltip.craftable": "ǝlqɐʇɟɐɹƆ",
+
+  "ae.crafting.status.stored": "%s :pǝɹoʇS",
+  "ae.crafting.status.active": "%s :ƃuᴉʇɟɐɹƆ",
+  "ae.crafting.status.pending": "s% :pǝlnpǝɥɔS",
+
+  "websocket.connection.error": "pǝlᴉɐℲ uoᴉʇɔǝuuoƆ",
+  "websocket.connection.established": "pǝɥsᴉlqɐʇsƎ uoᴉʇɔǝuuoƆ",
+  "websocket.connection.disconnected": "ɹǝʌɹǝs ɯoɹɟ pǝʇɔǝuuoɔsᴉp"
 }

@@ -192,6 +192,7 @@ jar {
 shadowJar {
     archiveClassifier = "dev"
     configurations = [project.configurations.shadowInclude]
+    from project.layout.buildDirectory.dir("mixin")
     from jar.outputs
     from jarJar.outputs
     exclude "/_COROUTINE/**"
@@ -210,6 +211,7 @@ shadowJar {
     exclude "META-INF/services/kotlin*"
     exclude "META-INF/versions/9/**"
     exclude "META-INF/com.android.tools/**"
+    relocate "me.towdium.pinin", "icu.takeneko.appwebterminal.deps.pinin"
 }
 
 reobfJar {

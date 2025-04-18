@@ -1,4 +1,5 @@
 {
+  "lang.name": "English (US)",
   "common.button.cancel": "Cancel",
   "common.button.confirm": "Confirm",
   "main.terminals.title": "Select A Terminal",
@@ -19,12 +20,20 @@
   "terminal.button.crafting_page": "Crafting Status",
   "terminal.button.storage_page": "Storage",
   "terminal.input.search": "Search...",
-  "ae.crafting.statue.missing": "Missing: ",
-  "ae.crafting.statue.available": "Available: ",
-  "ae.crafting.statue.to_craft": "To Craft: ",
-  "ae.crafting.statue.crafting": "Crafting: ",
-  "ae.crafting.statue.scheduled": "Scheduled: ",
+  "ae.crafting.status.missing": "Missing: ",
+  "ae.crafting.status.available": "Available: ",
+  "ae.crafting.status.to_craft": "To Craft: ",
+  "ae.crafting.status.crafting": "Crafting: ",
+  "ae.crafting.status.scheduled": "Scheduled: ",
   "ae.tooltip.stored": "Stored: ",
   "ae.tooltip.craftable": "Craftable",
-  "ae.tooltip.craft": "Craft"
+  "ae.tooltip.craft": "Craft",
+
+  "ae.crafting.status.stored": "Stored: %s",
+  "ae.crafting.status.active": "Crafting: %s",
+  "ae.crafting.status.pending": "Scheduled: %s",
+
+  "websocket.connection.error": "Connection Failed",
+  "websocket.connection.established": "Connection Established",
+  "websocket.connection.disconnected": "Disconnected from server"
 }

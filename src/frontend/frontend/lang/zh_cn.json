@@ -1,4 +1,5 @@
 {
+  "lang.name": "简体中文 (中国大陆)",
   "common.button.cancel": "取消",
   "common.button.confirm": "确认",
   "main.terminals.title": "选择终端",
@@ -19,13 +20,21 @@
   "terminal.button.crafting_page": "合成状态",
   "terminal.button.storage_page": "存储",
   "terminal.input.search": "搜索...",
-  "ae.crafting.statue.missing": "缺少数量：",
-  "ae.crafting.statue.available": "可用数量：",
-  "ae.crafting.statue.to_craft": "合成数量：",
-  "ae.crafting.statue.crafting": "正在合成：",
-  "ae.crafting.statue.scheduled": "计划合成：",
+  "ae.crafting.status.missing": "缺少数量：",
+  "ae.crafting.status.available": "可用数量：",
+  "ae.crafting.status.to_craft": "合成数量：",
+  "ae.crafting.status.crafting": "正在合成：",
+  "ae.crafting.status.scheduled": "计划合成：",
   "ae.tooltip.stored": "已存储：",
   "ae.tooltip.craftable": "可合成",
-  "ae.tooltip.craft": "合成"
+  "ae.tooltip.craft": "合成",
+
+  "ae.crafting.status.stored": "可用数量: %s",
+  "ae.crafting.status.active": "正在合成: %s",
+  "ae.crafting.status.pending": "计划合成: %s",
+
+  "websocket.connection.error": "连接失败",
+  "websocket.connection.established": "已连接",
+  "websocket.connection.disconnected": "连接已断开"
 
 }
