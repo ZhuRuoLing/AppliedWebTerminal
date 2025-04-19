@@ -29,6 +29,14 @@ data class SelectCpu(val cpuId: Int) : Protocol {
 }
 
 @kotlinx.serialization.Serializable
+data class CancelJob(val cpuId: Int) : Protocol {
+    override fun type(): String = "cancel_job"
+    override fun accept(session: WebsocketSession) {
+        session.craftingServiceView.getCpu(cpuId)?.cancelJob()
+    }
+}
+
+@kotlinx.serialization.Serializable
 data class MECraftingServiceStatusBundle(
     val cpus: List<MECpuStatusBundle>,
     var craftingStatus: MECraftingStatusBundle?

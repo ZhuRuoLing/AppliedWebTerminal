@@ -34,7 +34,8 @@ class WebsocketSession(
         mapOf(
             "update_interval" to SetUpdateInterval.serializer(),
             "select_cpu" to SelectCpu.serializer(),
-            "status" to MECraftingServiceStatusBundle.serializer()
+            "status" to MECraftingServiceStatusBundle.serializer(),
+            "cancel_job" to CancelJob.serializer(),
         ),
         String.serializer(),
         Protocol::type
