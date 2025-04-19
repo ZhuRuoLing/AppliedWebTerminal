@@ -185,7 +185,6 @@ class WebTerminalScreen(
                 }
             }
         }
-        println(handled)
         if (!handled) {
             this.focused = null
         }
