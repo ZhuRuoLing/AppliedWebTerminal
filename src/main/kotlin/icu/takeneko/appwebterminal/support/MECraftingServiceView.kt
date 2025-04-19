@@ -91,6 +91,7 @@ class MECraftingServiceView(
                     this.incrementalUpdateHelper.addChange(it.key)
                 }
                 this.currentCpu!!.craftingLogic.addListener(cpuUpdateListener)
+                this.craftingStatus = CraftingStatus.create(this.incrementalUpdateHelper, cpu.craftingLogic)
             } else {
                 this.currentCpu = null
             }
