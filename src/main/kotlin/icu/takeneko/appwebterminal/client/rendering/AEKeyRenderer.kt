@@ -5,14 +5,14 @@ import com.mojang.blaze3d.platform.Lighting
 import com.mojang.blaze3d.platform.NativeImage
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.blaze3d.vertex.VertexSorting
 import icu.takeneko.appwebterminal.all.KeyImageProviderRegistry
 import icu.takeneko.appwebterminal.client.rendering.foundation.FrameBuffer
+import icu.takeneko.appwebterminal.client.rendering.foundation.FullyBufferedBufferSource
 import net.minecraft.client.Minecraft
-import org.joml.Matrix3f
 import org.joml.Matrix4f
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
+import java.util.ArrayDeque
 import kotlin.io.path.createFile
 import kotlin.io.path.createParentDirectories
 import kotlin.io.path.deleteIfExists
@@ -42,54 +42,57 @@ class AEKeyRenderer(
     )
 
     private val logger = LoggerFactory.getLogger("AEKeyRenderer")
-
+    val renderTasks = ArrayDeque<() -> Unit>()
+    var taskPullLimit = 1
     private var lastNotify: Long = 0
 
-    fun renderAll(basePath: Path, progressListener: RenderProgressListener) {
+    fun submitRenderTasks(basePath: Path, progressListener: RenderProgressListener) {
         rendering = true
         KeyImageProviderRegistry.values.toList().forEach { prov ->
             val entries = prov.getAllEntries().toList()
-            progressListener.notifyTotalCount(entries.size)
+            renderTasks += {
+                progressListener.notifyTotalCount(entries.size)
+            }
             entries.forEachIndexed { index, it ->
-                val id = it.id
-                if (System.currentTimeMillis() - lastNotify > 200) {
-                    progressListener.notifyProgress(index, it)
-                    lastNotify = System.currentTimeMillis()
+                renderTasks += {
+                    val id = it.id
+                    if (System.currentTimeMillis() - lastNotify > 200) {
+                        progressListener.notifyProgress(index, it)
+                        lastNotify = System.currentTimeMillis()
+                    }
+                    @Suppress("UNCHECKED_CAST")
+                    renderSingle(
+                        it,
+                        prov as AEKeyImageProvider<AEKey>,
+                        basePath
+                            / it.type.id.toString().replace(":", "_")
+                            / "$id.png".replace(":", "_")
+                    )
                 }
-                @Suppress("UNCHECKED_CAST")
-                renderSingle(
-                    it,
-                    prov as AEKeyImageProvider<AEKey>,
-                    basePath
-                        / it.type.id.toString().replace(":", "_")
-                        / "$id.png".replace(":", "_")
-                )
             }
         }
-        progressListener.notifyCompleted()
-        rendering = false
+        renderTasks += {
+            progressListener.notifyCompleted()
+            rendering = false
+        }
+    }
+
+    fun next() {
+        var limit = taskPullLimit
+        while (renderTasks.isNotEmpty() && limit >= 0){
+            renderTasks.pop()()
+            limit--
+        }
     }
 
     fun <T : AEKey> renderSingle(key: T, provider: AEKeyImageProvider<T>, path: Path) {
-        val bufferSource = Minecraft.getInstance().renderBuffers().bufferSource()
+        val bufferSource = FullyBufferedBufferSource()
         val poseStack = PoseStack()
         poseStack.pushPose()
-
         frameBuffer.clear()
-        val oldRotMat = Matrix3f(RenderSystem.getInverseViewRotationMatrix())
-        val oldProjMat = Matrix4f(RenderSystem.getProjectionMatrix())
-        val oldVertexSorting = RenderSystem.getVertexSorting()
-        RenderSystem.setInverseViewRotationMatrix(Matrix3f())
-        RenderSystem.getModelViewStack().apply {
-            pushPose()
-            setIdentity()
-            RenderSystem.applyModelViewMatrix()
-        }
         Lighting.setupForEntityInInventory()
-        RenderSystem.setProjectionMatrix(projectionMatrix, VertexSorting.ORTHOGRAPHIC_Z)
         RenderSystem.enableCull()
-        RenderSystem.setShaderColor(0.99f,0.99f,0.99f,1f)
-        RenderSystem.enableDepthTest()
+        RenderSystem.setShaderColor(0.99f, 0.99f, 0.99f, 1f)
         frameBuffer.bindWrite(true)
         try {
             provider.renderImage(
@@ -99,16 +102,21 @@ class AEKeyRenderer(
                 sizeX,
                 sizeY
             )
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             logger.error("Error while rendering ${key.type.id}/${key.id}", e)
         }
-
-        frameBuffer.bindWrite(true)
-        bufferSource.endBatch()
-        RenderSystem.getModelViewStack().popPose()
-        RenderSystem.applyModelViewMatrix()
-        RenderSystem.setProjectionMatrix(oldProjMat, oldVertexSorting)
-        RenderSystem.setInverseViewRotationMatrix(oldRotMat)
+        val uploadResult = bufferSource.upload()
+        uploadResult.forEach { t, u ->
+            t.setupRenderState()
+            frameBuffer.bindWrite(true)
+            u.drawWithShader(
+                Matrix4f(),
+                projectionMatrix,
+                RenderSystem.getShader()
+            )
+            t.clearRenderState()
+        }
+        frameBuffer.unbindWrite()
         Minecraft.getInstance().mainRenderTarget.bindWrite(true)
         frameBuffer.bindRead()
         nativeImage.downloadTexture(0, true)
@@ -135,5 +143,6 @@ class AEKeyRenderer(
     companion object {
         var rendering = false
             private set
+        var instance: AEKeyRenderer? = null
     }
 }

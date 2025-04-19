@@ -9,6 +9,7 @@ import icu.takeneko.appwebterminal.client.all.blurShaderLoaded
 import icu.takeneko.appwebterminal.client.all.createPostProcess
 import icu.takeneko.appwebterminal.client.all.roundRectShaderLoaded
 import icu.takeneko.appwebterminal.client.gui.WebTerminalScreen
+import icu.takeneko.appwebterminal.client.rendering.AEKeyRenderer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraftforge.client.event.RegisterShadersEvent
@@ -50,5 +51,6 @@ fun onRenderLevelPost(event: RenderLevelStageEvent) {
             BlurPostProcessInstance?.apply(mainRenderTarget.colorTextureId)
             mainRenderTarget.bindWrite(true)
         }
+        AEKeyRenderer.instance?.next()
     }
 }

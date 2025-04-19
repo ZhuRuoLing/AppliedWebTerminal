@@ -6,10 +6,12 @@ import icu.takeneko.appwebterminal.client.rendering.JProgressWindow
 import icu.takeneko.appwebterminal.client.rendering.RenderProgressListener
 import icu.takeneko.appwebterminal.util.LiteralCommand
 import icu.takeneko.appwebterminal.util.execute
+import icu.takeneko.appwebterminal.util.integerArgument
 import icu.takeneko.appwebterminal.util.literal
 import icu.takeneko.appwebterminal.util.sendError
 import icu.takeneko.appwebterminal.util.sendFeedback
 import net.minecraft.client.Minecraft
+import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.Component
 import net.minecraftforge.client.event.RegisterClientCommandsEvent
 import org.slf4j.LoggerFactory
@@ -29,17 +31,50 @@ val AppWebTerminalCommand = LiteralCommand("appwebterminal") {
                 0
             }
         }
-        literal("renderLocal") {
-            execute {
-                System.setProperty("java.awt.headless", "false")
-                val progressListener = ProgressListenerImpl()
-                progressListener.progressWindow?.show()
-                AEKeyRenderer(256, 256).apply {
-                    renderAll(Path("./aeKeyResources"), progressListener)
-                    dispose()
+        literal("render") {
+            integerArgument("limit") {
+                execute {
+                    if (AEKeyRenderer.instance != null) {
+                        sendError(Component.translatable("appwebterminal.message.rendering"))
+                        return@execute 1
+                    }
+                    System.setProperty("java.awt.headless", "false")
+                    val progressListener = ProgressListenerImpl(this.source)
+                    progressListener.progressWindow?.show()
+                    val renderer = AEKeyRenderer(256, 256).apply {
+                        submitRenderTasks(Path("./aeKeyResources"), progressListener)
+                    }
+                    renderer.taskPullLimit = getArgument<Integer>("limit",Integer::class.java).toInt()
+                    renderer.renderTasks += {
+                        sendFeedback(Component.translatable("appwebterminal.message.render_complete"))
+                        renderer.dispose()
+                        AEKeyRenderer.instance = null
+                    }
+                    AEKeyRenderer.instance = renderer
+                    progressListener.progressWindow?.dismiss()
+                    sendFeedback(Component.translatable("appwebterminal.message.started"))
+                    1
                 }
+            }
+            execute {
+                if (AEKeyRenderer.instance != null) {
+                    sendError(Component.translatable("appwebterminal.message.rendering"))
+                    return@execute 1
+                }
+                System.setProperty("java.awt.headless", "false")
+                val progressListener = ProgressListenerImpl(this.source)
+                progressListener.progressWindow?.show()
+                val renderer = AEKeyRenderer(256, 256).apply {
+                    submitRenderTasks(Path("./aeKeyResources"), progressListener)
+                }
+                renderer.renderTasks += {
+                    sendFeedback(Component.translatable("appwebterminal.message.render_complete"))
+                    renderer.dispose()
+                    AEKeyRenderer.instance = null
+                }
+                AEKeyRenderer.instance = renderer
                 progressListener.progressWindow?.dismiss()
-                sendFeedback(Component.translatable("appwebterminal.message.render_complete"))
+                sendFeedback(Component.translatable("appwebterminal.message.started"))
                 1
             }
         }
@@ -54,7 +89,7 @@ val AppWebTerminalCommand = LiteralCommand("appwebterminal") {
     }
 }
 
-private class ProgressListenerImpl : RenderProgressListener {
+private class ProgressListenerImpl(private val src: CommandSourceStack) : RenderProgressListener {
     private var total: Int = 0
     private val logger = LoggerFactory.getLogger("RenderProgress")
     val progressWindow: JProgressWindow? = try {
@@ -65,12 +100,14 @@ private class ProgressListenerImpl : RenderProgressListener {
 
     override fun notifyTotalCount(size: Int) {
         logger.info("Total: $size")
+        src.sendSystemMessage(Component.literal("Total: $size"))
         total = size
         progressWindow?.notifyTotalCount(size)
     }
 
     override fun notifyProgress(current: Int, what: AEKey) {
         logger.info("Progress: $current/$total, Current: ${what.type}/${what.id}")
+        src.sendSystemMessage(Component.literal("Progress: $current/$total, Current: ${what.type}/${what.id}"))
         progressWindow?.notifyProgress(current, what)
     }
 
