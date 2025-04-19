@@ -97,6 +97,10 @@ class MECraftingServiceView(
         }
     }
 
+    public fun getCpu(id: Int): ICraftingCPU? {
+        return cpuMap[id]
+    }
+
     fun createUpdateMessage(): MECraftingServiceStatusBundle {
         val data = MECraftingServiceStatusBundle(
             cpuMap.map { (k,v) -> v.asStatus(k) },
