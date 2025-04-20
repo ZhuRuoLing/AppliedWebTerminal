@@ -213,7 +213,6 @@ class WebTerminalScreen(
 
         scale = Mth.lerp(1 - progressNonlinear, animationState.startScale, animationState.endScale)
         alpha = Mth.lerp(1 - progressNonlinear, animationState.startAlpha, animationState.endAlpha)
-        println(alpha)
         val xMove = (1 - scale) * width / 2
         val yMove = (1 - scale) * height / 2
         pose.translate(xMove, yMove, 0f)

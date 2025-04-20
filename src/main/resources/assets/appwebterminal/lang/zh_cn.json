@@ -1,0 +1,19 @@
+{
+  "appwebterminal.button.done": "完成",
+  "appwebterminal.gui.me_network_offline": "离线",
+  "appwebterminal.gui.me_network_online": "在线",
+  "appwebterminal.hint.name": "名称: ",
+  "appwebterminal.hint.password": "密码: ",
+  "appwebterminal.message.render_complete": "渲染完成。",
+  "appwebterminal.message.rendering": "当前正在渲染。",
+  "appwebterminal.message.started": "已启动渲染器。",
+  "appwebterminal.screen.title": "ME 网页终端",
+  "block.appwebterminal.web_terminal": "ME 网页终端",
+  "config.appwebterminal.option.backendWebsocketEndpoint": "后端 WebSocket 终端访问点",
+  "config.appwebterminal.option.frontendTitle": "前端标题",
+  "config.appwebterminal.option.httpPort": "Http 端口",
+  "config.appwebterminal.option.needPinInLanguage": "启用拼音搜索的语言",
+  "config.screen.appwebterminal": "网页终端设置",
+  "item.appwebterminal.cable_web_terminal": "ME 网页终端",
+  "itemGroup.appwebterminal.applied_web_terminal": "Applied Web Terminal"
+}

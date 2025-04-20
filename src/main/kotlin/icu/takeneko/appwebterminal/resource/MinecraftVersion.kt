@@ -107,14 +107,3 @@ data class AssetIndexMetadata(
 
 @kotlinx.serialization.Serializable
 data class VersionManifest(val latest: LatestData, val versions: MutableList<VersionData>)
-
-fun main() {
-    CacheProvider.init()
-    println(MinecraftVersion.update().get())
-    println(MinecraftVersion.versions["1.20.1"])
-    MinecraftVersion.resolveVersionAssetIndex("1.20.1")?.get()?.let {
-        for ((name,value) in it.objects.entries) {
-            CacheProvider.downloadFile(FileMetadata(name.encodeBase64(), value.downloadUrl, value.size, value.hash))
-        }
-    }
-}
