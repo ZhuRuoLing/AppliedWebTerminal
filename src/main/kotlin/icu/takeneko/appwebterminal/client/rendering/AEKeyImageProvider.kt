@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource
+import kotlin.math.min
 
 interface AEKeyImageProvider<T : AEKey> {
     val keyType: AEKeyType
@@ -30,7 +31,7 @@ interface AEKeyImageProvider<T : AEKey> {
             poseStack,
             bufferSource,
             aeKey,
-            200f,
+            (min(canvasSizeX, canvasSizeY) * 0.8).toFloat(),
             LightTexture.FULL_BLOCK,
             Minecraft.getInstance().level
         )

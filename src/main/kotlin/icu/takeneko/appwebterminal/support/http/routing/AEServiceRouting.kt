@@ -183,9 +183,9 @@ fun Application.configureAEServiceRouting() {
                     if (AppWebTerminal.config.needPinInLanguage.contains(lang)) {
                         val treeSearcher = TreeSearcher<MEStack>(Searcher.Logic.CONTAIN, pinIn)
                         meStacks.forEach {
-                            treeSearcher.put(it.what.displayName.toLocalizedString(lang), it)
+                            treeSearcher.put(it.what.displayName.toLocalizedString(lang).lowercase(), it)
                         }
-                        treeSearcher.search(search)
+                        treeSearcher.search(search.lowercase())
                     } else {
                         meStacks.filter {
                             it.what.displayName.toLocalizedString(lang).contains(search, true)
