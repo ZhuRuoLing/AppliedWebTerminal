@@ -56,6 +56,8 @@ class MECraftingServiceView(
         if (this.currentCpu != null && fullUpgradeSent) {
             this.cpuSchedulingMode = this.currentCpu!!.selectionMode
             this.cantStoreItems = this.currentCpu!!.craftingLogic.isCantStoreItems;
+            this.craftingStatus = CraftingStatus.create(this.incrementalUpdateHelper, this.currentCpu!!.craftingLogic)
+            this.incrementalUpdateHelper.commitChanges()
         }
     }
 
@@ -82,12 +84,12 @@ class MECraftingServiceView(
             this.craftingStatus = null
             if (cpu is CraftingCPUCluster) {
                 this.currentCpu = cpu
+                this.currentCpu!!.craftingLogic.addListener(cpuUpdateListener)
                 val keyCounter = KeyCounter()
                 this.currentCpu!!.craftingLogic.getAllItems(keyCounter)
                 keyCounter.forEach {
                     this.incrementalUpdateHelper.addChange(it.key)
                 }
-                this.currentCpu!!.craftingLogic.addListener(cpuUpdateListener)
                 this.craftingStatus = CraftingStatus.create(this.incrementalUpdateHelper, cpu.craftingLogic)
             } else {
                 this.currentCpu = null
@@ -100,18 +102,13 @@ class MECraftingServiceView(
     }
 
     fun createUpdateMessage(): MECraftingServiceStatusBundle {
-        if (this.currentCpu != null && fullUpgradeSent) {
-            this.craftingStatus = CraftingStatus.create(this.incrementalUpdateHelper, this.currentCpu!!.craftingLogic)
-            this.incrementalUpdateHelper.commitChanges()
-        }
         val data = MECraftingServiceStatusBundle(
-            cpuMap.map { (k,v) -> v.asStatus(k) },
+            cpuMap.map { (k, v) -> v.asStatus(k) },
             craftingStatus?.bundle
         )
         if (data.craftingStatus?.entries != null) {
             fullUpgradeSent = true
         }
-
         return data
     }
 }
