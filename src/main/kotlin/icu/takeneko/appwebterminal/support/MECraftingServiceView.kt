@@ -77,23 +77,21 @@ class MECraftingServiceView(
     }
 
     private fun selectCpu(cpu: ICraftingCPU) {
-        if (cpu != currentCpu) {
-            this.currentCpu?.craftingLogic?.removeListener(cpuUpdateListener)
-            this.incrementalUpdateHelper.reset()
-            this.fullUpgradeSent = false
-            this.craftingStatus = null
-            if (cpu is CraftingCPUCluster) {
-                this.currentCpu = cpu
-                this.currentCpu!!.craftingLogic.addListener(cpuUpdateListener)
-                val keyCounter = KeyCounter()
-                this.currentCpu!!.craftingLogic.getAllItems(keyCounter)
-                keyCounter.forEach {
-                    this.incrementalUpdateHelper.addChange(it.key)
-                }
-                this.craftingStatus = CraftingStatus.create(this.incrementalUpdateHelper, cpu.craftingLogic)
-            } else {
-                this.currentCpu = null
+        this.currentCpu?.craftingLogic?.removeListener(cpuUpdateListener)
+        this.incrementalUpdateHelper.reset()
+        this.fullUpgradeSent = false
+        this.craftingStatus = null
+        if (cpu is CraftingCPUCluster) {
+            this.currentCpu = cpu
+            val keyCounter = KeyCounter()
+            this.currentCpu!!.craftingLogic.getAllItems(keyCounter)
+            keyCounter.forEach {
+                this.incrementalUpdateHelper.addChange(it.key)
             }
+            this.currentCpu!!.craftingLogic.addListener(cpuUpdateListener)
+            this.craftingStatus = CraftingStatus.create(this.incrementalUpdateHelper, cpu.craftingLogic)
+        } else {
+            this.currentCpu = null
         }
     }
 
