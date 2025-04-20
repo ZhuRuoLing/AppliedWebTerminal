@@ -1,29 +1,35 @@
+# Applied Web Terminal
 
-Installation information
-=======
+Move your AE terminal to the web!
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+## Dependencies
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+- [AE2](https://modrinth.com/mod/ae2)
+- [Kotlin For Forge](https://modrinth.com/mod/kotlin-for-forge)
+- [Configuration](https://modrinth.com/mod/configuration)
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+## Usage
 
-Mapping Names:
-============
-The MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+- Download the latest version of this mod from [Releases](https://github.com/ZhuRuoLing/AppliedWebTerminal/releases) and install the dependencies
+- If you are playing in single-player mode:
+    - Enter your single-player world
+    - Run the command `/appwebterminal resources render` to generate frontend resources (only needs to be run once)
+- If you are playing on a server:
+    - Create a new single-player world
+    - Run the command `/appwebterminal resources render` to generate frontend resources (only needs to be run once)
+    - Upload the `aeKeyResources` folder from your game root directory to your server
+- Connect the `ME Web Terminal` to the AE network
+- Right-click to open the GUI and configure the name and password
+- Open your web browser, access the network terminal address, and log in with the password
+- All done!
 
-MDG Legacy:
-==========
-This template uses [ModDevGradle Legacy](https://github.com/neoforged/ModDevGradle). Documentation can be found [here](https://github.com/neoforged/ModDevGradle/blob/main/LEGACY.md).
+## Images
+### Storage Page
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+<img src="/images/storage.png" style="width: 250px" alt="Storage Page">
+
+### Crafting Status Page
+<img src="/images/crafting.png" style="width: 250px" alt="Crafting Page">
+
+### In-Game GUI
+<img src="/images/ui.png" style="width: 250px" alt="In-Game GUI">
