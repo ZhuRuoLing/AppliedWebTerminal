@@ -390,11 +390,15 @@ private enum class SortMethod {
             list.sortedBy { it.what.id.path }
         }
     },
-    BY_ID {
+    BY_MOD {
         override fun sort(list: List<MEStack>, decrease: Boolean): List<MEStack> = if (decrease) {
-            list.sortedByDescending { it.what.id }
+            list.sortedByDescending {
+                it.what.id.toString()
+            }
         } else {
-            list.sortedBy { it.what.id }
+            list.sortedBy {
+                it.what.id.toString()
+            }
         }
     };
 

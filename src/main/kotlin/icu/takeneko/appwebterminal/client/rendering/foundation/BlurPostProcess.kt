@@ -15,7 +15,6 @@ class BlurPostProcess(xSize: Int, ySize: Int) : PostProcess(xSize, ySize) {
 
 
     override fun resize(xSize: Int, ySize: Int) {
-        print("Resizing $xSize $ySize")
         super.resize(xSize, ySize)
         swap1.resize(xSize, ySize)
         swap2.resize(xSize, ySize)

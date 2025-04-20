@@ -8,6 +8,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.io.File
 import kotlin.io.path.Path
 import kotlin.io.path.div
 import kotlin.io.path.notExists
@@ -23,9 +24,9 @@ fun Application.configureFrontendSupportRouting() {
                 )
             )
         }
-        get("/aeResource/{keyType}/{key}") {
+        get("/aeResource/{keyType}/{key...}") {
             val keyType = call.parameters["keyType"] ?: return@get
-            val key = call.parameters["key"] ?: return@get
+            val key = call.parameters.getAll("key")?.joinToString(File.separator) ?: return@get
             val filePath = Path("./aeKeyResources") /
                 keyType.replace(":", "_") /
                 "$key.png".replace(":", "_")
@@ -34,15 +35,16 @@ fun Application.configureFrontendSupportRouting() {
             }
             return@get call.respondFile(filePath.toFile())
         }
-        get("/translate/{language}/{key}") {
+        get("/translate/{language}/{key...}") {
             val language = call.parameters["language"] ?: return@get call.respond(
                 HttpStatusCode.BadRequest,
                 "Expected parameter 'language'"
             )
-            val key = call.parameters["key"] ?: return@get call.respond(
-                HttpStatusCode.BadRequest,
-                "Expected parameter 'key'"
-            )
+            val key = call.parameters.getAll("key")?.joinToString(File.separator)
+                ?: return@get call.respond(
+                    HttpStatusCode.BadRequest,
+                    "Expected parameter 'key'"
+                )
             if (ServerI18nSupport.contains(language, key)) {
                 return@get call.respond(ServerI18nSupport.get(language, key))
             } else {

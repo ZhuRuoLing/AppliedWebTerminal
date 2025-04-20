@@ -52,10 +52,17 @@
   "ae.crafting.plan.submit_failed_by": "%s ʎq pǝןıɐɟ ʇıɯqnS uɐןԀ ʇɟɐɹƆ",
   "settings.title": "sbuıʇʇǝS",
   "settings.item.terminal": "ןɐuıɯɹǝ⟘",
-  "settings.item.terminal.refresh_interval": "ןɐʌɹǝʇuI ɥsǝɹɟǝᴚ",
+  "settings.item.terminal.refresh_interval": "(sʞɔıʇ) ןɐʌɹǝʇuI ɥsǝɹɟǝᴚ",
   "settings.item.status": "snʇɐʇS",
   "settings.item.language": "ǝbɐnbuɐꞀ",
   "settings.item.language.configure": "ǝɹnbıɟuoƆ",
+  "settings.item.terminal.sorting": "buıʇɹoS",
+  "settings.item.terminal.order": "ɹǝpɹO",
+  "settings.item.terminal.sorting.by_name": "ǝɯɐN ɯǝʇI",
+  "settings.item.terminal.sorting.by_count": "sɯǝʇı ɟo ɹǝqɯnN",
+  "settings.item.terminal.sorting.by_mod": "poW",
+  "settings.item.terminal.sorting.ascending": "buıpuǝɔsⱯ",
+  "settings.item.terminal.sorting.descending": "buıpuǝɔsǝᗡ",
   "ae.crafting.sidebar.open": "ɹɐqǝpıS uǝdO",
   "ae.crafting.sidebar.close": "ɹɐqǝpıS ǝsdɐןןoƆ"
 }

@@ -52,10 +52,17 @@
   "ae.crafting.plan.submit_failed_by": "Craft Plan Submit failed by %s",
   "settings.title": "Settings",
   "settings.item.terminal": "Terminal",
-  "settings.item.terminal.refresh_interval": "Refresh Interval",
+  "settings.item.terminal.refresh_interval": "Refresh Interval (ticks)",
   "settings.item.status": "Status",
   "settings.item.language": "Language",
   "settings.item.language.configure": "Configure",
+  "settings.item.terminal.sorting": "Sorting",
+  "settings.item.terminal.order": "Order",
+  "settings.item.terminal.sorting.by_name":"Item Name",
+  "settings.item.terminal.sorting.by_count":"Number of items",
+  "settings.item.terminal.sorting.by_mod":"Mod",
+  "settings.item.terminal.sorting.ascending": "Ascending",
+  "settings.item.terminal.sorting.descending": "Descending",
   "ae.crafting.sidebar.open": "Open Sidebar",
   "ae.crafting.sidebar.close": "Collapse Sidebar"
 }
