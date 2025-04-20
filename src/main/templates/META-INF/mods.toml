@@ -50,6 +50,9 @@ description='''${mod_description}'''
     versionRange="[15.3.0,)"
     ordering="NONE"
     side="BOTH"
+    [dependencies.${mod_id}.mc-publish]
+        modrinth="ae2"
+        curseforge="applied-energistics-2"
 
 [[dependencies.${mod_id}]]
     modId="configuration"
@@ -57,6 +60,9 @@ description='''${mod_description}'''
     versionRange="[3.1.0,)"
     ordering="NONE"
     side="BOTH"
+    [dependencies.${mod_id}.mc-publish]
+        modrinth="configuration"
+        curseforge="configuration"
 
 [[dependencies.${mod_id}]]
     modId="kotlinforforge"
@@ -64,6 +70,9 @@ description='''${mod_description}'''
     versionRange="${loader_version_range}"
     ordering="NONE"
     side="BOTH"
+    [dependencies.${mod_id}.mc-publish]
+        modrinth="kotlin-for-forge"
+        curseforge="kotlin-for-forge"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't

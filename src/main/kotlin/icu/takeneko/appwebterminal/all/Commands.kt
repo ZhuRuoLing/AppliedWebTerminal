@@ -1,11 +1,14 @@
 package icu.takeneko.appwebterminal.all
 
 import appeng.api.stacks.AEKey
+import com.mojang.brigadier.context.CommandContext
 import icu.takeneko.appwebterminal.client.rendering.AEKeyRenderer
 import icu.takeneko.appwebterminal.client.rendering.JProgressWindow
 import icu.takeneko.appwebterminal.client.rendering.RenderProgressListener
 import icu.takeneko.appwebterminal.util.LiteralCommand
+import icu.takeneko.appwebterminal.util.S
 import icu.takeneko.appwebterminal.util.execute
+import icu.takeneko.appwebterminal.util.getIntegerArgument
 import icu.takeneko.appwebterminal.util.integerArgument
 import icu.takeneko.appwebterminal.util.literal
 import icu.takeneko.appwebterminal.util.sendError
@@ -33,49 +36,20 @@ val AppWebTerminalCommand = LiteralCommand("appwebterminal") {
         }
         literal("render") {
             integerArgument("limit") {
+                integerArgument("size") {
+                    execute {
+                        val limit = getIntegerArgument("limit").toInt();
+                        val size = getIntegerArgument("size").toInt()
+                        executeRender(limit, size)
+                    }
+                }
                 execute {
-                    if (AEKeyRenderer.instance != null) {
-                        sendError(Component.translatable("appwebterminal.message.rendering"))
-                        return@execute 1
-                    }
-                    System.setProperty("java.awt.headless", "false")
-                    val progressListener = ProgressListenerImpl(this.source)
-                    progressListener.progressWindow?.show()
-                    val renderer = AEKeyRenderer(256, 256).apply {
-                        submitRenderTasks(Path("./aeKeyResources"), progressListener)
-                    }
-                    renderer.taskPullLimit = getArgument<Integer>("limit",Integer::class.java).toInt()
-                    renderer.renderTasks += {
-                        sendFeedback(Component.translatable("appwebterminal.message.render_complete"))
-                        renderer.dispose()
-                        AEKeyRenderer.instance = null
-                    }
-                    AEKeyRenderer.instance = renderer
-                    progressListener.progressWindow?.dismiss()
-                    sendFeedback(Component.translatable("appwebterminal.message.started"))
-                    1
+                    val limit = getIntegerArgument("limit").toInt();
+                    executeRender(limit, 256)
                 }
             }
             execute {
-                if (AEKeyRenderer.instance != null) {
-                    sendError(Component.translatable("appwebterminal.message.rendering"))
-                    return@execute 1
-                }
-                System.setProperty("java.awt.headless", "false")
-                val progressListener = ProgressListenerImpl(this.source)
-                progressListener.progressWindow?.show()
-                val renderer = AEKeyRenderer(256, 256).apply {
-                    submitRenderTasks(Path("./aeKeyResources"), progressListener)
-                }
-                renderer.renderTasks += {
-                    sendFeedback(Component.translatable("appwebterminal.message.render_complete"))
-                    renderer.dispose()
-                    AEKeyRenderer.instance = null
-                }
-                AEKeyRenderer.instance = renderer
-                progressListener.progressWindow?.dismiss()
-                sendFeedback(Component.translatable("appwebterminal.message.started"))
-                1
+                executeRender(1, 256)
             }
         }
         literal("listRegistered") {
@@ -119,4 +93,27 @@ private class ProgressListenerImpl(private val src: CommandSourceStack) : Render
 
 fun registerClientCommand(event: RegisterClientCommandsEvent) {
     event.dispatcher.register(AppWebTerminalCommand.node)
+}
+
+fun CommandContext<S>.executeRender(limit: Int, size: Int): Int {
+    if (AEKeyRenderer.instance != null) {
+        sendError(Component.translatable("appwebterminal.message.rendering"))
+        return 1
+    }
+    System.setProperty("java.awt.headless", "false")
+    val progressListener = ProgressListenerImpl(this.source)
+    progressListener.progressWindow?.show()
+    val renderer = AEKeyRenderer(size, size).apply {
+        submitRenderTasks(Path("./aeKeyResources"), progressListener)
+    }
+    renderer.taskPullLimit = limit
+    renderer.renderTasks += {
+        sendFeedback(Component.translatable("appwebterminal.message.render_complete"))
+        renderer.dispose()
+        AEKeyRenderer.instance = null
+    }
+    AEKeyRenderer.instance = renderer
+    progressListener.progressWindow?.dismiss()
+    sendFeedback(Component.translatable("appwebterminal.message.started"))
+    return 1
 }
