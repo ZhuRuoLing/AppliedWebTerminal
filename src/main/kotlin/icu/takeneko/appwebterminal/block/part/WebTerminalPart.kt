@@ -58,6 +58,12 @@ class WebTerminalPart(item: IPartItem<*>) : AEBasePart(item), AENetworkAccess {
         return true
     }
 
+    override fun onPlacement(player: Player?) {
+        super.onPlacement(player)
+        this.displayName = player?.gameProfile?.name ?: this.displayName;
+        markDirty()
+    }
+
     override fun writeToNBT(data: CompoundTag) {
         super.writeToNBT(data)
         data.putString("Name", displayName)

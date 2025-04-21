@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -90,6 +91,12 @@ class WebTerminalBlockEntity(
             registered = false
         }
 
+    }
+
+    override fun setOwner(owner: Player?) {
+        super.setOwner(owner)
+        this.displayName = owner?.gameProfile?.name ?: this.displayName;
+        markDirty()
     }
 
     override fun onOrientationChanged(orientation: BlockOrientation) {
