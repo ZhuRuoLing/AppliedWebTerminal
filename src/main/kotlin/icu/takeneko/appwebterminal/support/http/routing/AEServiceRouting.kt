@@ -47,6 +47,7 @@ import me.towdium.pinin.PinIn
 import me.towdium.pinin.searchers.Searcher
 import me.towdium.pinin.searchers.TreeSearcher
 import net.minecraft.resources.ResourceLocation
+import net.minecraftforge.server.ServerLifecycleHooks
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
@@ -140,15 +141,21 @@ fun Application.configureAEServiceRouting() {
                                 CraftingPlanSubmitErrorCode.CRAFTING_PLAN_NOT_FOUND
                             )
                         )
-                    val submitResult = grid.craftingService.submitJob(
-                        craftingPlan,
-                        null,
-                        null,
-                        true,
-                        actionSource
-                    )
+                    var submitResult: ICraftingSubmitResult? = null
+                    ServerLifecycleHooks.getCurrentServer().executeBlocking {
+                        submitResult = grid.craftingService.submitJob(
+                            craftingPlan,
+                            null,
+                            null,
+                            true,
+                            actionSource
+                        )
+                    }
                     allCraftingPlans.invalidate(request.id)
-                    return@post call.respond(submitResult.serializable(request.id))
+                    if (submitResult != null) {
+                        return@post call.respond(submitResult.serializable(request.id))
+                    }
+                    return@post call.respond(HttpStatusCode.BadRequest)
                 }
             }
             get("/storage") {

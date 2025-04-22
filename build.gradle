@@ -269,7 +269,9 @@ dependencies {
     modRuntimeOnly("vazkii.botania:Botania:1.20.1-448-FORGE")
     modImplementation("curse.maven:applied-botanics-addon-610632:4904185")
 
-    modRuntimeOnly "com.gregtechceu.gtceu:gtceu-1.20.1:1.4.2"
+    modRuntimeOnly("com.gregtechceu.gtceu:gtceu-1.20.1:1.4.2")
+    modRuntimeOnly("curse.maven:sophisticated-core-618298:6226747")
+    modRuntimeOnly("curse.maven:sophisticated-storage-619320:6217888")
 
     annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 }
