@@ -41,4 +41,6 @@ class LanguageInstance(
     operator fun contains(key: String) = key in translations
 
     fun getOrDefault(key: String, default: String = key) = translations[key] ?: default
+
+    fun get(key: String) = translations[key]
 }

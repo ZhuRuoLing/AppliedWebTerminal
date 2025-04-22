@@ -33,7 +33,7 @@ object KubejsI18nSupport {
         }
     }
 
-    fun get(language: String, key: String): String {
-        return languages.get(language, key) ?: ""
+    fun get(language: String, key: String): String? {
+        return languages.get(language, key)
     }
 }

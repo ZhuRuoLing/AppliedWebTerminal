@@ -34,12 +34,13 @@ fun Component.toLocalizedString(lang: String): String {
         }
 
         is TranslatableContents -> {
+
             val key = contents.key
             val args = contents.args.map {
                 if (it is Component) {
                    return@map it.toLocalizedString(lang)
                 }
-                return@map it
+                return@map it.toString()
             }
             I18nUtil.translate(lang, key, *args.toTypedArray())
         }

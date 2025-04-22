@@ -3,7 +3,7 @@ package icu.takeneko.appwebterminal.util
 import java.util.IllegalFormatException
 
 object I18nUtil {
-    val languageProviders = listOf<(String, String) -> String>(
+    val languageProviders = listOf<(String, String) -> String?>(
         { lang, key -> KubejsI18nSupport.get(lang, key) },
         { lang, key -> MinecraftI18nSupport.get(lang, key) },
         { lang, key -> ServerI18nSupport.get(lang, key) }
@@ -12,7 +12,8 @@ object I18nUtil {
     fun get(language: String, key: String): String {
         val content = languageProviders.asSequence()
             .map { it(language, key) }
-            .find { it.isNotEmpty() }
+            .filterNotNull()
+            .firstOrNull()
         return content ?: key
     }
 
@@ -25,7 +26,7 @@ object I18nUtil {
                 key
             }
         } else {
-            key
+            content
         }
     }
 }

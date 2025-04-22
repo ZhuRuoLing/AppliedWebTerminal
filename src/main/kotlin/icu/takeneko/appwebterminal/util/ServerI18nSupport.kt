@@ -17,7 +17,7 @@ object ServerI18nSupport {
         return key in getInstance(language)
     }
 
-    fun get(language: String, key: String): String {
-        return getInstance(language).getOrDefault(key, "")
+    fun get(language: String, key: String): String? {
+        return getInstance(language).get(key)
     }
 }

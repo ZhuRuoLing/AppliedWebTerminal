@@ -29,8 +29,8 @@ object MinecraftI18nSupport {
         }
     }
 
-    fun get(language: String, key: String): String {
+    fun get(language: String, key: String): String? {
         requestLanguage(language)
-        return translations.get(language, key) ?: ""
+        return translations.get(language, key)
     }
 }

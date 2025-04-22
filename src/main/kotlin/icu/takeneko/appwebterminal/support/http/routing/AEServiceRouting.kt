@@ -194,7 +194,6 @@ fun Application.configureAEServiceRouting() {
                         val treeSearcher = TreeSearcher<MEStack>(Searcher.Logic.CONTAIN, pinIn)
                         meStacks.forEach {
                             val localName = it.what.displayName.toLocalizedString(lang).lowercase()
-                            logger.info(localName)
                             treeSearcher.put(localName, it)
                         }
                         treeSearcher.search(search.lowercase())
