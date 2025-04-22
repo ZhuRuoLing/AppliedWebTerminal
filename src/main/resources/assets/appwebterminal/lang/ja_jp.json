@@ -1,0 +1,19 @@
+{
+  "appwebterminal.button.done": "完了",
+  "appwebterminal.gui.me_network_offline": "オフライン",
+  "appwebterminal.gui.me_network_online": "オンライン",
+  "appwebterminal.hint.name": "名前: ",
+  "appwebterminal.hint.password": "パスワード: ",
+  "appwebterminal.message.render_complete": "レンダリング完了。",
+  "appwebterminal.message.rendering": "レンダラーは現在動作しています。",
+  "appwebterminal.message.started": "レンダラーを開始しました。",
+  "appwebterminal.screen.title": "ME Webターミナル",
+  "block.appwebterminal.web_terminal": "ME Webターミナル",
+  "config.appwebterminal.option.backendWebsocketEndpoint": "バックエンドWebソケットエンドポイント",
+  "config.appwebterminal.option.frontendTitle": "フロントエンドタイトル",
+  "config.appwebterminal.option.httpPort": "http ポート",
+  "config.appwebterminal.option.needPinInLanguage": "言語にピンが必要",
+  "config.screen.appwebterminal": "AppliedWebTerminal 設定",
+  "item.appwebterminal.cable_web_terminal": "ME Webターミナル",
+  "itemGroup.appwebterminal.applied_web_terminal": "Applied Web Terminal"
+}
