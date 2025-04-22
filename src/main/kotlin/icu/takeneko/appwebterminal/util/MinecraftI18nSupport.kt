@@ -31,21 +31,6 @@ object MinecraftI18nSupport {
 
     fun get(language: String, key: String): String {
         requestLanguage(language)
-        return translations.get(language, key) ?: key
+        return translations.get(language, key) ?: ""
     }
-
-    fun translate(language: String, key: String, vararg args: Any?): String {
-        val content = get(language, key)
-        return try {
-            String.format(content, *args)
-        } catch (_: IllegalArgumentException) {
-            content
-        }
-    }
-
-    fun contains(language: String, key: String): Boolean {
-        requestLanguage(language)
-        return translations.contains(language, key)
-    }
-
 }

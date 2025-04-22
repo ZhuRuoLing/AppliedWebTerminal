@@ -1,6 +1,7 @@
 package icu.takeneko.appwebterminal.support.http.routing
 
 import icu.takeneko.appwebterminal.AppWebTerminal
+import icu.takeneko.appwebterminal.util.I18nUtil
 import icu.takeneko.appwebterminal.util.MinecraftI18nSupport
 import icu.takeneko.appwebterminal.util.ServerI18nSupport
 import icu.takeneko.appwebterminal.util.staticResourceForModContainer
@@ -45,14 +46,7 @@ fun Application.configureFrontendSupportRouting() {
                     HttpStatusCode.BadRequest,
                     "Expected parameter 'key'"
                 )
-            if (ServerI18nSupport.contains(language, key)) {
-                return@get call.respond(ServerI18nSupport.get(language, key))
-            } else {
-                if (MinecraftI18nSupport.contains(language, key)) {
-                    return@get call.respond(MinecraftI18nSupport.get(language, key))
-                }
-                return@get call.respond(ServerI18nSupport.get(language, key))
-            }
+            return@get call.respond(I18nUtil.get(language, key))
         }
     }
 }

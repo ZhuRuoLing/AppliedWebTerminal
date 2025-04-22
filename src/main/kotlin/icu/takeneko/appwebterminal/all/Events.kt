@@ -8,6 +8,7 @@ import icu.takeneko.appwebterminal.client.rendering.AEKeyImageProvider
 import icu.takeneko.appwebterminal.registrate
 import icu.takeneko.appwebterminal.support.AENetworkSupport
 import icu.takeneko.appwebterminal.support.http.HttpServerLifecycleSupport
+import icu.takeneko.appwebterminal.util.KubejsI18nSupport
 import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.chunk.LevelChunk
@@ -28,6 +29,7 @@ fun onCommonSetup(event: FMLCommonSetupEvent) {
             block.lateInit()
         }
     }
+    KubejsI18nSupport.init()
 }
 
 fun onAddRegistries(event: NewRegistryEvent) {

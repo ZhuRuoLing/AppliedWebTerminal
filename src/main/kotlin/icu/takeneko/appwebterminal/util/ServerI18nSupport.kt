@@ -17,31 +17,7 @@ object ServerI18nSupport {
         return key in getInstance(language)
     }
 
-    fun get(language: String, key: String, allowDefaultTranslation: Boolean): String {
-        if (allowDefaultTranslation) {
-            val default = getInstance(DEFAULT_LANGUAGE).getOrDefault(key)
-            if (language == DEFAULT_LANGUAGE) {
-                return default
-            }
-            return getInstance(language).getOrDefault(key, default)
-        }
-        return getInstance(language).getOrDefault(key, key)
-    }
-
     fun get(language: String, key: String): String {
-        val default = getInstance(DEFAULT_LANGUAGE).getOrDefault(key)
-        if (language == DEFAULT_LANGUAGE) {
-            return default
-        }
-        return getInstance(language).getOrDefault(key, default)
-    }
-
-    fun translate(language: String, key: String, vararg args: Any?): String {
-        val content = get(language, key)
-        return try {
-            String.format(content, *args)
-        } catch (_: IllegalArgumentException) {
-            content
-        }
+        return getInstance(language).getOrDefault(key, "")
     }
 }

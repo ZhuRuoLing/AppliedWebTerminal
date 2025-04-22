@@ -1,5 +1,6 @@
 package icu.takeneko.appwebterminal.util
 
+import appeng.shaded.flatbuffers.reflection.Object
 import com.google.common.base.CaseFormat
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentContents
@@ -34,8 +35,13 @@ fun Component.toLocalizedString(lang: String): String {
 
         is TranslatableContents -> {
             val key = contents.key
-            val args = contents.args
-            I18nUtil.translate(lang, key, *args)
+            val args = contents.args.map {
+                if (it is Component) {
+                   return@map it.toLocalizedString(lang)
+                }
+                return@map it
+            }
+            I18nUtil.translate(lang, key, *args.toTypedArray())
         }
 
         else -> {

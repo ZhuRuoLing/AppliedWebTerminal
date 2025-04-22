@@ -12,6 +12,7 @@ import appeng.api.stacks.GenericStack
 import appeng.api.storage.AEKeyFilter
 import appeng.menu.me.crafting.CraftingPlanSummary
 import com.google.common.cache.CacheBuilder
+import com.mojang.logging.LogUtils
 import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.support.AEKeyObject
 import icu.takeneko.appwebterminal.support.AEKeyObject.Companion.serializable
@@ -57,6 +58,8 @@ private val allCraftingPlans = CacheBuilder.newBuilder()
     .build<Int, ICraftingPlan>()
 
 private val idCounter = AtomicInteger()
+
+private val logger = LogUtils.getLogger()
 
 private val pinIn = PinIn().config()
     .keyboard(Keyboard.QUANPIN)
@@ -190,7 +193,9 @@ fun Application.configureAEServiceRouting() {
                     if (AppWebTerminal.config.needPinInLanguage.contains(lang)) {
                         val treeSearcher = TreeSearcher<MEStack>(Searcher.Logic.CONTAIN, pinIn)
                         meStacks.forEach {
-                            treeSearcher.put(it.what.displayName.toLocalizedString(lang).lowercase(), it)
+                            val localName = it.what.displayName.toLocalizedString(lang).lowercase()
+                            logger.info(localName)
+                            treeSearcher.put(localName, it)
                         }
                         treeSearcher.search(search.lowercase())
                     } else {
