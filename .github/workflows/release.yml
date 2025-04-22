@@ -1,4 +1,4 @@
-name: Release ExampleMod
+name: Release Applied Web Terminal
 on:
   release:
     types:
