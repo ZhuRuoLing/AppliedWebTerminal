@@ -135,10 +135,11 @@ object CacheProvider {
     }
 }
 
+@OptIn(ExperimentalStdlibApi::class)
 fun File.sha1(): String {
     val messageDigest = MessageDigest.getInstance("SHA-1")
     val result = messageDigest.digest(this.readBytes())
-    return Hex.encodeHex(result).concatToString()
+    return result.toHexString()
 }
 
 @kotlinx.serialization.Serializable

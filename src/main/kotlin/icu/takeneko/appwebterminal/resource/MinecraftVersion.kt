@@ -20,12 +20,9 @@ class MinecraftVersion(val assetsSource: MinecraftAssetsApi) {
     val versions = mutableMapOf<String, VersionData>()
 
     fun update(): CompletableFuture<VersionManifest> {
-        println(versionManifestUrl)
         val request = HttpRequest.newBuilder().GET().uri(Url(versionManifestUrl).toURI()).build()
         return httpClient.sendAsync(request, BodyHandlers.ofString()).thenApply {
             val resp = it.body()
-            println(it.headers())
-            println(resp)
             versionManifest = Json.decodeFromString<VersionManifest>(resp)
             for (version in versionManifest.versions) {
                 versions[version.id] = version

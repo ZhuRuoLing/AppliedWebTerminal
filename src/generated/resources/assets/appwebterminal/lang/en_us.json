@@ -9,6 +9,7 @@
   "appwebterminal.message.started": "Started renderer.",
   "appwebterminal.screen.title": "ME Web Terminal",
   "block.appwebterminal.web_terminal": "ME Web Terminal",
+  "config.appwebterminal.option.assetsSource": "Assets Source",
   "config.appwebterminal.option.backendWebsocketEndpoint": "Backend Websocket Endpoint",
   "config.appwebterminal.option.frontendTitle": "Frontend Title",
   "config.appwebterminal.option.httpPort": "Http Port",
