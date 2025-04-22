@@ -60,8 +60,11 @@ class WebTerminalPart(item: IPartItem<*>) : AEBasePart(item), AENetworkAccess {
 
     override fun onPlacement(player: Player?) {
         super.onPlacement(player)
-        this.displayName = player?.gameProfile?.name ?: this.displayName;
-        markDirty()
+        val ownerName = player?.gameProfile?.name
+        if (ownerName != null) {
+            this.displayName = "${ownerName}'s Web Terminal"
+            markDirty()
+        }
     }
 
     override fun writeToNBT(data: CompoundTag) {

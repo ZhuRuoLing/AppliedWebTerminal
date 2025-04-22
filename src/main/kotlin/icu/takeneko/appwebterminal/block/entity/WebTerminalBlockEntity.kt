@@ -95,8 +95,11 @@ class WebTerminalBlockEntity(
 
     override fun setOwner(owner: Player?) {
         super.setOwner(owner)
-        this.displayName = owner?.gameProfile?.name ?: this.displayName;
-        markDirty()
+        val ownerName = owner?.gameProfile?.name
+        if ( ownerName != null) {
+            this.displayName = "${ownerName}'s Web Terminal"
+            markDirty()
+        }
     }
 
     override fun onOrientationChanged(orientation: BlockOrientation) {
