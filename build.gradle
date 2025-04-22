@@ -54,6 +54,7 @@ repositories {
     maven {
         url 'https://jitpack.io'
     }
+    maven { url = "https://maven.firstdarkdev.xyz/snapshots" }
     exclusiveContent { // tterrag - registrate
         forRepository { maven { url = "https://maven.tterrag.com/" } }
         filter { includeGroup("com.tterrag.registrate") }
@@ -267,6 +268,8 @@ dependencies {
     modCompileOnly("vazkii.botania:Botania:1.20.1-448-FORGE:api")
     modRuntimeOnly("vazkii.botania:Botania:1.20.1-448-FORGE")
     modImplementation("curse.maven:applied-botanics-addon-610632:4904185")
+
+    modRuntimeOnly "com.gregtechceu.gtceu:gtceu-1.20.1:1.4.2"
 
     annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 }
