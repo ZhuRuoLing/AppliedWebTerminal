@@ -25,6 +25,7 @@ data class SelectCpu(val cpuId: Int) : Protocol {
 
     override fun accept(session: WebsocketSession) {
         session.craftingServiceView.selectCpu(cpuId)
+        session.updateCountdown = 0
     }
 }
 
