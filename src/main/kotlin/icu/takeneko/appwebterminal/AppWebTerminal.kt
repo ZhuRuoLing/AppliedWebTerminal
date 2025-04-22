@@ -63,7 +63,7 @@ object AppWebTerminal {
         MinecraftForge.EVENT_BUS.addListener(::onServerStop)
         MinecraftForge.EVENT_BUS.addListener(::onChunkUnloaded)
         MinecraftForge.EVENT_BUS.addListener(::onServerTickPost)
-        LanguageFileDownloader().start()
+        LanguageFileDownloader(config.assetsSource).start()
         KeyImageProviderLoader.compileContents()
         LOGGER.info("AppWebTerminal initialized")
         runWhenOn(Dist.CLIENT) {

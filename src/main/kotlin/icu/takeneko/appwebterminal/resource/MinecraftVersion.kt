@@ -1,5 +1,6 @@
 package icu.takeneko.appwebterminal.resource
 
+import icu.takeneko.appwebterminal.config.MinecraftAssetsApi
 import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.serialization.json.Json
@@ -8,21 +9,23 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers
 import java.util.concurrent.CompletableFuture
 
-object MinecraftVersion {
-
-    private val mojangApiUrl = "https://piston-meta.mojang.com/"
+class MinecraftVersion(val assetsSource: MinecraftAssetsApi) {
+    private val mojangApiUrl = assetsSource.endpoint
     private val Json = Json {
         ignoreUnknownKeys = true
     }
-    private val versionManifestUrl = "$mojangApiUrl/mc/game/version_manifest.json"
+    private val versionManifestUrl = "$mojangApiUrl/mc/game/version_manifest_v2.json"
     lateinit var versionManifest: VersionManifest
-    private val httpClient = HttpClient.newHttpClient()
+    private val httpClient = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build()
     val versions = mutableMapOf<String, VersionData>()
 
     fun update(): CompletableFuture<VersionManifest> {
+        println(versionManifestUrl)
         val request = HttpRequest.newBuilder().GET().uri(Url(versionManifestUrl).toURI()).build()
         return httpClient.sendAsync(request, BodyHandlers.ofString()).thenApply {
             val resp = it.body()
+            println(it.headers())
+            println(resp)
             versionManifest = Json.decodeFromString<VersionManifest>(resp)
             for (version in versionManifest.versions) {
                 versions[version.id] = version
@@ -43,7 +46,7 @@ object MinecraftVersion {
     fun resolveVersionAssetIndex(version: String): CompletableFuture<AssetIndex>? {
         val versionMetadataFuture = resolveVersionMetadata(version) ?: return null
         return versionMetadataFuture.thenApply {
-            HttpRequest.newBuilder().GET().uri(Url(it.assetIndex.url).toURI()).build()
+            HttpRequest.newBuilder().GET().uri(Url(assetsSource.urlIndexReplacer.apply(it.assetIndex.url)).toURI()).build()
         }.thenCompose {
             httpClient.sendAsync(it, BodyHandlers.ofString())
         }.thenApply {

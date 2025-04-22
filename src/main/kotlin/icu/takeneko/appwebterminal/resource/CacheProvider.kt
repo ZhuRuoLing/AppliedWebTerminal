@@ -39,7 +39,7 @@ object CacheProvider {
     private val cacheDownloadRoot = cacheRoot / "download"
     private val logger = LoggerFactory.getLogger("Cache")
     private val caches = mutableMapOf<String, FileMetadata>()
-    private val httpClient = HttpClient.newHttpClient()
+    private val httpClient = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build()
 
     @OptIn(ExperimentalSerializationApi::class)
     fun init() {

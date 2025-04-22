@@ -28,6 +28,11 @@ public class AppWebTerminalConfig {
     @Configurable.Comment({"Add PinIn support to languages"})
     public String[] needPinInLanguage = {"zh_cn", "zh_tw", "zh_hk"};
 
+    @Configurable
+    @Configurable.Comment({"Used api to download minecraft langague files"})
+    @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+    public MinecraftAssetsApi assetsSource = MinecraftAssetsApi.MOJANG;
+
     @SuppressWarnings("unused")
     public int getHttpPort() {
         return httpPort;
