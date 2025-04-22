@@ -1,5 +1,16 @@
 # Applied Web Terminal
 
+<div style="display: flex; flex-wrap: wrap">
+<a href="https://www.curseforge.com/minecraft/mc-mods/applied-web-terminal">
+  <img alt="curseforge" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg">
+</a>
+<a href="https://modrinth.com/mod/applied-web-terminal">
+  <img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg">
+</a>
+<img alt="forge" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/forge_vector.svg">
+<img alt="fabric" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/unsupported/fabric_vector.svg">
+</div>
+
 Move your AE terminal to the web!
 
 ## Dependencies
