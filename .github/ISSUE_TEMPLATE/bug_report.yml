@@ -1,3 +1,4 @@
+# from: https://github.com/Fallen-Breath/fabric-mod-template/tree/master/.github/ISSUE_TEMPLATE
 name: Bug Report
 description: Something doesn't seem correct and it might be a bug
 labels: ["🐛bug"]
