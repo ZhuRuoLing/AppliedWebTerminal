@@ -11,7 +11,20 @@
 <img alt="fabric" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/unsupported/fabric_vector.svg">
 </div>
 
+English | [简体中文](README_zh.md)
+
 Move your AE terminal to the web!
+
+<!-- TOC -->
+* [Applied Web Terminal](#applied-web-terminal)
+  * [Dependencies](#dependencies)
+  * [Usage](#usage)
+  * [Images](#images)
+    * [Storage Page](#storage-page)
+    * [Crafting Status Page](#crafting-status-page)
+    * [In-Game GUI](#in-game-gui)
+  * [Configs](#configs)
+<!-- TOC -->
 
 ## Dependencies
 
@@ -31,10 +44,15 @@ Move your AE terminal to the web!
     - Upload the `aeKeyResources` folder from your game root directory to your server
 - Connect the `ME Web Terminal` to the AE network
 - Right-click to open the GUI and configure the name and password
-- Open your web browser, access the network terminal address, and log in with the password
+- Open your web browser, access the network terminal address (default port `11451`), and log in with the password
 - All done!
 
 ## Images
+<details>
+<summary>
+Images
+</summary>
+
 ### Storage Page
 
 <img src="/images/storage.png" style="width: 250px" alt="Storage Page">
@@ -44,3 +62,42 @@ Move your AE terminal to the web!
 
 ### In-Game GUI
 <img src="/images/ui.png" style="width: 250px" alt="In-Game GUI">
+
+</details>
+
+## Configs
+
+Config file is `.minecraft/config/appwebterminal.yaml`
+
+<details>
+<summary>
+Details
+</summary>
+
+> Http Server port for ME Web Terminal.
+
+`httpPort`: `11451`
+- - -
+> Web Terminal Title
+
+`frontendTitle`: `Applied Web Terminal`
+- - -
+> `Websocket url` for frontend to connect
+> 
+> Use `~` for auto detecting at frontend (use the same host of website)
+>
+> Example: `ws://example.com/`
+
+`backendWebsocketEndpoint`: `~`
+- - -
+> Add PinIn support to languages
+
+`needPinInLanguage`:
+
+&emsp;&emsp;`- zh_cn`
+
+&emsp;&emsp;`- zh_tw`
+
+&emsp;&emsp;`- zh_hk`
+- - -
+</details>
