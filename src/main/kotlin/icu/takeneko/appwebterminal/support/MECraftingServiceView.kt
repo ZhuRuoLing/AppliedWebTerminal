@@ -83,9 +83,7 @@ class MECraftingServiceView(
         this.incrementalUpdateHelper.reset()
         this.fullUpgradeSent = false
         this.craftingStatus = null
-        println(cpu)
         val selection = CraftingCpuContainerHelper.create(cpu)
-        println(selection)
         if (selection != null) {
             this.currentCpu = selection
             val keyCounter = this.currentCpu!!.getAllItems()
