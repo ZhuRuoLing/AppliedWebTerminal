@@ -264,6 +264,7 @@ dependencies {
     modImplementation("software.bernie.geckolib:geckolib-forge-1.20.1:4.2.2")
     modImplementation("top.theillusivec4.curios:curios-forge:5.3.1+1.20.1")
     modImplementation("vazkii.patchouli:Patchouli:1.20.1-84-FORGE")
+    modImplementation("curse.maven:advancedae-1084104:6205290")
 
     modCompileOnly("vazkii.botania:Botania:1.20.1-448-FORGE:api")
     modRuntimeOnly("vazkii.botania:Botania:1.20.1-448-FORGE")

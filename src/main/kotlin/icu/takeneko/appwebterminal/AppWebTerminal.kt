@@ -18,8 +18,10 @@ import icu.takeneko.appwebterminal.all.registerItems
 import icu.takeneko.appwebterminal.all.registerKeyImageProviders
 import icu.takeneko.appwebterminal.all.registerNetworking
 import icu.takeneko.appwebterminal.api.KeyImageProviderLoader
+import icu.takeneko.appwebterminal.api.crafting.impl.AECraftingCpuContainerImpl
 import icu.takeneko.appwebterminal.client.onLoadShaders
 import icu.takeneko.appwebterminal.client.onRenderLevelPost
+import icu.takeneko.appwebterminal.compat.advancedae.registerAAECompat
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.data.configureDataGeneration
 import icu.takeneko.appwebterminal.resource.LanguageFileDownloader
@@ -66,6 +68,8 @@ object AppWebTerminal {
         LanguageFileDownloader(config.assetsSource).start()
         KeyImageProviderLoader.compileContents()
         LOGGER.info("AppWebTerminal initialized")
+        AECraftingCpuContainerImpl.register()
+        registerAAECompat()
         runWhenOn(Dist.CLIENT) {
             FORGE_BUS.addListener(::registerClientCommand)
             FORGE_BUS.addListener(::onRenderLevelPost)

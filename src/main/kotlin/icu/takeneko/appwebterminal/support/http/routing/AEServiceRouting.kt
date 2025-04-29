@@ -41,6 +41,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import kotlinx.coroutines.future.await
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import me.towdium.pinin.Keyboard
@@ -145,7 +146,7 @@ fun Application.configureAEServiceRouting() {
                             )
                         )
                     var submitResult: ICraftingSubmitResult? = null
-                    ServerLifecycleHooks.getCurrentServer().executeBlocking {
+                    ServerLifecycleHooks.getCurrentServer().submitAsync {
                         submitResult = grid.craftingService.submitJob(
                             craftingPlan,
                             null,
@@ -153,7 +154,7 @@ fun Application.configureAEServiceRouting() {
                             true,
                             actionSource
                         )
-                    }
+                    }.await()
                     allCraftingPlans.invalidate(request.id)
                     if (submitResult != null) {
                         return@post call.respond(submitResult.serializable(request.id))
