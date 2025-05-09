@@ -1,14 +1,13 @@
 package icu.takeneko.appwebterminal.all
 
 import appeng.api.stacks.AEKey
-import com.mojang.brigadier.context.CommandContext
 import icu.takeneko.appwebterminal.client.rendering.AEKeyRenderer
 import icu.takeneko.appwebterminal.client.rendering.JProgressWindow
 import icu.takeneko.appwebterminal.client.rendering.RenderProgressListener
+import icu.takeneko.appwebterminal.util.CommandContext
 import icu.takeneko.appwebterminal.util.LiteralCommand
 import icu.takeneko.appwebterminal.util.S
 import icu.takeneko.appwebterminal.util.execute
-import icu.takeneko.appwebterminal.util.getIntegerArgument
 import icu.takeneko.appwebterminal.util.integerArgument
 import icu.takeneko.appwebterminal.util.literal
 import icu.takeneko.appwebterminal.util.sendError
@@ -25,7 +24,7 @@ val AppWebTerminalCommand = LiteralCommand("appwebterminal") {
     literal("resources") {
         literal("upload") {
             execute {
-                val src = this.source
+                val src: CommandSourceStack by this
                 if (Minecraft.getInstance().isLocalServer) {
                     sendError(Component.translatable("appwebterminal.message.join_server_required"))
                     return@execute 1
@@ -38,13 +37,13 @@ val AppWebTerminalCommand = LiteralCommand("appwebterminal") {
             integerArgument("limit") {
                 integerArgument("size") {
                     execute {
-                        val limit = getIntegerArgument("limit").toInt();
-                        val size = getIntegerArgument("size").toInt()
+                        val limit: Int by this
+                        val size: Int by this
                         executeRender(limit, size)
                     }
                 }
                 execute {
-                    val limit = getIntegerArgument("limit").toInt();
+                    val limit: Int by this
                     executeRender(limit, 256)
                 }
             }
@@ -101,7 +100,7 @@ fun CommandContext<S>.executeRender(limit: Int, size: Int): Int {
         return 1
     }
     System.setProperty("java.awt.headless", "false")
-    val progressListener = ProgressListenerImpl(this.source)
+    val progressListener = ProgressListenerImpl(this.delegate.source)
     progressListener.progressWindow?.show()
     val renderer = AEKeyRenderer(size, size).apply {
         submitRenderTasks(Path("./aeKeyResources"), progressListener)
