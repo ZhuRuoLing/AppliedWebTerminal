@@ -9,9 +9,14 @@ import java.nio.IntBuffer
 
 @Suppress("JoinDeclarationAndAssignment")
 class FrameBuffer(
-    private var xSize: Int,
-    private var ySize: Int
+    xSize: Int,
+    ySize: Int,
+    private val hasDepth: Boolean = true
 ) {
+    var ySize = ySize
+        private set
+    var xSize = xSize
+        private set
     val framebufferId: Int
     var colorTextureId: Int = 0
     private var depthTextureId: Int = 0
@@ -32,7 +37,9 @@ class FrameBuffer(
 
     fun createTexture() {
         colorTextureId = GL11.glGenTextures()
-        depthTextureId = GL11.glGenTextures()
+        if (hasDepth) {
+            depthTextureId = GL11.glGenTextures()
+        }
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorTextureId)
         GL11.glTexImage2D(
             GL11.GL_TEXTURE_2D,
@@ -49,23 +56,25 @@ class FrameBuffer(
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, depthTextureId)
-        GL11.glTexImage2D(
-            GL11.GL_TEXTURE_2D,
-            0,
-            GL11.GL_DEPTH_COMPONENT,
-            xSize,
-            ySize,
-            0,
-            GL11.GL_DEPTH_COMPONENT,
-            GL11.GL_FLOAT,
-            null as IntBuffer?
-        )
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_MODE, GL11.GL_ZERO)
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+        if (hasDepth) {
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, depthTextureId)
+            GL11.glTexImage2D(
+                GL11.GL_TEXTURE_2D,
+                0,
+                GL11.GL_DEPTH_COMPONENT,
+                xSize,
+                ySize,
+                0,
+                GL11.GL_DEPTH_COMPONENT,
+                GL11.GL_FLOAT,
+                null as IntBuffer?
+            )
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_MODE, GL11.GL_ZERO)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+        }
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0)
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferId)
         GL30.glFramebufferTexture2D(
@@ -75,18 +84,22 @@ class FrameBuffer(
             colorTextureId,
             0
         )
-        GL30.glFramebufferTexture2D(
-            GL30.GL_FRAMEBUFFER,
-            GL30.GL_DEPTH_ATTACHMENT,
-            GL11.GL_TEXTURE_2D,
-            depthTextureId,
-            0
-        )
+        if (hasDepth) {
+            GL30.glFramebufferTexture2D(
+                GL30.GL_FRAMEBUFFER,
+                GL30.GL_DEPTH_ATTACHMENT,
+                GL11.GL_TEXTURE_2D,
+                depthTextureId,
+                0
+            )
+        }
     }
 
     fun resize(x: Int, y: Int) {
         GL11.glDeleteTextures(colorTextureId)
-        GL11.glDeleteTextures(colorTextureId)
+        if (hasDepth) {
+            GL11.glDeleteTextures(depthTextureId)
+        }
         this.xSize = x
         this.ySize = y
         createTexture()
@@ -96,8 +109,10 @@ class FrameBuffer(
     fun clear() {
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferId)
         GL11.glClearColor(clearColorR, clearColorG, clearColorB, clearColorA)
-        GL11.glClearDepth(1.0)
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+        if (hasDepth) {
+            GL11.glClearDepth(1.0)
+        }
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or if (hasDepth) GL11.GL_DEPTH_BUFFER_BIT else 0)
         if (Minecraft.ON_OSX) {
             GL11.glGetError()
         }
@@ -108,9 +123,9 @@ class FrameBuffer(
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, src)
         GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, framebufferId)
         GL30.glBlitFramebuffer(
-            0,0,
+            0, 0,
             xSize, ySize,
-            0,0,
+            0, 0,
             xSize, ySize,
             GL11.GL_COLOR_BUFFER_BIT,
             GL11.GL_LINEAR

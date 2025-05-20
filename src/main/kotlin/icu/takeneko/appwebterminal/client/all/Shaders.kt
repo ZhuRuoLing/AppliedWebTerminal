@@ -1,6 +1,7 @@
 package icu.takeneko.appwebterminal.client.all
 
 import icu.takeneko.appwebterminal.client.rendering.foundation.BlurPostProcess
+import icu.takeneko.appwebterminal.client.rendering.foundation.SamplingBlurPostProcess
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ShaderInstance
 

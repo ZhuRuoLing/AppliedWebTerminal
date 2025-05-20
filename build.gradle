@@ -217,6 +217,7 @@ shadowJar {
     exclude "META-INF/versions/9/**"
     exclude "META-INF/com.android.tools/**"
     relocate "me.towdium.pinin", "icu.takeneko.appwebterminal.deps.pinin"
+    relocate "com.fasterxml.jackson", "icu.takeneko.appwebterminal.deps.jackson"
 }
 
 reobfJar {
