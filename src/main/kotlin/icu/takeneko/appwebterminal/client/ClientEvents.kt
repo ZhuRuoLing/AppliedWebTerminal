@@ -48,7 +48,7 @@ fun onRenderLevelPost(event: RenderLevelStageEvent) {
     if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
         if (Minecraft.getInstance().screen is WebTerminalScreen) {
             val mainRenderTarget = Minecraft.getInstance().mainRenderTarget
-            BlurPostProcessInstance?.apply(mainRenderTarget.frameBufferId)
+            BlurPostProcessInstance?.apply(mainRenderTarget.colorTextureId)
             mainRenderTarget.bindWrite(true)
         }
         AEKeyRenderer.instance?.next()

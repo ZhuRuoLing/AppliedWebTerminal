@@ -216,8 +216,8 @@ shadowJar {
     exclude "META-INF/services/kotlin*"
     exclude "META-INF/versions/9/**"
     exclude "META-INF/com.android.tools/**"
+    exclude "com/fasterxml/**"
     relocate "me.towdium.pinin", "icu.takeneko.appwebterminal.deps.pinin"
-    relocate "com.fasterxml.jackson", "icu.takeneko.appwebterminal.deps.jackson"
 }
 
 reobfJar {
@@ -250,10 +250,13 @@ dependencies {
     additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-caching-headers:3.1.2"))
     additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-host-common:3.1.2"))
     additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-auth:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-auth-jwt:3.1.2"))
+    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-auth-jwt:3.1.2") {
+        exclude group: 'com.fasterxml.jackson.core'
+    })
     additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-cio:3.1.2"))
     additionalRuntimeClasspath shadowInclude(implementation("com.github.Towdium:PinIn:1.6.0") { transitive = false })
-
+    additionalRuntimeClasspath jarJar(implementation("com.fasterxml.jackson.core:jackson-core:2.14.0"))
+    additionalRuntimeClasspath jarJar(implementation("com.fasterxml.jackson.core:jackson-databind:2.14.0"))
     implementation "thedarkcolour:kfflang:4.11.0"
     implementation "thedarkcolour:kfflib:4.11.0"
     implementation "thedarkcolour:kffmod:4.11.0"
@@ -288,7 +291,8 @@ mixin {
 
 jar {
     manifest.attributes([
-            "MixinConfigs": "${mod_id}.mixins.json"
+            "MixinConfigs": "${mod_id}.mixins.json",
+            "Multi-Release": false
     ])
 }
 
