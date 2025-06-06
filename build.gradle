@@ -256,6 +256,7 @@ dependencies {
     additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-cio:3.1.2"))
     additionalRuntimeClasspath shadowInclude(implementation("com.github.Towdium:PinIn:1.6.0") { transitive = false })
     additionalRuntimeClasspath jarJar(implementation("com.fasterxml.jackson.core:jackson-core:2.14.0"))
+    additionalRuntimeClasspath jarJar(implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.0"))
     additionalRuntimeClasspath jarJar(implementation("com.fasterxml.jackson.core:jackson-databind:2.14.0"))
     implementation "thedarkcolour:kfflang:4.11.0"
     implementation "thedarkcolour:kfflib:4.11.0"
