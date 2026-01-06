@@ -110,7 +110,10 @@ data class MEStack(
         val GenericStack.meStack: MEStack
             get() = MEStack(this.what.serializable(), this.amount)
         val KeyCounter.meStacks: List<MEStack>
-            get() = this.map { MEStack(it.key.serializable(), it.longValue) }
+            get() {
+                println(this)
+                return this.map { MEStack(it.key.serializable(), it.longValue) }
+            }
     }
 }
 
