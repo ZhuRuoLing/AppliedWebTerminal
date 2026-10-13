@@ -11,8 +11,10 @@ import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import net.minecraft.core.HolderLookup
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import net.neoforged.neoforge.server.ServerLifecycleHooks
 
 class DispatchedSerializer<T : Any, K>(
     private val keyName: String,
@@ -53,6 +55,9 @@ class DispatchedSerializer<T : Any, K>(
     }
 }
 
+private val holderLookup: HolderLookup.Provider
+    get() = ServerLifecycleHooks.getCurrentServer()!!.registries().compositeAccess()
+
 abstract class StringifySerializer<E> : KSerializer<E> {
     override val descriptor: SerialDescriptor
         get() = PrimitiveSerialDescriptor("ResourceLocation", PrimitiveKind.STRING)
@@ -73,14 +78,14 @@ abstract class StringifySerializer<E> : KSerializer<E> {
 class ResourceLocationSerializer : StringifySerializer<ResourceLocation>() {
     override fun objectToString(e: ResourceLocation): String = e.toString()
 
-    override fun fromString(s: String): ResourceLocation = ResourceLocation(s)
+    override fun fromString(s: String): ResourceLocation = ResourceLocation.parse(s)
 }
 
 class ComponentSerializer: StringifySerializer<Component>() {
-    override fun objectToString(e: Component): String = Component.Serializer.toJson(e)
+    override fun objectToString(e: Component): String = Component.Serializer.toJson(e, holderLookup)
 
 
-    override fun fromString(s: String): Component = Component.Serializer.fromJson(s)!!
+    override fun fromString(s: String): Component = Component.Serializer.fromJson(s, holderLookup)!!
 }
 
 private class WrappedDecoder(decoder: Decoder, val compositeDecoder: CompositeDecoder) : Decoder by decoder {

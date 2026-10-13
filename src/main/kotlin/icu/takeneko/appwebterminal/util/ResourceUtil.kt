@@ -1,10 +1,18 @@
 package icu.takeneko.appwebterminal.util
 
 import icu.takeneko.appwebterminal.AppWebTerminal.MOD_ID
-import io.ktor.http.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import net.minecraftforge.fml.ModList
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.defaultForFileExtension
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondBytes
+import io.ktor.server.routing.RouteSelector
+import io.ktor.server.routing.RouteSelectorEvaluation
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.RoutingResolveContext
+import io.ktor.server.routing.get
+import io.ktor.server.routing.route
+import net.neoforged.fml.ModList
 import java.io.File
 import kotlin.io.path.Path
 import kotlin.io.path.extension

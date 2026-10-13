@@ -15,48 +15,50 @@ import icu.takeneko.appwebterminal.util.sendFeedback
 import net.minecraft.client.Minecraft
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.Component
-import net.minecraftforge.client.event.RegisterClientCommandsEvent
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent
 import org.slf4j.LoggerFactory
 import java.awt.HeadlessException
 import kotlin.io.path.Path
 
-val AppWebTerminalCommand = LiteralCommand("appwebterminal") {
-    literal("resources") {
-        literal("upload") {
-            execute {
-                val src: CommandSourceStack by this
-                if (Minecraft.getInstance().isLocalServer) {
-                    sendError(Component.translatable("appwebterminal.message.join_server_required"))
-                    return@execute 1
-                }
+object AWCommands {
+    val theCommand = LiteralCommand("appwebterminal") {
+        literal("resources") {
+            literal("upload") {
+                execute {
+                    val src: CommandSourceStack by this
+                    if (Minecraft.getInstance().isLocalServer) {
+                        sendError(Component.translatable("appwebterminal.message.join_server_required"))
+                        return@execute 1
+                    }
 
-                0
+                    0
+                }
             }
-        }
-        literal("render") {
-            integerArgument("limit") {
-                integerArgument("size") {
+            literal("render") {
+                integerArgument("limit") {
+                    integerArgument("size") {
+                        execute {
+                            val limit: Int by this
+                            val size: Int by this
+                            executeRender(limit, size)
+                        }
+                    }
                     execute {
                         val limit: Int by this
-                        val size: Int by this
-                        executeRender(limit, size)
+                        executeRender(limit, 256)
                     }
                 }
                 execute {
-                    val limit: Int by this
-                    executeRender(limit, 256)
+                    executeRender(1, 256)
                 }
             }
-            execute {
-                executeRender(1, 256)
-            }
-        }
-        literal("listRegistered") {
-            execute {
-                KeyImageProviderRegistry.keys.forEach {
-                    sendFeedback(Component.literal(it.toString()))
+            literal("listRegistered") {
+                execute {
+                    AWBuiltinRegistries.keyImageProvider.keySet().forEach {
+                        sendFeedback(Component.literal(it.toString()))
+                    }
+                    return@execute 1
                 }
-                return@execute 1
             }
         }
     }
@@ -91,7 +93,7 @@ private class ProgressListenerImpl(private val src: CommandSourceStack) : Render
 }
 
 fun registerClientCommand(event: RegisterClientCommandsEvent) {
-    event.dispatcher.register(AppWebTerminalCommand.node)
+    event.dispatcher.register(AWCommands.theCommand.node)
 }
 
 fun CommandContext<S>.executeRender(limit: Int, size: Int): Int {
@@ -99,7 +101,6 @@ fun CommandContext<S>.executeRender(limit: Int, size: Int): Int {
         sendError(Component.translatable("appwebterminal.message.rendering"))
         return 1
     }
-    System.setProperty("java.awt.headless", "false")
     val progressListener = ProgressListenerImpl(this.delegate.source)
     progressListener.progressWindow?.show()
     val renderer = AEKeyRenderer(size, size).apply {

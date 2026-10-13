@@ -1,6 +1,6 @@
 package icu.takeneko.appwebterminal.support.http.routing
 
-import icu.takeneko.appwebterminal.AppWebTerminal
+import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.util.I18nUtil
 import icu.takeneko.appwebterminal.util.MinecraftI18nSupport
 import icu.takeneko.appwebterminal.util.ServerI18nSupport
@@ -20,8 +20,8 @@ fun Application.configureFrontendSupportRouting() {
         get("/settings") {
             return@get call.respond(
                 FrontendSettings(
-                    AppWebTerminal.config.frontendTitle,
-                    AppWebTerminal.config.backendWebsocketEndpoint
+                    AppWebTerminalConfig.FRONTEND_TITLE.get(),
+                    AppWebTerminalConfig.BACKEND_WEBSOCKET_ENDPOINT.get()
                 )
             )
         }

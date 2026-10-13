@@ -13,7 +13,7 @@ import appeng.api.storage.AEKeyFilter
 import appeng.menu.me.crafting.CraftingPlanSummary
 import com.google.common.cache.CacheBuilder
 import com.mojang.logging.LogUtils
-import icu.takeneko.appwebterminal.AppWebTerminal
+import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.support.AEKeyObject
 import icu.takeneko.appwebterminal.support.AEKeyObject.Companion.serializable
 import icu.takeneko.appwebterminal.support.AEKeyTypeObject.Companion.serializable
@@ -49,7 +49,7 @@ import me.towdium.pinin.PinIn
 import me.towdium.pinin.searchers.Searcher
 import me.towdium.pinin.searchers.TreeSearcher
 import net.minecraft.resources.ResourceLocation
-import net.minecraftforge.server.ServerLifecycleHooks
+import net.neoforged.neoforge.server.ServerLifecycleHooks
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
@@ -146,7 +146,7 @@ fun Application.configureAEServiceRouting() {
                             )
                         )
                     var submitResult: ICraftingSubmitResult? = null
-                    ServerLifecycleHooks.getCurrentServer().submitAsync {
+                    ServerLifecycleHooks.getCurrentServer()?.submitAsync {
                         submitResult = grid.craftingService.submitJob(
                             craftingPlan,
                             null,
@@ -154,7 +154,7 @@ fun Application.configureAEServiceRouting() {
                             true,
                             actionSource
                         )
-                    }.await()
+                    }?.await()
                     allCraftingPlans.invalidate(request.id)
                     if (submitResult != null) {
                         return@post call.respond(submitResult.serializable(request.id))
@@ -191,7 +191,7 @@ fun Application.configureAEServiceRouting() {
                 }
 
                 val searchedMeStacks = if (!search.isEmpty()) {
-                    if (AppWebTerminal.config.needPinInLanguage.contains(lang)) {
+                    if (AppWebTerminalConfig.NEED_PIN_IN_LANGUAGE.get().contains(lang)) {
                         val treeSearcher = TreeSearcher<MEStack>(Searcher.Logic.CONTAIN, pinIn)
                         meStacks.forEach {
                             val localName = it.what.displayName.toLocalizedString(lang).lowercase()

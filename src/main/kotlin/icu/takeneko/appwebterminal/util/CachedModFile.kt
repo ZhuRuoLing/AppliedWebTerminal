@@ -1,6 +1,6 @@
 package icu.takeneko.appwebterminal.util
 
-import net.minecraftforge.forgespi.locating.IModFile
+import net.neoforged.neoforgespi.locating.IModFile
 import kotlin.io.path.readBytes
 
 class CachedModFile(

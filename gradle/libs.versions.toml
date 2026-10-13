@@ -1,16 +1,25 @@
 [versions]
-registrate = "MC1.20-1.3.11"
-jei = "15.20.0.105"
-ae2 = "15.4.10"
-kotlin-version = "2.1.20"
-ktor-version = "3.1.2"
+registrate = "MC1.21-1.3.0+67"
+jei = "19.64.0.453"
+ae2 = "19.2.18"
+pinin = "1.6.0"
+kotlinforforge = "5.12.0"
+kotlin-version = "2.4.0"
+ktor-version = "3.6.0"
+# Pinned to the versions Minecraft ships with; see resolutionStrategy in build.gradle
+guava = "32.1.2-jre"
+slf4j = "2.0.9"
 
 [libraries]
 registrate = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
-jei-common-api = { module = "mezz.jei:jei-1.20.1-common-api", version.ref = "jei" }
-jei-forge-api = { module = "mezz.jei:jei-1.20.1-forge-api", version.ref = "jei" }
-jei-forge-impl = { module = "mezz.jei:jei-1.20.1-forge", version.ref = "jei" }
-ae2 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
+jei-common-api = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
+jei-neoforge-api = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
+jei-neoforge-impl = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
+ae2 = { module = "org.appliedenergistics:appliedenergistics2", version.ref = "ae2" }
+pinin = { module = "com.github.Towdium:PinIn", version.ref = "pinin" }
+kfflang = { module = "thedarkcolour:kfflang-neoforge", version.ref = "kotlinforforge" }
+kfflib = { module = "thedarkcolour:kfflib-neoforge", version.ref = "kotlinforforge" }
+kffmod = { module = "thedarkcolour:kffmod-neoforge", version.ref = "kotlinforforge" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
 ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor-version" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor-version" }
@@ -28,4 +37,4 @@ ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor-vers
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
 
 [bundles]
-jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]
+jei = ["jei-common-api", "jei-neoforge-api", "jei-neoforge-impl"]

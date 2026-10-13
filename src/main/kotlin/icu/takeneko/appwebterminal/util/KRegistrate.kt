@@ -1,8 +1,8 @@
 package icu.takeneko.appwebterminal.util
 
 import com.tterrag.registrate.Registrate
-import net.minecraftforge.eventbus.api.IEventBus
-import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import net.neoforged.bus.api.IEventBus
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 class KRegistrate(modid: String) : Registrate(modid) {
 

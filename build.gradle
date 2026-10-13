@@ -2,45 +2,41 @@ plugins {
     id 'idea'
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.moddev.legacyforge' version '2.0.80'
-
-    // Adds the Kotlin Gradle plugin
-    id 'org.jetbrains.kotlin.jvm' version '2.0.0'
-    // OPTIONAL Kotlin Serialization plugin
-    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0'
-    id("com.gradleup.shadow") version "9.0.0-beta12"
+    id 'net.neoforged.moddev' version '2.0.148'
+    id 'org.jetbrains.kotlin.jvm' version '2.4.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.4.0'
 }
 
 tasks.named('wrapper', Wrapper).configure {
-    // Define wrapper values here so as to not have to always do so when updating gradlew.properties.
-    // Switching this to Wrapper.DistributionType.ALL will download the full gradle sources that comes with
-    // documentation attached on cursor hover of gradle classes and methods. However, this comes with increased
-    // file size for Gradle. If you do switch this to ALL, run the Gradle wrapper task twice afterwards.
-    // (Verify by checking gradle/wrapper/gradle-wrapper.properties to see if distributionUrl now points to `-all`)
     distributionType = Wrapper.DistributionType.BIN
 }
 
-// Formats the mod version to include the loader, Minecraft version, and build number (if present)
 String buildNumber = System.getenv("GITHUB_ACTION_NUMBER")
 version = "${mod_version}" + (buildNumber != null ? "-build.${System.getenv("GITHUB_RUN_NUMBER")}" : "")
 group = mod_group_id
 
 repositories {
     mavenLocal()
-    maven { // JEI
+    mavenCentral()
+    maven {
         name = "Jared's Maven"
         url = "https://maven.blamejared.com/"
     }
-    maven { // JEI mirror, AE2
+    maven {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
-    maven { // Kotlin for Forge
+    maven {
         url = 'https://thedarkcolour.github.io/KotlinForForge/'
         content { includeGroup "thedarkcolour" }
     }
     maven {
         url "https://cursemaven.com"
+    }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content { includeGroup "maven.modrinth" }
     }
     maven {
         url 'https://maven.blamejared.com'
@@ -55,8 +51,14 @@ repositories {
         url 'https://jitpack.io'
     }
     maven { url = "https://maven.firstdarkdev.xyz/snapshots" }
-    exclusiveContent { // tterrag - registrate
+    exclusiveContent {
         forRepository { maven { url = "https://maven.tterrag.com/" } }
+        forRepository {
+            maven {
+                name = "Ithundxr Maven"
+                url = "https://maven.ithundxr.dev/snapshots"
+            }
+        }
         filter { includeGroup("com.tterrag.registrate") }
     }
 }
@@ -65,28 +67,19 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 21 to end users in 1.20.1, so mods should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-legacyForge {
-    // Specify the version of MinecraftForge to use.
-    version = project.minecraft_version + '-' + project.forge_version
+neoForge {
+    version = project.neoforge_version
 
     parchment {
         mappingsVersion = project.parchment_mappings_version
         minecraftVersion = project.parchment_minecraft_version
     }
 
-    // This line is optional. Access Transformers are automatically detected
-    //accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
-
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
             client()
             devLogin = true
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
             jvmArgument("--add-opens=kotlinx.coroutines.core/kotlinx.coroutines.debug.internal=kotlin.stdlib")
             jvmArgument("-XX:+CreateCoredumpOnCrash")
@@ -107,9 +100,6 @@ legacyForge {
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }
 
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
@@ -117,195 +107,86 @@ legacyForge {
 
         data {
             data()
-
-            // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
-            // gameDirectory = project.file('run-data')
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
-        // applies to all the run configs above
         configureEach {
-            // Recommended logging data for a userdev environment
-            // The markers can be added/remove as needed separated by commas.
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
             systemProperty 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             logLevel = org.slf4j.event.Level.DEBUG
         }
     }
 
     mods {
-        // define mod <-> source bindings
-        // these are used to tell the game which sources are for which mod
-        // mostly optional in a single mod project
-        // but multi mod projects should define one per mod
         "${mod_id}" {
             sourceSet(sourceSets.main)
         }
     }
 }
 
-// Include resources generated by data generators.
 sourceSets.main.resources {
     srcDirs 'src/generated/resources', 'src/frontend'
 }
 
-// Sets up a dependency configuration called 'localRuntime' and a deobfuscating one called 'modLocalRuntime'
-// These configurations should be used instead of 'runtimeOnly' to declare
-// a dependency that will be present for runtime testing but that is
-// "optional", meaning it will not be pulled by dependents of this mod.
+sourceSets.main.kotlin.exclude 'icu/takeneko/appwebterminal/compat/**'
+
 configurations {
     runtimeClasspath.extendsFrom localRuntime
-    shadowInclude
-}
 
-obfuscation {
-    createRemappingConfiguration(configurations.localRuntime)
-}
-
-tasks.register("deleteFrontend", Delete) {
-    group = 'build'
-    description = 'delete exists frontend files'
-    delete 'src/frontend'
-}
-
-tasks.register("copyFrontendFile", Copy) {
-    dependsOn(tasks.named('deleteFrontend'))
-    dependsOn(project(":frontend").tasks.named('npmBuild'))
-    group = 'build'
-    description = 'build and copy dist to src/frontend/frontend'
-
-    from "frontend/dist/"
-    into "src/frontend/frontend"
-}
-
-jar {
-    from jarJar.outputs
-}
-
-shadowJar {
-    archiveClassifier = "dev"
-    configurations = [project.configurations.shadowInclude]
-    from project.layout.buildDirectory.dir("mixin")
-    from jar.outputs
-    from jarJar.outputs
-    exclude "/_COROUTINE/**"
-    exclude "/kotlinx/coroutines/**"
-    exclude "/kotlinx/serialization/**"
-    exclude "/kotlin/**"
-    exclude "META-INF/LICENSE*"
-    exclude "META-INF/NOTICE*"
-    exclude "com/google/**"
-    exclude "javax/**"
-    exclude "org/slf4j/**"
-    exclude "org/checkerframework/**"
-    exclude "org/fusesource/**"
-    exclude "org/jetbrains/**"
-    exclude "org/intellij/**"
-    exclude "META-INF/kotlin*.kotlin_module"
-    exclude "META-INF/proguard/**"
-    exclude "META-INF/native-image/**"
-    exclude "META-INF/maven/**"
-    exclude "META-INF/services/kotlin*"
-    exclude "META-INF/versions/9/**"
-    exclude "META-INF/com.android.tools/**"
-    exclude "com/fasterxml/**"
-    relocate "me.towdium.pinin", "icu.takeneko.appwebterminal.deps.pinin"
-}
-
-reobfJar {
-    archiveClassifier = ""
-    input = shadowJar.archiveFile
-}
-
-configurations.configureEach {
-    exclude(group: "org.jetbrains.kotlinx", module: "kotlinx-serialization-json-io-jvm")
-    resolutionStrategy {
-        force "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3"
-        force "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3"
+    configureEach {
+        resolutionStrategy {
+            force "com.google.guava:guava:${libs.versions.guava.get()}"
+            force "org.slf4j:slf4j-api:${libs.versions.slf4j.get()}"
+        }
     }
+}
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+java {
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+
+compileKotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    }
 }
 
 dependencies {
-    jarJar(modApi(libs.registrate.get()))
-    modImplementation(libs.bundles.jei)
-    modImplementation(libs.ae2)
-    modImplementation("curse.maven:configuration-444699:5840405")
-
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-core:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-websockets:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-content-negotiation:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.2"))
-//    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-call-logging:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-forwarded-header:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-cors:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-caching-headers:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-host-common:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-auth:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-auth-jwt:3.1.2") {
+    jarJar(api(libs.registrate.get()))
+    implementation(libs.bundles.jei)
+    implementation(libs.ae2)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.websockets)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.server.forwarded.header)
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.caching.headers)
+    implementation(libs.ktor.server.host.common)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auth.jwt) {
         exclude group: 'com.fasterxml.jackson.core'
-    })
-    additionalRuntimeClasspath shadowInclude(implementation("io.ktor:ktor-server-cio:3.1.2"))
-    additionalRuntimeClasspath shadowInclude(implementation("com.github.Towdium:PinIn:1.6.0") { transitive = false })
-    additionalRuntimeClasspath jarJar(implementation("com.fasterxml.jackson.core:jackson-core:2.14.0"))
-    additionalRuntimeClasspath jarJar(implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.0"))
-    additionalRuntimeClasspath jarJar(implementation("com.fasterxml.jackson.core:jackson-databind:2.14.0"))
-    implementation "thedarkcolour:kfflang:4.11.0"
-    implementation "thedarkcolour:kfflib:4.11.0"
-    implementation "thedarkcolour:kffmod:4.11.0"
-
-    modImplementation("curse.maven:modern-ui-352491:6199942")
-    modImplementation("curse.maven:mekanism-268560:6258796")
-    modImplementation("curse.maven:applied-mekanistics-574300:4842281")
-    modImplementation("curse.maven:mekanism-generators-268566:6258799")
-    modImplementation("curse.maven:applied-flux-965012:6327987")
-    modImplementation("curse.maven:glodium-957920:5226922")
-    modImplementation("curse.maven:ars-energistique-905641:5504444")
-    modImplementation("curse.maven:ars-nouveau-401955:5894609")
-    modImplementation("software.bernie.geckolib:geckolib-forge-1.20.1:4.2.2")
-    modImplementation("top.theillusivec4.curios:curios-forge:5.3.1+1.20.1")
-    modImplementation("vazkii.patchouli:Patchouli:1.20.1-84-FORGE")
-    modImplementation("curse.maven:advancedae-1084104:6205290")
-
-    modCompileOnly("vazkii.botania:Botania:1.20.1-448-FORGE:api")
-    modRuntimeOnly("vazkii.botania:Botania:1.20.1-448-FORGE")
-    modImplementation("curse.maven:applied-botanics-addon-610632:4904185")
-
-    modRuntimeOnly("com.gregtechceu.gtceu:gtceu-1.20.1:1.4.2")
-    modRuntimeOnly("curse.maven:sophisticated-core-618298:6226747")
-    modRuntimeOnly("curse.maven:sophisticated-storage-619320:6217888")
-
-    annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
-}
-mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
-    config "${mod_id}.mixins.json"
+    }
+    implementation(libs.ktor.server.cio)
+    implementation(libs.pinin) { transitive = false }
+    implementation(libs.kfflang)
+    implementation(libs.kfflib)
+    implementation(libs.kffmod)
 }
 
-jar {
-    manifest.attributes([
-            "MixinConfigs": "${mod_id}.mixins.json",
-            "Multi-Release": false
-    ])
-}
-
-
-// This block of code expands all declared replace properties in the specified resource targets.
-// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
-            forge_version          : forge_version,
-            forge_version_range    : forge_version_range,
+            neoforge_version       : neoforge_version,
+            neoforge_version_range : neoforge_version_range,
             loader_version_range   : loader_version_range,
             mod_id                 : mod_id,
             mod_name               : mod_name,
@@ -319,39 +200,24 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     from "src/main/templates"
     into "build/generated/sources/modMetadata"
 }
-// Include the output of "generateModMetadata" as an input directory for the build
-// this works with both building through Gradle and the IDE.
+
 sourceSets.main.resources.srcDir generateModMetadata
-// To avoid having to run "generateModMetadata" manually, make it run on every project reload
-legacyForge.ideSyncTask generateModMetadata
 
-// Example configuration to allow publishing using the maven-publish plugin
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/repo"
-        }
-    }
+tasks.register("deleteFrontend", Delete) {
+    group = 'build'
+    description = 'delete exists frontend files'
+    delete 'src/frontend'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+tasks.register("copyFrontendFile", Copy) {
+    dependsOn(tasks.named('deleteFrontend'))
+    dependsOn(project(":frontend").tasks.named('npmBuild'))
+    group = 'build'
+    description = 'build and copy dist to src/frontend/frontend'
+    from "frontend/dist/"
+    into "src/frontend/frontend"
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "17"
-}
-
-java {
-    withSourcesJar()
-}
-
-// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {
         downloadSources = true

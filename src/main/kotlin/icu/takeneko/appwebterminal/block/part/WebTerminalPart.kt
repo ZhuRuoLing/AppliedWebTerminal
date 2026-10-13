@@ -9,20 +9,20 @@ import appeng.items.parts.PartModels
 import appeng.parts.AEBasePart
 import appeng.parts.PartModel
 import icu.takeneko.appwebterminal.AppWebTerminal
-import icu.takeneko.appwebterminal.all.networkingChannel
 import icu.takeneko.appwebterminal.networking.OpenWebTerminalScreenPacket
 import icu.takeneko.appwebterminal.support.AENetworkAccess
 import icu.takeneko.appwebterminal.support.AENetworkSupport
-import io.ktor.util.*
+import io.ktor.util.generateNonce
+import io.ktor.util.generateNonceBlocking
 import net.minecraft.core.BlockPos
+import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
-import net.minecraftforge.network.PacketDistributor
+import net.neoforged.neoforge.network.PacketDistributor
 import java.util.UUID
 
 class WebTerminalPart(item: IPartItem<*>) : AEBasePart(item), AENetworkAccess {
@@ -33,7 +33,7 @@ class WebTerminalPart(item: IPartItem<*>) : AEBasePart(item), AENetworkAccess {
     var password: String = "AppliedWebTerminal"
         private set
 
-    private var nonce = generateNonce()
+    private var nonce = generateNonceBlocking()
     private var registered = false
 
     override fun getBoxes(bch: IPartCollisionHelper) {
@@ -41,13 +41,12 @@ class WebTerminalPart(item: IPartItem<*>) : AEBasePart(item), AENetworkAccess {
         bch.addBox(4.0, 4.0, 13.0, 12.0, 12.0, 14.0)
     }
 
-    override fun onPartActivate(player: Player, hand: InteractionHand, pos: Vec3): Boolean {
+    override fun onClicked(player: Player, pos: Vec3): Boolean {
         if (player.level().isClientSide) {
             return true
         }
-        networkingChannel.send(
-            PacketDistributor.PLAYER.with { player as ServerPlayer },
-            OpenWebTerminalScreenPacket(
+        PacketDistributor.sendToPlayer(
+            player as ServerPlayer, OpenWebTerminalScreenPacket(
                 displayName,
                 id,
                 worldPosition(),
@@ -67,28 +66,28 @@ class WebTerminalPart(item: IPartItem<*>) : AEBasePart(item), AENetworkAccess {
         }
     }
 
-    override fun writeToNBT(data: CompoundTag) {
-        super.writeToNBT(data)
+    override fun writeToNBT(data: CompoundTag, registries: HolderLookup.Provider) {
+        super.writeToNBT(data, registries)
         data.putString("Name", displayName)
         data.putUUID("UUID", id)
         data.putString("Password", password)
     }
 
-    override fun writeToStream(data: FriendlyByteBuf) {
+    override fun writeToStream(data: RegistryFriendlyByteBuf) {
         super.writeToStream(data)
         data.writeUtf(displayName)
         data.writeUUID(id)
         data.writeUtf(password)
     }
 
-    override fun readFromNBT(data: CompoundTag) {
-        super.readFromNBT(data)
+    override fun readFromNBT(data: CompoundTag, registries: HolderLookup.Provider) {
+        super.readFromNBT(data, registries)
         this.displayName = if (data.contains("Name")) data.getString("Name") else "ME Web Terminal"
         this.id = if (data.hasUUID("UUID")) data.getUUID("UUID") else UUID.randomUUID()
         this.password = if (data.contains("Password")) data.getString("Password") else "AppliedWebTerminal"
     }
 
-    override fun readFromStream(data: FriendlyByteBuf): Boolean {
+    override fun readFromStream(data: RegistryFriendlyByteBuf): Boolean {
         super.readFromStream(data)
         this.displayName = data.readUtf()
         this.id = data.readUUID()

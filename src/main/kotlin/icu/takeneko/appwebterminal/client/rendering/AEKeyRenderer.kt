@@ -5,7 +5,7 @@ import com.mojang.blaze3d.platform.Lighting
 import com.mojang.blaze3d.platform.NativeImage
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
-import icu.takeneko.appwebterminal.all.KeyImageProviderRegistry
+import icu.takeneko.appwebterminal.all.AWBuiltinRegistries
 import icu.takeneko.appwebterminal.client.rendering.foundation.FrameBuffer
 import icu.takeneko.appwebterminal.client.rendering.foundation.FullyBufferedBufferSource
 import net.minecraft.client.Minecraft
@@ -26,6 +26,7 @@ class AEKeyRenderer(
         sizeX,
         sizeY
     )
+
     private val nativeImage = NativeImage(
         sizeX,
         sizeY,
@@ -48,7 +49,7 @@ class AEKeyRenderer(
 
     fun submitRenderTasks(basePath: Path, progressListener: RenderProgressListener) {
         rendering = true
-        KeyImageProviderRegistry.values.toList().forEach { prov ->
+        AWBuiltinRegistries.keyImageProvider.entrySet().toList().forEach { (_, prov) ->
             val entries = prov.getAllEntries().toList()
             renderTasks += {
                 progressListener.notifyTotalCount(entries.size)
@@ -79,7 +80,7 @@ class AEKeyRenderer(
 
     fun next() {
         var limit = taskPullLimit
-        while (renderTasks.isNotEmpty() && limit >= 0){
+        while (renderTasks.isNotEmpty() && limit >= 0) {
             renderTasks.pop()()
             limit--
         }
@@ -106,7 +107,7 @@ class AEKeyRenderer(
             logger.error("Error while rendering ${key.type.id}/${key.id}", e)
         }
         val uploadResult = bufferSource.upload()
-        uploadResult.forEach { t, u ->
+        uploadResult.forEach { (t, u) ->
             t.setupRenderState()
             frameBuffer.bindWrite(true)
             u.drawWithShader(
@@ -114,6 +115,7 @@ class AEKeyRenderer(
                 projectionMatrix,
                 RenderSystem.getShader()
             )
+            u.close()
             t.clearRenderState()
         }
         frameBuffer.unbindWrite()

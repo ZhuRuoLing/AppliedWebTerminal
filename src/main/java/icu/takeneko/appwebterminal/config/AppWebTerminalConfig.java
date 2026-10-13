@@ -1,55 +1,50 @@
 package icu.takeneko.appwebterminal.config;
 
-import dev.toma.configuration.config.Config;
-import dev.toma.configuration.config.Configurable;
-import dev.toma.configuration.config.UpdateRestrictions;
-import icu.takeneko.appwebterminal.AppWebTerminal;
+import java.util.List;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-@Config(id = AppWebTerminal.MOD_ID)
 public class AppWebTerminalConfig {
-    @Configurable
-    @Configurable.Comment({"Http Server port for ME Web Terminal."})
-    @Configurable.Range(
-        min = 1L,
-        max = 65536L
-    )
-    @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
-    public int httpPort = 11451;
+    public static final ModConfigSpec SPEC;
+    public static final ModConfigSpec.IntValue HTTP_PORT;
+    public static final ModConfigSpec.ConfigValue<String> FRONTEND_TITLE;
+    public static final ModConfigSpec.ConfigValue<String> BACKEND_WEBSOCKET_ENDPOINT;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> NEED_PIN_IN_LANGUAGE;
+    public static final ModConfigSpec.EnumValue<MinecraftAssetsApi> ASSETS_SOURCE;
 
-    @Configurable
-    @Configurable.Comment({"Web Terminal Title"})
-    public String frontendTitle = "Applied Web Terminal";
+    static {
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        HTTP_PORT = builder.comment("Http Server port for ME Web Terminal.")
+            .defineInRange(
+                "httpPort",
+                11451,
+                1,
+                65535
+            );
 
-    @Configurable
-    @Configurable.Comment({"Websocket url for frontend to connect", "Use \"~\" for auto detecting"})
-    public String backendWebsocketEndpoint = "~";
+        FRONTEND_TITLE = builder.comment("Web Terminal Title")
+            .define(
+                "frontendTitle",
+                "Applied Web Terminal"
+            );
 
-    @Configurable
-    @Configurable.Comment({"Add PinIn support to languages"})
-    public String[] needPinInLanguage = {"zh_cn", "zh_tw", "zh_hk"};
+        BACKEND_WEBSOCKET_ENDPOINT = builder.comment("Websocket url for frontend to connect", "Use \"~\" for auto detecting")
+            .define(
+                "backendWebsocketEndpoint",
+                "~"
+            );
 
-    @Configurable
-    @Configurable.Comment({"Used api to download minecraft langague files"})
-    @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
-    public MinecraftAssetsApi assetsSource = MinecraftAssetsApi.MOJANG;
+        NEED_PIN_IN_LANGUAGE = builder.comment("Add PinIn support to languages")
+            .defineListAllowEmpty(
+                "needPinInLanguage",
+                List.of("zh_cn", "zh_tw", "zh_hk"),
+                () -> "zh_cn",
+                value -> value instanceof String
+            );
 
-    @SuppressWarnings("unused")
-    public int getHttpPort() {
-        return httpPort;
-    }
+        ASSETS_SOURCE = builder.comment("API used to download Minecraft language files; restart the game to apply changes.")
+            .gameRestart()
+            .defineEnum("assetsSource", MinecraftAssetsApi.MOJANG);
 
-    @SuppressWarnings("unused")
-    public String getFrontendTitle() {
-        return frontendTitle;
-    }
-
-    @SuppressWarnings("unused")
-    public String getBackendWebsocketEndpoint() {
-        return backendWebsocketEndpoint;
-    }
-
-    @SuppressWarnings("unused")
-    public String[] getNeedPinInLanguage() {
-        return needPinInLanguage;
+        SPEC = builder.build();
     }
 }

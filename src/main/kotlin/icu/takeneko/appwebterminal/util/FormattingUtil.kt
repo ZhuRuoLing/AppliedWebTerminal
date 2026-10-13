@@ -4,7 +4,7 @@ import com.google.common.base.CaseFormat
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentContents
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.network.chat.contents.LiteralContents
+import net.minecraft.network.chat.contents.PlainTextContents
 import net.minecraft.network.chat.contents.TranslatableContents
 import java.util.Locale
 
@@ -28,7 +28,7 @@ fun String.toLowerCaseUnder(): String {
 fun Component.toLocalizedString(lang: String): String {
     val contents = this.contents
     var rt = when (contents) {
-        is LiteralContents -> {
+        is PlainTextContents.LiteralContents -> {
             contents.text()
         }
 
@@ -60,7 +60,7 @@ fun Component.strip(): MutableComponent {
     if (neededContents(this.contents)) {
         rt = MutableComponent.create(this.contents)
     } else {
-        rt = MutableComponent.create(ComponentContents.EMPTY)
+        rt = MutableComponent.create(PlainTextContents.EMPTY)
     }
     rt.style = this.style.withHoverEvent(null).withClickEvent(null).withInsertion(null)
     this.siblings.forEach { c -> rt.append(c.strip()) }
@@ -68,8 +68,8 @@ fun Component.strip(): MutableComponent {
 }
 
 private fun neededContents(contents: ComponentContents): Boolean {
-    if (contents == ComponentContents.EMPTY) return true
-    if (contents is LiteralContents) return true
+    if (contents == PlainTextContents.EMPTY) return true
+    if (contents is PlainTextContents.LiteralContents) return true
     if (contents is TranslatableContents) return true
     return false
 }

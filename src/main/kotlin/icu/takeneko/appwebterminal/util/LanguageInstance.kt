@@ -2,7 +2,7 @@ package icu.takeneko.appwebterminal.util
 
 import com.mojang.logging.LogUtils
 import kotlinx.serialization.json.Json
-import net.minecraftforge.fml.ModList
+import net.neoforged.fml.ModList
 import kotlin.io.path.exists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.readText

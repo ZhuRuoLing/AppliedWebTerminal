@@ -30,7 +30,6 @@ Move your AE terminal to the web!
 
 - [AE2](https://modrinth.com/mod/ae2)
 - [Kotlin For Forge](https://modrinth.com/mod/kotlin-for-forge)
-- [Configuration](https://modrinth.com/mod/configuration)
 
 ## Usage
 
@@ -67,7 +66,7 @@ Images
 
 ## Configs
 
-Config file is `.minecraft/config/appwebterminal.yaml`
+NeoForge writes the configuration to `.minecraft/config/appwebterminal-common.toml`. Existing YAML files are not imported automatically. To migrate manually, copy the values from `appwebterminal.yaml` into the matching TOML keys below, then remove or archive the old YAML file.
 
 <details>
 <summary>
@@ -76,11 +75,11 @@ Details
 
 > Http Server port for ME Web Terminal.
 
-`httpPort`: `11451`
+`httpPort = 11451`
 - - -
 > Web Terminal Title
 
-`frontendTitle`: `Applied Web Terminal`
+`frontendTitle = "Applied Web Terminal"`
 - - -
 > `Websocket url` for frontend to connect
 > 
@@ -88,16 +87,15 @@ Details
 >
 > Example: `ws://example.com/`
 
-`backendWebsocketEndpoint`: `~`
+`backendWebsocketEndpoint = "~"`
 - - -
 > Add PinIn support to languages
 
-`needPinInLanguage`:
-
-&emsp;&emsp;`- zh_cn`
-
-&emsp;&emsp;`- zh_tw`
-
-&emsp;&emsp;`- zh_hk`
+`needPinInLanguage = ["zh_cn", "zh_tw", "zh_hk"]`
 - - -
+> API used to download Minecraft language files (restart the game to apply changes)
+
+`assetsSource = "MOJANG"` (or `"BMCLAPI"`)
+
+Restart the server after changing `httpPort` (valid range: 1–65535). For example, copy `httpPort: 11451` from YAML as `httpPort = 11451` in TOML; use quoted strings for text and a bracketed list for languages.
 </details>

@@ -4,15 +4,16 @@ import appeng.api.networking.GridFlags
 import appeng.api.networking.IGrid
 import appeng.api.networking.IGridNodeListener
 import appeng.api.orientation.BlockOrientation
-import appeng.blockentity.grid.AENetworkBlockEntity
-import icu.takeneko.appwebterminal.all.MEWebTerminal
+import appeng.blockentity.grid.AENetworkedBlockEntity
+import icu.takeneko.appwebterminal.all.AWBlocks
 import icu.takeneko.appwebterminal.block.WebTerminalBlock
 import icu.takeneko.appwebterminal.support.AENetworkAccess
 import icu.takeneko.appwebterminal.support.AENetworkSupport
 import icu.takeneko.appwebterminal.util.get
-import io.ktor.util.*
+import io.ktor.util.generateNonceBlocking
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.player.Player
@@ -26,7 +27,7 @@ class WebTerminalBlockEntity(
     blockEntityType: BlockEntityType<*>,
     blockPos: BlockPos,
     blockState: BlockState
-) : AENetworkBlockEntity(blockEntityType, blockPos, blockState), AENetworkAccess {
+) : AENetworkedBlockEntity(blockEntityType, blockPos, blockState), AENetworkAccess {
 
     private var id: UUID = UUID.randomUUID()
     var displayName: String = "ME Web Terminal"
@@ -34,12 +35,12 @@ class WebTerminalBlockEntity(
     var password: String = "AppliedWebTerminal"
         private set
 
-    private var nonce = generateNonce()
+    private var nonce = generateNonceBlocking()
     private var registered = false
 
     init {
         this.mainNode.setExposedOnSides(Direction.entries.toMutableSet() - blockState[WebTerminalBlock.FACING])
-        this.mainNode.setVisualRepresentation(MEWebTerminal.asStack())
+        this.mainNode.setVisualRepresentation(AWBlocks.webTerminal.asStack())
         this.mainNode.setIdlePowerUsage(3.0)
         this.mainNode.setFlags(GridFlags.REQUIRE_CHANNEL)
     }
@@ -53,15 +54,15 @@ class WebTerminalBlockEntity(
         this.mainNode.setExposedOnSides(Direction.entries.toMutableSet() - level!!.getBlockState(worldPosition)[WebTerminalBlock.FACING])
     }
 
-    override fun saveAdditional(data: CompoundTag) {
-        super.saveAdditional(data)
+    override fun saveAdditional(data: CompoundTag, registries: HolderLookup.Provider) {
+        super.saveAdditional(data, registries)
         data.putString("Name", displayName)
         data.putUUID("UUID", id)
         data.putString("Password", password)
     }
 
-    override fun loadTag(data: CompoundTag) {
-        super.loadTag(data)
+    override fun loadTag(data: CompoundTag, registries: HolderLookup.Provider) {
+        super.loadTag(data, registries)
         this.displayName = if (data.contains("Name")) data.getString("Name") else "ME Web Terminal"
         this.id = if (data.hasUUID("UUID")) data.getUUID("UUID") else UUID.randomUUID()
         this.password = if (data.contains("Password")) data.getString("Password") else "AppliedWebTerminal"
@@ -96,7 +97,7 @@ class WebTerminalBlockEntity(
     override fun setOwner(owner: Player?) {
         super.setOwner(owner)
         val ownerName = owner?.gameProfile?.name
-        if ( ownerName != null) {
+        if (ownerName != null) {
             this.displayName = "${ownerName}'s Web Terminal"
             markDirty()
         }
@@ -132,7 +133,7 @@ class WebTerminalBlockEntity(
         this.password = password
         return if (oldPassword != password) {
             AENetworkSupport.requestSessionReset(this)
-            this.nonce = generateNonce()
+            this.nonce = generateNonceBlocking()
             true
         } else {
             false

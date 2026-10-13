@@ -19,7 +19,6 @@
 
 - [AE2](https://modrinth.com/mod/ae2)
 - [Kotlin For Forge](https://modrinth.com/mod/kotlin-for-forge)
-- [Configuration](https://modrinth.com/mod/configuration)
 
 ## 使用
 
@@ -56,7 +55,7 @@
 
 ## 配置
 
-配置文件位于`.minecraft/config/appwebterminal.yaml`
+NeoForge 配置文件位于 `.minecraft/config/appwebterminal-common.toml`。旧的 YAML 文件不会自动导入。请手动将 `appwebterminal.yaml` 中的值复制到下方对应的 TOML 配置项，然后删除或备份旧 YAML 文件。
 
 <details>
 <summary>
@@ -65,11 +64,11 @@
 
 > ME Web Terminal 的 Http服务器端口
 
-`httpPort`: `11451`
+`httpPort = 11451`
 - - -
 > 前端网页标题
 
-`frontendTitle`: `Applied Web Terminal`
+`frontendTitle = "Applied Web Terminal"`
 - - -
 > 前端连接的 `Websocket url`
 > 
@@ -77,16 +76,15 @@
 > 
 > 示例：`ws://example.com/`
 
-`backendWebsocketEndpoint`: `~`
+`backendWebsocketEndpoint = "~"`
 - - -
 > 使用拼音搜索的语言
 
-`needPinInLanguage`:
-
-&emsp;&emsp;`- zh_cn`
-
-&emsp;&emsp;`- zh_tw`
-
-&emsp;&emsp;`- zh_hk`
+`needPinInLanguage = ["zh_cn", "zh_tw", "zh_hk"]`
 - - -
+> 下载 Minecraft 语言文件使用的 API（修改后重启游戏）
+
+`assetsSource = "MOJANG"`（也可以使用 `"BMCLAPI"`）
+
+修改 `httpPort` 后请重启服务器（有效范围为 1–65535）。例如，把 YAML 中的 `httpPort: 11451` 改写成 TOML 中的 `httpPort = 11451`；字符串需要引号，语言列表使用方括号。
 </details>

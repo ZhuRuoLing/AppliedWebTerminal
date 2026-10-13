@@ -3,17 +3,14 @@ package icu.takeneko.appwebterminal.block
 import appeng.api.orientation.IOrientationStrategy
 import appeng.api.orientation.OrientationStrategies
 import appeng.block.AEBaseEntityBlock
-import icu.takeneko.appwebterminal.all.MEWebTerminalBlockEntity
-import icu.takeneko.appwebterminal.all.networkingChannel
+import icu.takeneko.appwebterminal.all.AWBlockEntities
 import icu.takeneko.appwebterminal.block.entity.WebTerminalBlockEntity
 import icu.takeneko.appwebterminal.networking.OpenWebTerminalScreenPacket
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
@@ -22,7 +19,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.minecraft.world.level.block.state.properties.DirectionProperty
 import net.minecraft.world.phys.BlockHitResult
-import net.minecraftforge.network.PacketDistributor
+import net.neoforged.neoforge.network.PacketDistributor
 
 class WebTerminalBlock(properties: Properties) : AEBaseEntityBlock<WebTerminalBlockEntity>(properties),
     LateInitSupported {
@@ -33,7 +30,7 @@ class WebTerminalBlock(properties: Properties) : AEBaseEntityBlock<WebTerminalBl
     override fun lateInit() {
         setBlockEntity(
             WebTerminalBlockEntity::class.java,
-            MEWebTerminalBlockEntity.get(),
+            AWBlockEntities.webTerminal.get(),
             null,
             null
         )
@@ -43,20 +40,19 @@ class WebTerminalBlock(properties: Properties) : AEBaseEntityBlock<WebTerminalBl
         return OrientationStrategies.facing()
     }
 
-    override fun onActivated(
+    override fun useWithoutItem(
+        state: BlockState,
         level: Level,
         pos: BlockPos,
         player: Player,
-        hand: InteractionHand,
-        heldItem: ItemStack?,
-        hit: BlockHitResult
+        hitResult: BlockHitResult
     ): InteractionResult {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS
         }
         val be = level.getBlockEntity(pos) as WebTerminalBlockEntity
-        networkingChannel.send(
-            PacketDistributor.PLAYER.with { player as ServerPlayer },
+        PacketDistributor.sendToPlayer(
+            player as ServerPlayer,
             OpenWebTerminalScreenPacket(be.displayName, be.getId(), pos, be.password, be.mainNode.isOnline)
         )
         return InteractionResult.SUCCESS

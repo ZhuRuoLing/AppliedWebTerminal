@@ -1,12 +1,16 @@
 package icu.takeneko.appwebterminal.networking
 
+import icu.takeneko.appwebterminal.AppWebTerminal
 import icu.takeneko.appwebterminal.client.gui.WebTerminalScreen
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
+import net.minecraft.core.UUIDUtil
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraftforge.network.NetworkEvent
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.neoforged.neoforge.network.handling.IPayloadContext
 import java.util.UUID
-import java.util.function.Supplier
 
 data class OpenWebTerminalScreenPacket(
     val initialName: String,
@@ -14,27 +18,31 @@ data class OpenWebTerminalScreenPacket(
     val blockPos: BlockPos,
     val password: String,
     val isOnline: Boolean
-) {
-    constructor(buf: FriendlyByteBuf) : this(
-        buf.readUtf(),
-        buf.readUUID(),
-        buf.readBlockPos(),
-        buf.readUtf(),
-        buf.readBoolean()
-    )
+) : CustomPacketPayload {
 
-    fun encode(buf: FriendlyByteBuf) {
-        buf.writeUtf(initialName)
-        buf.writeUUID(uuid)
-        buf.writeBlockPos(blockPos)
-        buf.writeUtf(password)
-        buf.writeBoolean(isOnline)
+    fun accept(context: IPayloadContext) {
+        Minecraft.getInstance().setScreen(WebTerminalScreen(initialName, uuid, password, isOnline))
     }
 
-    fun accept(context: Supplier<NetworkEvent.Context>) {
-        context.get().enqueueWork {
-            Minecraft.getInstance().setScreen(WebTerminalScreen(initialName, uuid, password, isOnline))
-        }
-        context.get().packetHandled = true
+    override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> = type
+
+    companion object {
+        val id = AppWebTerminal.location("open_screen")
+        val type = CustomPacketPayload.Type<OpenWebTerminalScreenPacket>(id)
+
+        val streamCodec: StreamCodec<in FriendlyByteBuf, OpenWebTerminalScreenPacket> =
+            StreamCodec.composite(
+                ByteBufCodecs.STRING_UTF8,
+                OpenWebTerminalScreenPacket::initialName,
+                UUIDUtil.STREAM_CODEC,
+                OpenWebTerminalScreenPacket::uuid,
+                BlockPos.STREAM_CODEC,
+                OpenWebTerminalScreenPacket::blockPos,
+                ByteBufCodecs.STRING_UTF8,
+                OpenWebTerminalScreenPacket::password,
+                ByteBufCodecs.BOOL,
+                OpenWebTerminalScreenPacket::isOnline,
+                ::OpenWebTerminalScreenPacket
+            )
     }
 }

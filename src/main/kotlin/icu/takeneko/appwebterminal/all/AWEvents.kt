@@ -1,26 +1,24 @@
 package icu.takeneko.appwebterminal.all
 
-import icu.takeneko.appwebterminal.AppWebTerminal
+import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
 import icu.takeneko.appwebterminal.api.KeyImageProviderLoader
 import icu.takeneko.appwebterminal.block.LateInitSupported
 import icu.takeneko.appwebterminal.block.entity.WebTerminalBlockEntity
-import icu.takeneko.appwebterminal.client.rendering.AEKeyImageProvider
 import icu.takeneko.appwebterminal.registrate
+import icu.takeneko.appwebterminal.resource.LanguageFileDownloader
 import icu.takeneko.appwebterminal.support.AENetworkSupport
 import icu.takeneko.appwebterminal.support.http.HttpServerLifecycleSupport
 import icu.takeneko.appwebterminal.util.KubejsI18nSupport
 import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.chunk.LevelChunk
-import net.minecraftforge.event.TickEvent
-import net.minecraftforge.event.TickEvent.ServerTickEvent
-import net.minecraftforge.event.level.ChunkEvent
-import net.minecraftforge.event.server.ServerStartedEvent
-import net.minecraftforge.event.server.ServerStoppedEvent
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
-import net.minecraftforge.registries.NewRegistryEvent
-import net.minecraftforge.registries.RegisterEvent
-import net.minecraftforge.registries.RegistryBuilder
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
+import net.neoforged.neoforge.event.level.ChunkEvent
+import net.neoforged.neoforge.event.server.ServerStartedEvent
+import net.neoforged.neoforge.event.server.ServerStoppedEvent
+import net.neoforged.neoforge.event.tick.ServerTickEvent
+import net.neoforged.neoforge.registries.NewRegistryEvent
+import net.neoforged.neoforge.registries.RegisterEvent
 
 fun onCommonSetup(event: FMLCommonSetupEvent) {
     registrate.getAll(Registries.BLOCK).forEach {
@@ -30,12 +28,13 @@ fun onCommonSetup(event: FMLCommonSetupEvent) {
         }
     }
     KubejsI18nSupport.init()
+    event.enqueueWork {
+        LanguageFileDownloader(AppWebTerminalConfig.ASSETS_SOURCE.get()).start()
+    }
 }
 
 fun onAddRegistries(event: NewRegistryEvent) {
-    event.create(
-        RegistryBuilder<AEKeyImageProvider<*>>().setName(KeyImageProviderRegistryKey.location())
-    ) { _KeyImageProviderRegistry = { it } }
+    event.register(AWBuiltinRegistries.keyImageProvider)
 }
 
 fun onChunkUnloaded(event: ChunkEvent.Unload) {
@@ -50,16 +49,15 @@ fun onChunkUnloaded(event: ChunkEvent.Unload) {
     }
 }
 
-fun onServerTickPost(event: ServerTickEvent) {
-    if (event.phase != TickEvent.Phase.END) return
+fun onServerTickPost(e: ServerTickEvent.Pre) {
     AENetworkSupport.tick()
 }
 
 fun onRegister(event: RegisterEvent) {
-    if (event.registryKey == KeyImageProviderRegistryKey) {
+    if (event.registryKey == AWRegistries.keyImageProvider) {
         KeyImageProviderLoader.providers.forEach { t, u ->
             event.register(
-                KeyImageProviderRegistryKey,
+                AWRegistries.keyImageProvider,
                 t,
                 u
             )
@@ -68,7 +66,7 @@ fun onRegister(event: RegisterEvent) {
 }
 
 fun onServerStart(event: ServerStartedEvent) {
-    HttpServerLifecycleSupport.launch(AppWebTerminal.config.httpPort)
+    HttpServerLifecycleSupport.launch(AppWebTerminalConfig.HTTP_PORT.get())
 }
 
 fun onServerStop(event: ServerStoppedEvent) {
