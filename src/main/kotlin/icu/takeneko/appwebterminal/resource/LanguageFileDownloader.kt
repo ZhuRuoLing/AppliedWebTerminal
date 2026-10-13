@@ -10,6 +10,7 @@ import java.util.regex.Pattern
 class LanguageFileDownloader(val assetsSource: MinecraftAssetsApi) : Thread("LanguageFileDownloader") {
     private val logger = LogUtils.getLogger()
     private val minecraftVersion = MinecraftVersion(assetsSource)
+
     override fun run() {
         runBlocking {
             CacheProvider.init()

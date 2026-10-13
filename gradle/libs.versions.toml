@@ -9,6 +9,9 @@ ktor-version = "3.6.0"
 # Pinned to the versions Minecraft ships with; see resolutionStrategy in build.gradle
 guava = "32.1.2-jre"
 slf4j = "2.0.9"
+jackson = "2.22.0"
+# Jackson drops the patch component from 2.20 on; annotations only exist as "2.22" while core/databind are "2.22.0"
+jackson-annotations = "2.22"
 
 [libraries]
 registrate = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
@@ -20,6 +23,7 @@ pinin = { module = "com.github.Towdium:PinIn", version.ref = "pinin" }
 kfflang = { module = "thedarkcolour:kfflang-neoforge", version.ref = "kotlinforforge" }
 kfflib = { module = "thedarkcolour:kfflib-neoforge", version.ref = "kotlinforforge" }
 kffmod = { module = "thedarkcolour:kffmod-neoforge", version.ref = "kotlinforforge" }
+kff = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
 ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor-version" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor-version" }
@@ -32,6 +36,9 @@ ktor-server-host-common = { module = "io.ktor:ktor-server-host-common", version.
 ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor-version" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor-version" }
 ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor-version" }
+jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson-annotations" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }

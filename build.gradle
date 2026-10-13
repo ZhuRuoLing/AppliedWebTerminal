@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id 'idea'
     id 'java-library'
@@ -151,34 +153,90 @@ java {
     }
 }
 
-
-compileKotlin {
+kotlin {
     compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+        jvmTarget = JvmTarget.JVM_21
+    }
+}
+
+// Keep bundled libraries in the game layer so they can read Kotlin modules supplied by KFF.
+def devLibrariesJar = tasks.register('devLibrariesJar', Jar) {
+    dependsOn tasks.named('jarJar')
+    archiveClassifier = 'dev-libraries'
+    from tasks.named('jarJar')
+    manifest {
+        attributes 'FMLModType': 'GAMELIBRARY', 'Automatic-Module-Name': "${mod_id}.devlibraries"
     }
 }
 
 dependencies {
-    jarJar(api(libs.registrate.get()))
+    runtimeOnly files(devLibrariesJar)
+    api libs.registrate
+    jarJar libs.registrate.get()
+
     implementation(libs.bundles.jei)
     implementation(libs.ae2)
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.websockets)
-    implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.ktor.server.forwarded.header)
-    implementation(libs.ktor.server.cors)
-    implementation(libs.ktor.server.caching.headers)
-    implementation(libs.ktor.server.host.common)
-    implementation(libs.ktor.server.auth)
+
+    implementation(libs.kff)
+
+    def list = List.of(
+            libs.ktor.server.core,
+            libs.ktor.server.websockets,
+            libs.ktor.server.content.negotiation,
+            libs.ktor.serialization.kotlinx.json,
+            libs.ktor.server.forwarded.header,
+            libs.ktor.server.cors,
+            libs.ktor.server.caching.headers,
+            libs.ktor.server.host.common,
+            libs.ktor.server.auth,
+            libs.ktor.server.cio
+    )
+    for (final def item in list) {
+        implementation(item) {
+            exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-serialization-core'
+            exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-serialization-json'
+        }
+    }
+
+    implementation(libs.pinin) { transitive = false }
     implementation(libs.ktor.server.auth.jwt) {
         exclude group: 'com.fasterxml.jackson.core'
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-serialization-core'
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-serialization-json'
     }
-    implementation(libs.ktor.server.cio)
-    implementation(libs.pinin) { transitive = false }
-    implementation(libs.kfflang)
-    implementation(libs.kfflib)
-    implementation(libs.kffmod)
+
+    def ktorModules = [
+            'server-core', 'server-websockets', 'server-content-negotiation',
+            'serialization-kotlinx-json', 'server-forwarded-header', 'server-cors',
+            'server-caching-headers', 'server-host-common', 'server-auth', 'server-cio',
+            'server-auth-jwt', 'utils', 'io', 'http', 'serialization', 'websockets',
+            'events', 'http-cio', 'network', 'websocket-serialization',
+            'server-routing-openapi', 'openapi-schema', 'client-core', 'sse',
+            'server-csrf', 'server-sessions', 'server-auth-api-key',
+            'serialization-kotlinx'
+    ]
+    def bundledLibraries = ktorModules.collect {
+        "io.ktor:ktor-${it}-jvm:${libs.versions.ktor.version.get()}"
+    } + [
+            'com.github.Towdium:PinIn:1.6.0',
+            'com.typesafe:config:1.4.9',
+            'com.auth0:java-jwt:4.6.0',
+            'com.auth0:jwks-rsa:0.24.1',
+            'com.charleskorn.kaml:kaml-jvm:0.79.0',
+            'it.krzeminski:snakeyaml-engine-kmp-jvm:3.1.1',
+            'com.squareup.okio:okio-jvm:3.12.0',
+            'net.thauvin.erik.urlencoder:urlencoder-lib-jvm:1.6.0',
+            'org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.8.0-0.6.x-compat',
+            'org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.9.1',
+            'org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.9.1',
+            'org.jetbrains.kotlinx:kotlinx-serialization-json-io-jvm:1.11.0',
+            "com.fasterxml.jackson.core:jackson-core:${libs.jackson.core.get().versionConstraint.requiredVersion}",
+            "com.fasterxml.jackson.core:jackson-annotations:${libs.jackson.annotations.get().versionConstraint.requiredVersion}",
+            "com.fasterxml.jackson.core:jackson-databind:${libs.jackson.databind.get().versionConstraint.requiredVersion}"
+    ]
+    for (final def library in bundledLibraries) {
+        jarJar(library)
+    }
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

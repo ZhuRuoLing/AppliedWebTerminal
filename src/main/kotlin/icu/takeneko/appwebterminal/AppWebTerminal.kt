@@ -7,6 +7,7 @@ import icu.takeneko.appwebterminal.all.AWBlockEntities
 import icu.takeneko.appwebterminal.all.AWBlocks
 import icu.takeneko.appwebterminal.all.AWCreativeTabs
 import icu.takeneko.appwebterminal.all.AWItems
+import icu.takeneko.appwebterminal.all.AWKeyImageProviders
 import icu.takeneko.appwebterminal.all.AWNetworking
 import icu.takeneko.appwebterminal.all.onAddRegistries
 import icu.takeneko.appwebterminal.all.onChunkUnloaded
@@ -15,7 +16,6 @@ import icu.takeneko.appwebterminal.all.onRegister
 import icu.takeneko.appwebterminal.all.onServerStart
 import icu.takeneko.appwebterminal.all.onServerStop
 import icu.takeneko.appwebterminal.all.onServerTickPost
-import icu.takeneko.appwebterminal.all.registerKeyImageProviders
 import icu.takeneko.appwebterminal.api.KeyImageProviderLoader
 import icu.takeneko.appwebterminal.api.crafting.impl.AECraftingCpuContainerImpl
 import icu.takeneko.appwebterminal.config.AppWebTerminalConfig
@@ -62,7 +62,8 @@ object AppWebTerminal {
         AWItems.registerItems()
         AWCreativeTabs.registerCreativeTab()
         AWNetworking.registerNetworking()
-        registerKeyImageProviders(modBus)
+
+        AWKeyImageProviders.DR.register(modBus)
     }
 
     fun setupEvents() {
