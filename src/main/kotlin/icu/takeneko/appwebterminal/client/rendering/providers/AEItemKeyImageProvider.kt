@@ -9,7 +9,7 @@ object AEItemKeyImageProvider : AEKeyImageProvider<AEItemKey> {
     override val keyType: AEKeyType = AEKeyType.items()
 
     override fun getAllEntries(): Iterable<AEItemKey> =
-        BuiltInRegistries.ITEM.entrySet().map { (_, f) ->
+        BuiltInRegistries.ITEM.entrySet().mapNotNull { (_, f) ->
             AEItemKey.of(f)
         }
 }

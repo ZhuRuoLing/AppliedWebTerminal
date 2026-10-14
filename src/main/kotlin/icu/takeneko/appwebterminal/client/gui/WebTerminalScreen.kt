@@ -1,6 +1,7 @@
 package icu.takeneko.appwebterminal.client.gui
 
 import appeng.client.gui.style.StyleManager
+import appeng.client.gui.widgets.AE2Button
 import appeng.client.gui.widgets.AETextField
 import com.mojang.blaze3d.systems.RenderSystem
 import icu.takeneko.appwebterminal.networking.UpdateWebTerminalNamePacket
@@ -30,7 +31,7 @@ class WebTerminalScreen(
         val y: Int = (this.height - 136) / 2
         nameField = AETextField(style, Minecraft.getInstance().font, x + 60, y + 40, 128, 18)
             .apply {
-                setBordered(false)
+                isBordered = false
                 value = name
                 setResponder {
                     name = it
@@ -39,14 +40,15 @@ class WebTerminalScreen(
 
         passwordField = AETextField(style, Minecraft.getInstance().font, x + 60, y + 70, 128, 18)
             .apply {
-                setBordered(false)
+                isBordered = false
                 value = password
                 setResponder {
                     password = it
                 }
             }
 
-        finishButton = Button.builder(Component.translatable("appwebterminal.button.done")) {
+        finishButton = AE2Button.builder(Component.translatable("appwebterminal.button.done")) {
+            Minecraft.getInstance().setScreen(null)
         }.bounds(x + 130, y + 110, 60, 20).build()
 
         addRenderableWidget(nameField)
@@ -59,7 +61,7 @@ class WebTerminalScreen(
     }
 
     override fun shouldCloseOnEsc(): Boolean {
-        return false
+        return true
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -77,6 +79,7 @@ class WebTerminalScreen(
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick)
         RenderSystem.enableBlend()
         RenderSystem.disableDepthTest()
         val pose = guiGraphics.pose()
@@ -128,7 +131,6 @@ class WebTerminalScreen(
                 false
             )
         }
-        super.render(guiGraphics, mouseX, mouseY, partialTick)
         pose.popPose()
     }
 

@@ -61,6 +61,11 @@ repositories {
                 url = "https://maven.ithundxr.dev/snapshots"
             }
         }
+        forRepository {
+            maven {
+                url = "https://maven.gegy.dev/releases"
+            }
+        }
         filter { includeGroup("com.tterrag.registrate") }
     }
 }
@@ -206,13 +211,33 @@ dependencies {
     }
 
     def ktorModules = [
-            'server-core', 'server-websockets', 'server-content-negotiation',
-            'serialization-kotlinx-json', 'server-forwarded-header', 'server-cors',
-            'server-caching-headers', 'server-host-common', 'server-auth', 'server-cio',
-            'server-auth-jwt', 'utils', 'io', 'http', 'serialization', 'websockets',
-            'events', 'http-cio', 'network', 'websocket-serialization',
-            'server-routing-openapi', 'openapi-schema', 'client-core', 'sse',
-            'server-csrf', 'server-sessions', 'server-auth-api-key',
+            'server-core',
+            'server-websockets',
+            'server-content-negotiation',
+            'serialization-kotlinx-json',
+            'server-forwarded-header',
+            'server-cors',
+            'server-caching-headers',
+            'server-host-common',
+            'server-auth',
+            'server-cio',
+            'server-auth-jwt',
+            'utils',
+            'io',
+            'http',
+            'serialization',
+            'websockets',
+            'events',
+            'http-cio',
+            'network',
+            'websocket-serialization',
+            'server-routing-openapi',
+            'openapi-schema',
+            'client-core',
+            'sse',
+            'server-csrf',
+            'server-sessions',
+            'server-auth-api-key',
             'serialization-kotlinx'
     ]
     def bundledLibraries = ktorModules.collect {

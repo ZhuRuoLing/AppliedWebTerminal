@@ -12,7 +12,6 @@ import icu.takeneko.appwebterminal.util.integerArgument
 import icu.takeneko.appwebterminal.util.literal
 import icu.takeneko.appwebterminal.util.sendError
 import icu.takeneko.appwebterminal.util.sendFeedback
-import net.minecraft.client.Minecraft
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.Component
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent
@@ -23,17 +22,17 @@ import kotlin.io.path.Path
 object AWCommands {
     val theCommand = LiteralCommand("appwebterminal") {
         literal("resources") {
-            literal("upload") {
-                execute {
-                    val src: CommandSourceStack by this
-                    if (Minecraft.getInstance().isLocalServer) {
-                        sendError(Component.translatable("appwebterminal.message.join_server_required"))
-                        return@execute 1
-                    }
-
-                    0
-                }
-            }
+//            literal("upload") {
+//                execute {
+//                    val src: CommandSourceStack by this
+//                    if (Minecraft.getInstance().isLocalServer) {
+//                        sendError(Component.translatable("appwebterminal.message.join_server_required"))
+//                        return@execute 1
+//                    }
+//
+//                    0
+//                }
+//            }
             literal("render") {
                 integerArgument("limit") {
                     integerArgument("size") {

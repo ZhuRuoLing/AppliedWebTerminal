@@ -9,7 +9,7 @@ object AEFluidKeyImageProvider : AEKeyImageProvider<AEFluidKey> {
     override val keyType: AEKeyType = AEKeyType.fluids()
 
     override fun getAllEntries(): Iterable<AEFluidKey> =
-        BuiltInRegistries.FLUID.entrySet().map { (_, f) ->
+        BuiltInRegistries.FLUID.entrySet().mapNotNull { (_, f) ->
             AEFluidKey.of(f)
         }
 

@@ -49,6 +49,14 @@ public class FullyBufferedBufferSource extends MultiBufferSource.BufferSource im
     public void endBatch(RenderType renderType) {
     }
 
+    @Override
+    public void endBatch() {
+    }
+
+    @Override
+    public void endLastBatch() {
+    }
+
     public Map<RenderType, VertexBuffer> upload() {
         Map<RenderType, VertexBuffer> result = new HashMap<>();
         for (Map.Entry<RenderType, BufferBuilder> entry : bufferBuilders.entrySet()) {
